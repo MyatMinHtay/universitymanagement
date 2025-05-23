@@ -1,0 +1,464 @@
+@font-face {
+  font-family: poppin;
+  src: local("Poppins-Medium"), url(../font/Poppins-Medium.ttf) format("woff");
+}
+
+@font-face {
+  font-family: Pyidaungsu;
+  src: local("Pyidaungsu"), url(../font/Pyidaungsu.ttf);
+}
+
+:root {
+  --primarycolor: #00c6ad;
+  --secondarycolor: gray;
+  --black: #000;
+  --iconcolor: #ee982c;
+
+  --white-logo: url("../img/logo2.png");
+  --black-logo: url("../img/logo1.jpg");
+
+  --bg-color: #eee;
+  /* --bg-color: #eee; */
+
+  --border: 0.1rem solid rgba(0, 0, 0, 0.2);
+
+  --box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px,
+    rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+
+  --box-shadow-inset: inset 5px 5px 10px #96c0d9, inset -5px -5px 10px #caffff;
+
+  /* ====== Transition ====== */
+  --tran-03: all 0.2s ease;
+  --tran-03: all 0.3s ease;
+  --tran-04: all 0.3s ease;
+  --tran-05: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "poppin", "Pyidaungsu", sans-serif;
+}
+
+body.active {
+  --primarycolor: #185444;
+  --secondarycolor: #1fd5ed;
+  --iconcolor: #00bbff;
+  --black: #fff;
+  --bg-color: #424c55;
+
+  --white-logo: url("../img/logo1.jpg");
+  --black-logo: url("../img/logo2.png");
+
+  --border: 0.1rem solid rgba(0, 0, 0, 0.4);
+
+  --box-shadow-inset: inset 5px 5px 10px #6c7d87, inset -5px -5px 10px #a4b6c0;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+
+  color: var(--black);
+  transition: var(--tran-05);
+}
+
+.form_header{
+  font-size: 20px;
+}
+
+.displayfixer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bg-color {
+  background: var(--bg-color);
+  box-shadow: var(--box-shadow);
+  border-radius: 5px;
+}
+
+.fontcolor {
+  color: var(--black);
+}
+
+.nav-link {
+  color: var(--black);
+}
+
+.navbar-toggler {
+  color: var(--black);
+
+  padding: 0px;
+  border: none;
+}
+
+.customnavbar {
+  /* background-color: var(--primarycolor); */
+  color: var(--black);
+  border-radius: 55px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+}
+
+/* #offcanvasNavbar {
+  background-color: var(--primarycolor);
+} */
+
+.customnavbarchild {
+  width: 98%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 40px;
+}
+
+.navbar-toggler-icon {
+  font-size: 10px;
+  color: var(--black);
+}
+
+nav-item {
+  color: var(--black);
+}
+
+a {
+  text-decoration: none;
+  color: var(--black);
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.userimgcontainer {
+  width: 50px;
+  height: 50px;
+
+  border-radius: 50%;
+}
+
+/* Start Admin Order Form  */
+
+.orderPhoto {
+  width: 500px;
+  height: auto;
+}
+
+.statusbox {
+  width: 100px;
+  height: 25px;
+  line-height: 25px;
+}
+
+.orderbody {
+  background-color: var(--bg-color);
+}
+
+/* Start Webtoon Section  */
+
+.webtoonimgcontainer img {
+  width: 65px;
+  height: 75px;
+}
+
+.webtoonbox {
+  background-color: var(--primarycolor);
+  box-shadow: var(--box-shadow);
+  border-radius: 5px;
+}
+
+.categorydiv {
+  width: 100px;
+  height: 25px;
+  font-size: 14px;
+  background-color: var(--bg-color);
+}
+
+.blogname,
+.publisheddate {
+  font-size: 15px;
+}
+
+.uploaderprofile {
+  width: 30px;
+  height: 30px;
+}
+
+.uploaderprofile img {
+  width: 100%;
+  height: 100%;
+}
+
+/* #webtoonimage-preview{
+
+} */
+
+#webtoonimage-preview img {
+  width: 600px;
+  height: 900px;
+}
+
+.inputbox {
+  /* background-color: var(--primarycolor); */
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid var(--primarycolor);
+
+  border-radius: 0;
+  padding: 2px;
+  color: var(--black);
+  outline: 0;
+}
+
+.inputbox:focus {
+  background-color: transparent;
+
+  border: none;
+  border-bottom: 1px solid var(--primarycolor);
+
+  /* box-shadow: var(--box-shadow-inset); */
+  cursor: pointer;
+
+  outline: 0;
+}
+
+.form-group input[type="file"] {
+  /* You can customize the appearance of the input container here */
+  border: 1px solid var(--primarycolor);
+  padding: 8px;
+  width: 100%;
+  background-color: var(--primarycolor);
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  color: var(--black);
+}
+
+.btncustomize {
+  background: var(--primarycolor);
+}
+
+.ui-corner-all {
+  margin: 5px;
+}
+
+/* End Webtoon Section  */
+
+/* Start custom Search Input  */
+
+.customsearchs {
+  height: 45px;
+  background: transparent;
+  border: none;
+  outline: 0;
+
+  font-size: 16px;
+  margin-left: 20px;
+  color: var(--black);
+}
+
+.customsearchs:focus {
+  outline: 0;
+}
+
+.customsearchicon {
+  font-size: 30px;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  background: transparent;
+  border: 0;
+}
+
+.searchcontainer {
+  position: relative;
+  background-color: var(--primarycolor);
+  box-shadow: var(--box-shadow);
+}
+
+/* End Custom Search Input  */
+
+/* End Admin Order Form  */
+
+/* Start Chapter  */
+.chaptercontainer {
+  width: 90%;
+  margin: auto;
+}
+
+.showchapter {
+  margin: 5px 0px;
+  padding: 5px;
+}
+
+#webtoonimagepreview {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  align-items: center;
+}
+
+#webtoonimagepreview img {
+  width: 100px;
+  height: 100px;
+  margin: 5px;
+}
+
+.buttoncontainer {
+  width: 100px;
+  height: 100px;
+
+  position: relative;
+}
+
+.fa-xmark {
+  background: transparent;
+}
+
+.buttoncontainer button {
+  border: 0;
+  outline: none;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.chapterimgcontainer {
+  background: var(--bg-color);
+}
+
+.chapterimgcontainer img {
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  /* transform: scale(0); */
+}
+
+/* End Chapter  */
+
+/* Start System Role  */
+.rolepill {
+  background: var(--bg-color);
+}
+
+.btn-bg {
+  background-color: var(--primarycolor);
+}
+
+.btn-bg-2 {
+  background-color: var(--secondarycolor);
+}
+.menubtns {
+  background-color: var(--primarycolor);
+}
+
+.menubtns.btn-bg-2 {
+  background-color: var(--secondarycolor);
+}
+
+.roletable {
+  border-radius: 10px;
+}
+
+/* .roletable table td {
+  border: none;
+} */
+/* End System Role */
+
+.webtooncreateform {
+  box-shadow: var(--box-shadow);
+}
+
+.btn-green {
+  background: var(--primarycolor);
+}
+
+.btn-blue {
+  background: var(--bg-color);
+}
+
+/* Start Dashboard  */
+
+.accountboxcontainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.accountbox {
+  width: 200px;
+  height: 100px;
+  margin: 10px;
+  background-color: var(--primarycolor);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.note-editable {
+  color: #000;
+}
+
+.modal-header,
+.modal-footer {
+  border: none;
+}
+
+
+.table-gap td{
+  height: 60px;
+  vertical-align: middle;
+}
+/* End Dashboard  */
+
+/* Media Query  */
+@media (max-width: 992px) {
+  .navbar-brand {
+    font-size: 18px;
+  }
+
+  .customnavbar {
+    height: 40px;
+    margin-top: 10px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 16px;
+  }
+
+  .customnavbar {
+    height: 50px;
+    margin-top: 10px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .navbar-brand {
+    font-size: 14px;
+  }
+
+  .webtoonimgcontainer img {
+    width: 35px;
+    height: 45px;
+  }
+
+  .blogname {
+    font-size: 11px;
+  }
+}
