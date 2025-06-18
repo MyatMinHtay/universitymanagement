@@ -48,7 +48,8 @@ class AuthController extends Controller
         if (Auth::check()) {
             $user = auth()->user();
         }else{
-            dd('hit');
+            
+            $user = null;
         }
         return view('home',[
             'user' => $user

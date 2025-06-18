@@ -11,7 +11,7 @@
     <title>University Management</title>
 
     <!-- favicon  -->
-    <link href="{{ asset('./assets/img/logo1.jpg') }}" width="16" rel="icon" type="image/jpg">
+    <link href="{{ asset('./assets/img/favicon.png') }}" width="16" rel="icon" type="image/jpg">
 
    <!-- fontawesome  -->
    <link href="{{ asset('./assets/fontawesomefree/css/all.min.css') }}" rel="stylesheet" type="text/css">

@@ -36,9 +36,9 @@
                               </li>
 
                               <li class="nav-item">
-                                   <a class="nav-link" href="/admin/mtccourses">
+                                   <a class="nav-link" href="{{ route('departments') }}">
                                         <i class="fa-solid fa-m fs-5 icon"></i>
-                                        MTC and Courses</a>
+                                        Departments</a>
                               </li>
 
                               <li class="nav-item">
@@ -46,18 +46,6 @@
                                         <i class="fa-solid fa-s fs-5 icon"></i>
                                         Students</a>
                               </li>
-
-
-
-
-                              <li class="nav-item">
-                                   <a class="nav-link" href="/admin/formsubmitcourse">
-                                        <i class="fa-solid fa-o fs-5 icon"></i>
-                                        Form Submit Users</a>
-                              </li>
-
-
-
 
 
                               <li class="nav-item">

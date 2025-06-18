@@ -20,6 +20,7 @@ use App\Http\Controllers\AdditionalFormController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\CompletionReportController;
 use App\Http\Controllers\StudentInformationController;
+use App\Http\Controllers\DepartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,3 +122,14 @@ Route::get('/students/edit/{student:id}', [StudentInformationController::class, 
 Route::get('/students/delete/{student:id}', [StudentInformationController::class, 'destorystudent'])->middleware('admincheck:students')->name('students.delete');
 
 
+//Department Start
+
+Route::prefix('/admin')->middleware('admincheck:departments')->group(function () {
+    Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
+    Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
+    Route::get('/departments/create', [DepartmentController::class, 'create'])->name('departments.create');
+    Route::post('/departments/store', [DepartmentController::class, 'store'])->name('departments.store');
+    Route::post('/departments/update/{department:id}', [DepartmentController::class, 'update'])->name('departments.update');
+    Route::get('/departments/edit/{department:id}', [DepartmentController::class, 'edit'])->name('departments.show');
+    Route::get('/departments/delete/{department:id}', [DepartmentController::class, 'destroy'])->name('departments.delete');
+});
