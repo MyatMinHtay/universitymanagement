@@ -5,9 +5,7 @@
             <section id="hero" class="hero section dark-background">
 
             <div class="hero-container">
-                <video autoplay="" muted="" loop="" playsinline="" class="video-background">
-                <source src="{{ asset('/assets/img/education/video-2.mp4') }}" type="video/mp4">
-                </video>
+                
                 <div class="overlay"></div>
                 <div class="container">
                 <div class="row align-items-center">
@@ -16,8 +14,7 @@
                         <h1>Empowering Futures Through Education</h1>
                         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae diam ornare, imperdiet est eget, pretium augue. Nullam auctor felis in nibh gravida, eu viverra risus egestas.</p>
                         <div class="cta-buttons">
-                        <a href="#" class="btn-primary">Start Your Journey</a>
-                        <a href="#" class="btn-secondary">Discover Programs</a>
+                        
                         </div>
                     </div>
                     </div>

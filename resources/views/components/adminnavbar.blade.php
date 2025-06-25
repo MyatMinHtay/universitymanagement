@@ -37,14 +37,20 @@
 
                               <li class="nav-item">
                                    <a class="nav-link" href="{{ route('departments') }}">
-                                        <i class="fa-solid fa-m fs-5 icon"></i>
+                                        <i class="fa-solid fa-d fs-5 icon"></i>
                                         Departments</a>
                               </li>
 
                               <li class="nav-item">
-                                   <a class="nav-link" href="/students">
+                                   <a class="nav-link" href="{{ route('students') }}">
                                         <i class="fa-solid fa-s fs-5 icon"></i>
                                         Students</a>
+                              </li>
+
+                              <li class="nav-item">
+                                   <a class="nav-link" href="{{ route('teachers') }}">
+                                        <i class="fa-solid fa-t fs-5 icon"></i>
+                                        Teachers</a>
                               </li>
 
 

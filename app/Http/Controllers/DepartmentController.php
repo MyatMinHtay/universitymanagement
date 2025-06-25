@@ -22,6 +22,26 @@ class DepartmentController extends Controller
 
     }
 
+    public function showDepartmentsProfile(Department $department){
+
+     
+
+        return view('userdepartmentshow',[
+            'department' => $department
+        ]);
+    }
+
+    public function showDepartments(){
+
+        $departments = Department::all();
+
+      
+
+        return view('departments',[
+            'departments' => $departments
+        ]);
+    }
+
     public function search(Request $request){
         $searchQuery = $request->input('search');
         $departments = Department::where(function ($query) use ($searchQuery) {
@@ -106,7 +126,6 @@ class DepartmentController extends Controller
         ]);
     }
 
-
     public function update(Request $request, Department $department){
 
         $formData = $request->validate([
@@ -121,14 +140,11 @@ class DepartmentController extends Controller
             'banner' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+     
+
         $oldShortname = $department->shortname;
         $newShortname = $formData['shortname'];
 
-        // If shortname changed, delete old folder
-        if ($oldShortname !== $newShortname) {
-            $oldFolderPath = public_path("assets/departments/{$oldShortname}");
-            $this->deleteFolder($oldFolderPath);
-        }
 
         $deptFileFields = ['logo', 'banner'];
 
@@ -171,8 +187,7 @@ class DepartmentController extends Controller
         }
 
         return redirect()->route('departments')->with('success', 'Department updated successfully.');
-}
-
+    }
 
      private function deleteFolder($folderPath){
         if (file_exists($folderPath)) {
@@ -184,9 +199,6 @@ class DepartmentController extends Controller
             rmdir($folderPath);
         }
     }
-
-
-   
 
     public function destroy(Department $department)
     {

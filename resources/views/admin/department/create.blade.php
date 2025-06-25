@@ -1,5 +1,8 @@
 <x-adminlayout>
 
+
+
+
     <div class="container mt-5">
 
         <h1 class="text-center form_header">Add Department</h1>
@@ -68,6 +71,22 @@
 </x-adminlayout>
 
 <script>
+    $(document).ready(function() {
+        $('#description').summernote({
+            placeholder: 'Enter department description here...',
+            tabsize: 2,
+            height: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'clear']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ]
+        });
+    });
     $(document).ready(function () {
 
 
@@ -80,7 +99,7 @@
             }
 
             $.ajax({
-                url: "{{ route('student.search') }}", // Laravel route for searching students
+                url: "{{ route('students.search') }}", // Laravel route for searching students
                 method: 'GET',
                 data: { name: query },
                 success: function (data) {
@@ -145,4 +164,6 @@
 
 });
 </script>
+
+
 

@@ -5,23 +5,14 @@ use App\Models\CompletionReport;
 use App\Models\StudentInformation;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BlogController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\ExportController;
-use App\Http\Controllers\CoursesController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\FirstFormController;
-use App\Http\Controllers\MtcCourseController;
-use App\Http\Controllers\FileUploadController;
-use App\Http\Controllers\SecondFormController;
 use App\Http\Controllers\SystemRoleController;
-use App\Http\Controllers\AdditionalFormController;
 use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\CompletionReportController;
-use App\Http\Controllers\StudentInformationController;
 use App\Http\Controllers\DepartmentController;
-
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\TeacherController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,7 +35,7 @@ Route::get('/campus-facilities', [HomeController::class, 'showCampusFacilities']
 Route::get('/contact', [HomeController::class, 'showContact'])->name('contact');
 Route::get('/event-details', [HomeController::class, 'showEventDetails'])->name('event-details');
 Route::get('/events', [HomeController::class, 'showEvents'])->name('events');
-Route::get('/faculty-staff', [HomeController::class, 'showFacultyStaff'])->name('faculty-staff');
+
 Route::get('/news-details', [HomeController::class, 'showNewsDetails'])->name('news-details');
 Route::get('/news', [HomeController::class, 'showNews'])->name('news');
 Route::get('/privacy', [HomeController::class, 'showPrivacy'])->name('privacy');
@@ -90,46 +81,44 @@ Route::post('/admin/roles/update/{role:role}', [SystemRoleController::class, 'up
 Route::get('/admin/roles/edit/{role:role}', [SystemRoleController::class, 'editrole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles');
 Route::get('/admin/roles/delete/{role:role}', [SystemRoleController::class, 'deleterole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles');
 
-
-
-
-//Course Create
-Route::get('/createcourse', [CoursesController::class, 'index'])->middleware('admincheck:user')->name('createcourse');
-Route::post('/course/create', [CoursesController::class, 'createcourse'])->middleware('admincheck:user')->name('courses');
-Route::get('{course:id}/editcourse', [CoursesController::class, 'editcourse'])->middleware('admincheck:user')->name('editcourse');
-Route::post('{course:id}/course/update', [CoursesController::class, 'updatecourse'])->middleware('admincheck:user')->name('updatecourse');
-
-//View Form
-Route::get('/{course:id}/viewform', [CoursesController::class, 'viewform'])->middleware('admincheck:user')->name('viewform');
-Route::get('/{course:id}/adminviewform', [CoursesController::class, 'adminviewform'])->middleware('admincheck:moderator')->name('adminviewform');
-
-
-
-Route::get('/student-search', [StudentInformationController::class, 'search'])->name('student.search');
-
-
-
-
-
-
-//Start Student Information 
-
-Route::get('/students', [StudentInformationController::class, 'index'])->middleware('admincheck:students')->name('students');
-Route::get('/students/create', [StudentInformationController::class, 'createstudent'])->middleware('admincheck:students')->name('students.create');
-Route::post('/students/create', [StudentInformationController::class, 'storestudent'])->middleware("admincheck:students")->name('students.store');
-Route::post('/students/update/{student:id}', [StudentInformationController::class, 'updatestudent'])->middleware('admincheck:students')->name('students.update');
-Route::get('/students/edit/{student:id}', [StudentInformationController::class, 'editstudent'])->middleware('admincheck:students')->name('students.edit');
-Route::get('/students/delete/{student:id}', [StudentInformationController::class, 'destorystudent'])->middleware('admincheck:students')->name('students.delete');
-
-
 //Department Start
 
+//User Side
+Route::get('/departments', [DepartmentController::class, 'showDepartments'])->name('user.departments');
+Route::get('/departments/show/{department:id}', [DepartmentController::class, 'showDepartmentsProfile'])->name('user.departments.show');
+
+// Public search routes for department pages
+Route::get('/teachers/search', [TeacherController::class, 'search'])->name('teachers.search');
+Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
+
+//Admin Side
 Route::prefix('/admin')->middleware('admincheck:departments')->group(function () {
     Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
-    Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
     Route::get('/departments/create', [DepartmentController::class, 'create'])->name('departments.create');
     Route::post('/departments/store', [DepartmentController::class, 'store'])->name('departments.store');
     Route::post('/departments/update/{department:id}', [DepartmentController::class, 'update'])->name('departments.update');
-    Route::get('/departments/edit/{department:id}', [DepartmentController::class, 'edit'])->name('departments.show');
+    Route::get('/departments/edit/{department:id}', [DepartmentController::class, 'edit'])->name('departments.adminshow');
     Route::get('/departments/delete/{department:id}', [DepartmentController::class, 'destroy'])->name('departments.delete');
+});
+
+
+//Student Start
+Route::prefix('/admin')->middleware('admincheck:students')->group(function () {
+    Route::get('/students', [StudentController::class, 'index'])->name('students');
+    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+    Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
+    Route::post('/students/update/{student:id}', [StudentController::class, 'update'])->name('students.update');
+    Route::get('/students/edit/{student:id}', [StudentController::class, 'edit'])->name('students.show');
+    Route::get('/students/delete/{student:id}', [StudentController::class, 'destroy'])->name('students.delete');
+});
+
+//Teacher Start
+Route::prefix('/admin')->middleware('admincheck:teachers')->group(function () {
+    Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers');
+    Route::get('/teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
+    Route::post('/teachers/store', [TeacherController::class, 'store'])->name('teachers.store');
+    Route::post('/teachers/update/{teacher:id}', [TeacherController::class, 'update'])->name('teachers.update');
+    Route::get('/teachers/edit/{teacher:id}', [TeacherController::class, 'edit'])->name('teachers.show');
+    Route::get('/teachers/delete/{teacher:id}', [TeacherController::class, 'destroy'])->name('teachers.delete');
 });

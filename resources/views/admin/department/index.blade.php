@@ -10,29 +10,46 @@
             
             <a href="{{ route('departments.create') }}" class="addbtn">Add Department</a>
         </div>
-        <div class="dpboxes my-5" id="department-list">
+        <div class="table-responsive" id="department-list">
+    <table class="table table-hover table-bordered border-1 table-primary">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Logo</th>
+                <th scope="col">Department Name</th>
+                <th scope="col">Department Code</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($departments as $department)
+                <tr>
+                    <td>{{ $department->id }}</td>
+                    <td>
+                        <img src="{{ asset($department->logo) }}" alt="{{ $department->fullname }}" style="width: 60px; height: auto;">
+                    </td>
+                    <td>{{ $department->fullname }}</td>
+                    <td>{{ $department->deptCode }}</td>
+                    <td>
+                        <a href="{{ route('departments.adminshow', $department->id) }}" class="btn btn-info">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="text-center">No departments found.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+</div>
 
-            @foreach ($departments as  $department)
-                <div class="dpbox">
-                    <div class="dplogobox">
-                        <img src="{{ asset($department->logo) }}" alt="{{ $department->fullname }}">
-                    </div>
-
-                <div class="dpcontent">
-                    <h4 class="dp-name">{{ $department->fullname }} ({{ $department->deptCode }})</h4>
-                    
-                    <a href="{{ route('departments.show', $department->id) }}" class="dp-btn">View More</a>
-                </div>
-            </div>
-            @endforeach
-            
-            
-        </div>
     </div>
 </x-adminlayout>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#searchdp').on('keyup', function () {
             var searchQuery = $(this).val();
             $.ajax({
@@ -41,28 +58,51 @@
                 data: { search: searchQuery },
                 dataType: 'json',
                 success: function (data) {
-                    $('#department-list').html('');
-                    $.each(data, function (index, department) {
-                        var showUrl = 'departments/edit/' + department.id;
-                        var imageUrl = '/' + department.logo;
+                    var tableHtml = `
+                        <table class="table table-hover table-bordered border-1 table-primary">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Logo</th>
+                                    <th scope="col">Department Name</th>
+                                    <th scope="col">Department Code</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
 
-                        var departmentHtml = `
-                            <div class="dpbox">
-                                <div class="dplogobox">
-                                    <img src="${imageUrl}" alt="${department.fullname}">
-                                </div>
-                                <div class="dpcontent">
-                                    <h4 class="dp-name">${department.fullname} (${department.deptCode})</h4>
-                                    <a href="${showUrl}" class="dp-btn">View More</a>
-                                </div>
-                            </div>
+                    if (data.length === 0) {
+                        tableHtml += `
+                            <tr>
+                                <td colspan="5" class="text-center">No departments found.</td>
+                            </tr>
                         `;
+                    } else {
+                        $.each(data, function (index, department) {
+                            var showUrl = 'departments/edit/' + department.id;
+                            var imageUrl = '/' + department.logo;
 
-                        $('#department-list').append(departmentHtml);
-                    });
+                            tableHtml += `
+                                <tr>
+                                    <td>${department.id}</td>
+                                    <td><img src="${imageUrl}" alt="${department.fullname}" style="width: 60px; height: auto;"></td>
+                                    <td>${department.fullname}</td>
+                                    <td>${department.deptCode}</td>
+                                    <td>
+                                        <a href="${showUrl}" class="btn btn-info">
+                                            <i class="fa-solid fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    tableHtml += `</tbody></table>`;
+                    $('#department-list').html(tableHtml);
                 }
             });
         });
-
     });
 </script>

@@ -22,7 +22,10 @@
       <link href="{{ asset('/assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
         <link href="{{ asset('/assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 
-    <!-- custom css -->
+    <!-- Summernote CSS -->
+    <link href="{{ asset('/assets/summernote/summernote-bs5.min.css') }}" rel="stylesheet">
+
+
     <link rel="stylesheet" href="{{ asset('./assets/css/admin.css') }}" type="text/css">
     {{-- <link rel="stylesheet" href="{{ asset('./assets/css/style.css') }}" type="text/css"> --}}
 
@@ -53,6 +56,9 @@
 
     <!-- bootstrap css1 js1  -->
     <script src="{{ asset('/assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}" type="text/javascript"></script>
+
+    <!-- Summernote JS -->
+    <script src="{{ asset('/assets/summernote/summernote-bs5.min.js') }}"></script>
 
 </body>
 </html>

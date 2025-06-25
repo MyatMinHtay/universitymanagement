@@ -29,3 +29,148 @@
     background-color: var(--heading-color);
     color: #fff;
 }
+
+.department-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0;
+}
+
+.department-card {
+    width: 100%;
+    max-width: 300px;
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--default-color);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.department-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-image img {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.card-content h3 {
+    font-size: 1.2rem;
+    color: var(--heading-color);
+    margin-bottom: 0.2rem;
+    text-align: center;
+}
+
+.card-content p {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+
+.department-banner {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+    background-color: var(--background-color);
+}
+
+.department-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.department-profile {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--surface-color);
+    border-radius: 50%;
+    padding: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.department-profile img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.heading {
+    color: var(--heading-color);
+    margin-top: 80px;
+}
+
+.section {
+    margin-top: 40px;
+}
+
+.hero.section{
+    margin-top: 0;
+}
+
+.section-title {
+    color: var(--heading-color);
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.info-card {
+    width: 100%;
+    max-width: 300px;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+}
+
+.info-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.dpsection{
+    margin: 50px 0;
+}
+
+@media screen and (max-width: 768px) {
+    .info-card {
+        max-width: 100%;
+    }
+
+    .card-grid{
+        justify-content: center;
+    }
+}
