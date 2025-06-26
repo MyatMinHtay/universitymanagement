@@ -10,25 +10,49 @@
             <a href="{{ route('students.create') }}" class="addbtn">Add Student</a>
         </div>
 
-        <div class="dpboxes my-5" id="student-list">
-            @forelse ($students as $student)
-                <div class="dpbox">
-                    <div class="dplogobox">
-                        <img src="{{ asset($student->image) }}" alt="{{ $student->name }}">
-                    </div>
-                    <h4 class="dp-name">{{ $student->name }}</h4>
-                    <div class="dpcontent">
-                        
-                        <p>Year: {{ $student->year }}</p>
-                        <p>Seat No: {{ $student->seat_number }}</p>
-                        <p>Department: {{ $student->department->fullname ?? 'N/A' }}</p>
-                        
-                    </div>
-                    <a href="{{ route('students.show', $student->id) }}" class="dp-btn">View More</a>
-                </div>
-            @empty
-                <h4 class="empty-text">No Student Have Create Student </h4>
-            @endforelse
+        <div class="table-responsive" id="student-list">
+            <table class="table table-hover table-bordered border-1 table-primary">
+                <thead>
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Year</th>
+                        <th scope="col">Seat Number</th>
+                        <th scope="col">Department</th>
+                        <th scope="col">Edit</th>
+                        <th scope="col">View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($students as $student)
+                        <tr>
+                            <td>{{ $student->id }}</td>
+                            <td>
+                                <img src="{{ asset($student->image) }}" alt="{{ $student->name }}" style="width: 60px; height: auto;">
+                            </td>
+                            <td>{{ $student->name }}</td>
+                            <td>{{ $student->year }}</td>
+                            <td>{{ $student->seat_number }}</td>
+                            <td>{{ $student->department->fullname ?? 'N/A' }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('students.edit', $student->id) }}" class="btn btn-info">
+                                    <i class="fa-solid fa-eye"></i> Edit
+                                </a>
+                            </td>
+                            <td class="text-center">
+                                <a href="{{ route('students.show', $student->id) }}" class="btn btn-info">
+                                    <i class="fa-solid fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No students found.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
         <div>
@@ -37,8 +61,9 @@
     </div>
 </x-adminlayout>
 
+
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         $('#searchstudent').on('keyup', function () {
             var searchQuery = $(this).val();
             $.ajax({
@@ -47,30 +72,64 @@
                 data: { search: searchQuery },
                 dataType: 'json',
                 success: function (data) {
-                    $('#student-list').html('');
-                    $.each(data, function (index, student) {
-                        var showUrl = '/admin/students/edit/' + student.id;
-                        var imageUrl = '/' + student.image;
+                    var tableHtml = `
+                        <table class="table table-hover table-bordered border-1 table-primary">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Image</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Year</th>
+                                    <th scope="col">Seat Number</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Edit</th>
+                                    <th scope="col">View</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
 
-                        var studentHtml = `
-                            <div class="dpbox">
-                                <div class="dplogobox">
-                                    <img src="${imageUrl}" alt="${student.name}">
-                                </div>
-                                <div class="dpcontent">
-                                    <h4 class="dp-name">${student.name}</h4>
-                                    <p>Year: ${student.year}</p>
-                                    <p>Seat No: ${student.seat_number}</p>
-                                    <p>Department: ${student.department?.fullname ?? 'N/A'}</p>
-                                    <a href="${showUrl}" class="dp-btn">View More</a>
-                                </div>
-                            </div>
+                    if (data.length === 0) {
+                        tableHtml += `
+                            <tr>
+                                <td colspan="7" class="text-center">No students found.</td>
+                            </tr>
                         `;
+                    } else {
+                        $.each(data, function (index, student) {
+                            var editUrl = '/admin/students/edit/' + student.id;
+                            var showUrl = '/admin/students/' + student.id;
+                            var imageUrl = '/' + student.image;
+                            var departmentName = student.department?.fullname || 'N/A';
 
-                        $('#student-list').append(studentHtml);
-                    });
+                            tableHtml += `
+                                <tr>
+                                    <td>${student.id}</td>
+                                    <td><img src="${imageUrl}" alt="${student.name}" style="width: 60px; height: auto;"></td>
+                                    <td>${student.name}</td>
+                                    <td>${student.year}</td>
+                                    <td>${student.seat_number}</td>
+                                    <td>${departmentName}</td>
+                                    <td class="text-center">
+                                        <a href="${editUrl}" class="btn btn-info">
+                                            <i class="fa-solid fa-eye"></i> Edit
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a href="${showUrl}" class="btn btn-info">
+                                            <i class="fa-solid fa-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    }
+
+                    tableHtml += `</tbody></table>`;
+                    $('#student-list').html(tableHtml);
                 }
             });
         });
     });
 </script>
+

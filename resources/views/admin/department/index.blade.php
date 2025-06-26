@@ -18,7 +18,8 @@
                 <th scope="col">Logo</th>
                 <th scope="col">Department Name</th>
                 <th scope="col">Department Code</th>
-                <th scope="col">Actions</th>
+                <th scope="col">Edit</th>
+                <th scope="col">View</th>
             </tr>
         </thead>
         <tbody>
@@ -30,8 +31,13 @@
                     </td>
                     <td>{{ $department->fullname }}</td>
                     <td>{{ $department->deptCode }}</td>
-                    <td>
+                    <td class="text-center">
                         <a href="{{ route('departments.adminshow', $department->id) }}" class="btn btn-info">
+                            <i class="fa-solid fa-pencil"></i> Edit
+                        </a>
+                    </td>
+                    <td class="text-center">
+                        <a href="{{ route('departments.show', $department->id) }}" class="btn btn-info">
                             <i class="fa-solid fa-eye"></i> View
                         </a>
                     </td>
@@ -66,7 +72,8 @@
                                     <th scope="col">Logo</th>
                                     <th scope="col">Department Name</th>
                                     <th scope="col">Department Code</th>
-                                    <th scope="col">Actions</th>
+                                    <th scope="col">Edit</th>
+                                    <th scope="col">View</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,7 +87,8 @@
                         `;
                     } else {
                         $.each(data, function (index, department) {
-                            var showUrl = 'departments/edit/' + department.id;
+                            var editUrl = 'departments/edit/' + department.id;
+                            var showUrl = 'departments/show/' + department.id;
                             var imageUrl = '/' + department.logo;
 
                             tableHtml += `
@@ -89,7 +97,12 @@
                                     <td><img src="${imageUrl}" alt="${department.fullname}" style="width: 60px; height: auto;"></td>
                                     <td>${department.fullname}</td>
                                     <td>${department.deptCode}</td>
-                                    <td>
+                                    <td class="text-center">
+                                        <a href="${editUrl}" class="btn btn-info">
+                                            <i class="fa-solid fa-pencil"></i> Edit
+                                        </a>
+                                    </td>
+                                    <td class="text-center">
                                         <a href="${showUrl}" class="btn btn-info">
                                             <i class="fa-solid fa-eye"></i> View
                                         </a>

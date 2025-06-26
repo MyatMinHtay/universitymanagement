@@ -33,8 +33,7 @@ Route::get('/admissions', [HomeController::class, 'showAdmissions'])->name('admi
 Route::get('/alumni', [HomeController::class, 'showAlumni'])->name('alumni');
 Route::get('/campus-facilities', [HomeController::class, 'showCampusFacilities'])->name('campus-facilities');
 Route::get('/contact', [HomeController::class, 'showContact'])->name('contact');
-Route::get('/event-details', [HomeController::class, 'showEventDetails'])->name('event-details');
-Route::get('/events', [HomeController::class, 'showEvents'])->name('events');
+
 
 Route::get('/news-details', [HomeController::class, 'showNewsDetails'])->name('news-details');
 Route::get('/news', [HomeController::class, 'showNews'])->name('news');
@@ -95,6 +94,7 @@ Route::get('/departments/search', [DepartmentController::class, 'search'])->name
 //Admin Side
 Route::prefix('/admin')->middleware('admincheck:departments')->group(function () {
     Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
+    Route::get('/departments/show/{department:id}', [DepartmentController::class, 'show'])->name('departments.show');
     Route::get('/departments/create', [DepartmentController::class, 'create'])->name('departments.create');
     Route::post('/departments/store', [DepartmentController::class, 'store'])->name('departments.store');
     Route::post('/departments/update/{department:id}', [DepartmentController::class, 'update'])->name('departments.update');
@@ -105,20 +105,25 @@ Route::prefix('/admin')->middleware('admincheck:departments')->group(function ()
 
 //Student Start
 Route::prefix('/admin')->middleware('admincheck:students')->group(function () {
+    // Move 'create' before dynamic {student:id} route
     Route::get('/students', [StudentController::class, 'index'])->name('students');
-    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+    Route::get('/students/create', [StudentController::class, 'create'])->name('students.create'); // move this up
+    Route::get('/students/edit/{student:id}', [StudentController::class, 'edit'])->name('students.edit');
     Route::post('/students/store', [StudentController::class, 'store'])->name('students.store');
     Route::post('/students/update/{student:id}', [StudentController::class, 'update'])->name('students.update');
-    Route::get('/students/edit/{student:id}', [StudentController::class, 'edit'])->name('students.show');
     Route::get('/students/delete/{student:id}', [StudentController::class, 'destroy'])->name('students.delete');
+    Route::get('/students/{student:id}', [StudentController::class, 'show'])->name('students.show'); // dynamic last
 });
 
+Route::get('/students/{student:id}', [StudentController::class, 'showStudents'])->name('students.usershow'); // dynamic last
 //Teacher Start
 Route::prefix('/admin')->middleware('admincheck:teachers')->group(function () {
     Route::get('/teachers', [TeacherController::class, 'index'])->name('teachers');
     Route::get('/teachers/create', [TeacherController::class, 'create'])->name('teachers.create');
     Route::post('/teachers/store', [TeacherController::class, 'store'])->name('teachers.store');
     Route::post('/teachers/update/{teacher:id}', [TeacherController::class, 'update'])->name('teachers.update');
-    Route::get('/teachers/edit/{teacher:id}', [TeacherController::class, 'edit'])->name('teachers.show');
+    Route::get('/teachers/edit/{teacher:id}', [TeacherController::class, 'edit'])->name('teachers.edit');
     Route::get('/teachers/delete/{teacher:id}', [TeacherController::class, 'destroy'])->name('teachers.delete');
+    Route::get('/teachers/{teacher:id}', [TeacherController::class, 'show'])->name('teachers.show');
 });
+Route::get('/teachers/{teacher:id}', [TeacherController::class, 'showTeachers'])->name('teachers.usershow');

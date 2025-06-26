@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('shortname');
             $table->string('deptCode');
             $table->enum('status', ['active', 'inactive'])->default('active');
-            $table->text('description')->nullable();
             $table->string('logo')->nullable();
             $table->string('banner')->nullable();
             $table->timestamps();

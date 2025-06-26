@@ -31,7 +31,7 @@
   <link href="/assets/css/main.css" rel="stylesheet">
 
    <!-- fontawesome  -->
-   {{-- <link href="{{ asset('/assets/fontawesomefree/css/all.min.css') }}" rel="stylesheet" type="text/css"> --}}
+   <link href="{{ asset('/assets/fontawesomefree/css/all.min.css') }}" rel="stylesheet" type="text/css">
 
     <!-- custom css -->
     <link href="{{ asset('/assets/css/import.css') }}" rel="stylesheet" type="text/css" />
@@ -53,6 +53,9 @@
   <script src="{{ asset('/assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
   <script src="{{ asset('/assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
   <script src="{{ asset('/assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+
+  {{-- font awesoem  --}}
+  <script src="{{ asset('/assets/fontawesomefree/js/all.min.js') }}"></script>
 
   <!-- Main JS File -->
   <script src="{{ asset('/assets/js/main.js') }}"></script>

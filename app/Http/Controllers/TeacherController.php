@@ -38,17 +38,31 @@ class TeacherController extends Controller
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
                   ->orWhere('position', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('phone_number', 'like', '%' . $searchQuery . '%');
+                  ->orWhere('id', 'like', '%' . $searchQuery . '%');
             });
         }
         
         
         
-        $teachers = $query->get(['name', 'position', 'phone_number', 'image']);
+        $teachers = $query->get();
 
         return response()->json($teachers);
        
         
+    }
+
+    public function show(Teacher $teacher)
+    {
+        return view('admin.teacher.show', [
+            'teacher' => $teacher
+        ]);
+    }
+
+    public function showTeachers(Teacher $teacher)
+    {
+        return view('admin.teacher.userteachershow', [
+            'teacher' => $teacher
+        ]);
     }
 
     

@@ -38,10 +38,7 @@
                     <x-error name="deptCode"></x-error>
                 </div>
 
-                <div class="mb-5 form-group">
-                    <label for="description">Department Description</label>
-                    <textarea name="description" id="description" class="form-control inputbox textareaInput" cols="10" rows="1"></textarea>
-                </div>
+                
 
                 <div class="mb-3 form-group">
                     <label for="deptLogo">Department Logo</label>
@@ -71,22 +68,7 @@
 </x-adminlayout>
 
 <script>
-    $(document).ready(function() {
-        $('#description').summernote({
-            placeholder: 'Enter department description here...',
-            tabsize: 2,
-            height: 200,
-            toolbar: [
-                ['style', ['style']],
-                ['font', ['bold', 'underline', 'clear']],
-                ['color', ['color']],
-                ['para', ['ul', 'ol', 'paragraph']],
-                ['table', ['table']],
-                ['insert', ['link', 'picture', 'video']],
-                ['view', ['fullscreen', 'codeview', 'help']]
-            ]
-        });
-    });
+    
     $(document).ready(function () {
 
 

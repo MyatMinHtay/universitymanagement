@@ -47,13 +47,20 @@ class DepartmentController extends Controller
         $departments = Department::where(function ($query) use ($searchQuery) {
             $query->where('fullname', 'like', '%' . $searchQuery . '%')
                 ->orWhere('shortname', 'like', '%' . $searchQuery . '%')
-                ->orWhere('deptCode', 'like', '%' . $searchQuery . '%');
+                ->orWhere('deptCode', 'like', '%' . $searchQuery . '%')
+                ->orWhere('id', 'like', '%' . $searchQuery . '%');
         })->get();
         return response()->json($departments);
     }
 
     public function create(){
         return view('admin.department.create');
+    }
+
+    public function show(Department $department){
+        return view('admin.department.show',[
+            'department' => $department
+        ]);
     }
 
     public function store(Request $request){
@@ -63,7 +70,6 @@ class DepartmentController extends Controller
         $formData = $request->validate([
             'fullname' => 'required',
             'shortname' => 'required',
-            'description' => 'required',
             'deptCode' => 'required',
             'logo' => 'required|file|mimes:jpeg,png,jpg|max:2048',
             'banner' => 'required|file|mimes:jpeg,png,jpg|max:2048',
@@ -134,7 +140,6 @@ class DepartmentController extends Controller
                 'required',
                 Rule::unique('departments')->ignore($department->id),
             ],
-            'description' => 'required',
             'deptCode' => 'required',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'banner' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',

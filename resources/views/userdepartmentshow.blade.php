@@ -15,9 +15,7 @@
     <div class="container my-5">
         
 
-        <div class="description text-start mb-5">
-            <p>{!! $department->description !!}</p>
-        </div>
+        
 
         <div class="row mb-5">
             <div class="col-lg-12 mx-auto">
@@ -33,12 +31,12 @@
             <h3 class="section-title">Teachers</h3>
             <div class="card-grid" id="teacher-list">
                 @forelse ($department->teachers as $teacher)
-                    <div class="info-card">
+                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card">
                         <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
                         <h4>{{ $teacher->name }}</h4>
                         <p>{{ $teacher->position }}</p>
                         <p>{{ $teacher->phone_number }}</p>
-                    </div>
+                    </a>
                 @empty
                     <p>No teachers found in this department.</p>
                 @endforelse
@@ -59,12 +57,12 @@
             <h3 class="section-title">Students</h3>
             <div class="card-grid" id="student-list">
                 @forelse ($department->students as $student)
-                    <div class="info-card">
+                    <a href="{{ route('students.usershow', $student->id) }}" class="info-card">
                         <img src="{{ asset($student->image) }}" alt="{{ $student->name }}">
                         <h4>{{ $student->name }}</h4>
                         <p>Year: {{ $student->year }}</p>
                         <p>Seat No: {{ $student->seat_number }}</p>
-                    </div>
+                    </a>
                 @empty
                     <p>No students found in this department.</p>
                 @endforelse

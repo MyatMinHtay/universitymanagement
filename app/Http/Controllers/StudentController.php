@@ -13,7 +13,7 @@ class StudentController extends Controller
 {
     public function index()
     {
-        $students = Student::with('department')->paginate(2);
+        $students = Student::with('department')->paginate(10);
 
         return view('admin.student.index', [
             'students' => $students,
@@ -37,7 +37,7 @@ class StudentController extends Controller
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
                   ->orWhere('seat_number', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('year', 'like', '%' . $searchQuery . '%');
+                  ->orWhere('id', 'like', '%' . $searchQuery . '%');
             });
         }
         
@@ -52,6 +52,20 @@ class StudentController extends Controller
 
         return view('admin.student.create', [
             'departments' => $departments,
+        ]);
+    }
+
+    public function show(Student $student)
+    {
+        return view('admin.student.show', [
+            'student' => $student,
+        ]);
+    }
+
+    public function showStudents(Student $student)
+    {
+        return view('admin.student.userstushow', [
+            'student' => $student,
         ]);
     }
 
