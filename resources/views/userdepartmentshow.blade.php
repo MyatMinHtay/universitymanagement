@@ -2,12 +2,14 @@
     <main class="main">
             <!-- Page Title -->
         <div class="page-title">
-            <div class="container position-relative">
-            <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
-            <img class="mt-5" style="object-fit: cover" src="{{ asset($department->logo) }}" width="100px" height="100px" alt="">
-            <h1 class="mt-5">Department Of {{ $department->fullname }}</h1>
-            
-            
+            <div class="container position-relative ">
+              <div class="col-12">
+                <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
+              </div>
+              <div class="col-12">
+                <img class="mt-5" style="object-fit: cover" src="{{ asset($department->logo) }}" width="100px" height="100px" alt="">
+              </div>
+              <h1 class="mt-5">Department Of {{ $department->fullname }}</h1>
             </div>
         </div>
     <!-- End Page Title -->
@@ -18,14 +20,14 @@
         
 
         <div class="row mb-5">
-            <div class="col-lg-12 mx-auto">
-              <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-                <div class="input-group">
-                  <input type="text" id="searchtr" class="form-control" placeholder="Search Teachers">
-                </div>
+          <div class="col-lg-12 mx-auto">
+            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+              <div class="input-group">
+                <input type="text" id="searchtr" class="form-control" placeholder="Search Teachers">
               </div>
             </div>
           </div>
+        </div>
 
         <div class="dpsection">
             <h3 class="section-title">Teachers</h3>

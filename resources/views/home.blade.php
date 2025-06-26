@@ -2,9 +2,11 @@
       <main class="main">
 
             <!-- Hero Section -->
-            <section id="hero" class="hero section dark-background">
+            <section id="hero" class="hero section">
 
-            <div class="hero-container">
+                <div class="col-12">
+                    <img src="{{ asset('assets/images/hero-bg.jpg') }}" alt="">
+                </div>
                 
                 <div class="overlay"></div>
                 <div class="container">

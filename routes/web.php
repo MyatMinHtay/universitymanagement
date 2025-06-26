@@ -27,19 +27,8 @@ use App\Http\Controllers\TeacherController;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('home');
-Route::get('/about', [HomeController::class, 'showabout'])->name('about');
-Route::get('/academics', [HomeController::class, 'showAcademics'])->name('academics');
-Route::get('/admissions', [HomeController::class, 'showAdmissions'])->name('admissions');
-Route::get('/alumni', [HomeController::class, 'showAlumni'])->name('alumni');
-Route::get('/campus-facilities', [HomeController::class, 'showCampusFacilities'])->name('campus-facilities');
-Route::get('/contact', [HomeController::class, 'showContact'])->name('contact');
 
 
-Route::get('/news-details', [HomeController::class, 'showNewsDetails'])->name('news-details');
-Route::get('/news', [HomeController::class, 'showNews'])->name('news');
-Route::get('/privacy', [HomeController::class, 'showPrivacy'])->name('privacy');
-Route::get('/students-life', [HomeController::class, 'showStudentsLife'])->name('students-life');
-Route::get('/terms-of-service', [HomeController::class, 'showTermsOfService'])->name('terms-of-service');
 
 
 Route::get('/register', [AuthController::class, 'create'])->name('register');
@@ -103,6 +92,7 @@ Route::prefix('/admin')->middleware('admincheck:departments')->group(function ()
 });
 
 
+Route::get('/students', [StudentController::class, 'userShow'])->name('userstudents');
 //Student Start
 Route::prefix('/admin')->middleware('admincheck:students')->group(function () {
     // Move 'create' before dynamic {student:id} route
@@ -115,6 +105,7 @@ Route::prefix('/admin')->middleware('admincheck:students')->group(function () {
     Route::get('/students/{student:id}', [StudentController::class, 'show'])->name('students.show'); // dynamic last
 });
 
+Route::get('/teachers', [TeacherController::class, 'userShow'])->name('userteachers');
 Route::get('/students/{student:id}', [StudentController::class, 'showStudents'])->name('students.usershow'); // dynamic last
 //Teacher Start
 Route::prefix('/admin')->middleware('admincheck:teachers')->group(function () {

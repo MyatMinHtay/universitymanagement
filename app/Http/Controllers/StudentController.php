@@ -20,6 +20,14 @@ class StudentController extends Controller
         ]);
     }
 
+    public function userShow(){
+        $students = Student::with('department')->paginate(20);
+
+        return view('userstudentshow', [
+            'students' => $students,
+        ]);
+    }
+
     public function search(Request $request)
     {
         $searchQuery = $request->input('search');

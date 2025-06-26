@@ -10,8 +10,10 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="/home" class="active">Home</a></li>
+          <li><a href="/" class="active">Home</a></li>
           <li><a href="/departments">Departments</a></li>
+          <li><a href="/teachers">Teachers</a></li>
+          <li><a href="/students">Students</a></li>
           
           @auth
                <li class="dropdown"><a href="#"><span>{{Auth::user()->username}}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>

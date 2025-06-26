@@ -20,6 +20,14 @@ class TeacherController extends Controller
         ]);
     }
 
+    public function userShow(){
+        $teachers = Teacher::with('department')->paginate(20);
+
+        return view('userteachershow', [
+            'teachers' => $teachers
+        ]);
+    }
+
     public function search(Request $request)
     {
         $searchQuery = $request->input('search');
