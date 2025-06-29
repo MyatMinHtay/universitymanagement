@@ -14,7 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
-
+use App\Models\Teacher;
+use App\Models\Student;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Database\QueryException;
@@ -26,24 +27,10 @@ class AuthController extends Controller
     public function index(Request $request)
     {
 
-        // if (Auth::check()) {
+       $teachers = Teacher::latest()->limit(10)->get();
+       $students = Student::latest()->limit(10)->get();
 
-        //     $systemroles = SystemRole::all();
-        //     $users =  User::latest()
-        //         ->join('system_roles', 'users.role_id', '=', 'system_roles.id')
-        //         ->select('users.*', 'system_roles.role', 'system_roles.id as roleid')
-        //         ->paginate(30)->withQueryString();
-
-
-        //     return view('admin.users.index',[
-        //         'systemroles' => $systemroles,
-        //         'users' => $users,
-        //         'request' => $request
-        //     ]);
-        // } else {
-           
-        //     return view('home');
-        // }
+      
 
         if (Auth::check()) {
             $user = auth()->user();
@@ -52,7 +39,9 @@ class AuthController extends Controller
             $user = null;
         }
         return view('home',[
-            'user' => $user
+            'user' => $user,
+            'teachers' => $teachers,
+            'students' => $students
         ]);
     }
 

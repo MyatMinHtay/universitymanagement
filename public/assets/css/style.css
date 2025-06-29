@@ -149,6 +149,10 @@
     transition: transform 0.2s ease;
 }
 
+.info-card.home-card{
+    max-width: 350px;
+}
+
 .info-card:hover {
     transform: translateY(-5px);
 }
@@ -177,4 +181,23 @@
 
 .page-title.no-before:before {
     content: none;
+}
+
+.dep-banner{
+    position: relative;
+    margin-bottom: 100px;
+}
+
+.dep-logo{
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+   
+    padding: 8px;
+   
+}
+
+.cus-margin{
+    margin-top: 200px;
 }

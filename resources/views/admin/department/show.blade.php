@@ -4,9 +4,9 @@
 
      
     <div class="page-title text-center">
-        <div class="col-12 d-flex justify-content-start container mb-5">
+        {{-- <div class="col-12 d-flex justify-content-start container mb-5">
             <a href="{{ route('departments') }}" class="btn btn-success"><i class="fa-solid fa-arrow-left me-3"></i>Back</a>
-        </div>
+        </div> --}}
         <div class="container position-relative">
            
             <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
@@ -76,7 +76,7 @@
                             <th scope="col">Image</th>
                             <th scope="col">Name</th>
                             <th scope="col">Year</th>
-                            <th scope="col">Seat Number</th>
+                            <th scope="col">Roll Number</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,7 +167,7 @@
                                     <th scope="col">Image</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Year</th>
-                                    <th scope="col">Seat Number</th>
+                                    <th scope="col">Roll Number</th>
                                 </tr>
                             </thead>
                             <tbody>

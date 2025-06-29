@@ -23,11 +23,11 @@
                 <h3 class="section-title">Students</h3>
                 <div class="card-grid" id="student-list">
                     @forelse ($students as $student)
-                        <a href="{{ route('students.show', $student->id) }}" class="info-card">
+                        <a href="{{ route('students.usershow', $student->id) }}" class="info-card">
                             <img src="{{ asset($student->image) }}" alt="{{ $student->name }}">
                             <h4>{{ $student->name }}</h4>
                             <p>Year: {{ $student->year }}</p>
-                            <p>Seat No: {{ $student->seat_number }}</p>
+                            <p>Roll No: {{ $student->seat_number }}</p>
                             
                         </a>
                     @empty

@@ -21,9 +21,9 @@
                 </div>
 
                 <div class="mb-5 form-group">
-                    <label for="seat_number">Seat Number</label>
+                    <label for="seat_number">Roll Number</label>
                     <input type="text" class="form-control inputbox" value="{{ old('seat_number') }}"
-                        name="seat_number" id="seat_number" placeholder="Enter Seat Number">
+                        name="seat_number" id="seat_number" placeholder="Enter Roll Number">
                     <x-error name="seat_number"></x-error>
                 </div>
 

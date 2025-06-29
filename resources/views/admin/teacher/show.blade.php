@@ -2,11 +2,11 @@
 <main class="main mt-5">
     <!-- Page Title -->
     <div class="page-title text-center">
-        <div class="col-12 d-flex justify-content-start container mb-4">
+        {{-- <div class="col-12 d-flex justify-content-start container mb-4">
             <a href="{{ route('teachers') }}" class="btn btn-success">
                 <i class="fa-solid fa-arrow-left me-2"></i>Back
             </a>
-        </div>
+        </div> --}}
 
         <div class="container position-relative">
             <img class="img-fluid" src="{{ asset($teacher->department->banner) }}" alt="{{ $teacher->department->fullname }}">

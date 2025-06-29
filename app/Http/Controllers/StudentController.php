@@ -45,6 +45,7 @@ class StudentController extends Controller
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
                   ->orWhere('seat_number', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('year', 'like', '%' . $searchQuery . '%')
                   ->orWhere('id', 'like', '%' . $searchQuery . '%');
             });
         }

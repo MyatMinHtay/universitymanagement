@@ -3,7 +3,7 @@
     <!-- Page Title -->
     <div class="page-title no-before text-center">
         <div class="col-12 d-flex justify-content-start container mb-4">
-            <a href="{{ route('user.departments.show', $student->department->id) }}" class="btn btn-success">
+            <a href="{{ route('userstudents') }}" class="btn btn-success">
                 <i class="fa-solid fa-arrow-left me-2"></i>Back
             </a>
         </div>
@@ -38,7 +38,7 @@
                             <td>{{ $student->year }}</td>
                         </tr>
                         <tr>
-                            <th>Seat Number:</th>
+                            <th>Roll Number:</th>
                             <td>{{ $student->seat_number }}</td>
                         </tr>
                         

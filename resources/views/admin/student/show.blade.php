@@ -2,11 +2,11 @@
 <main class="main mt-5">
     <!-- Page Title -->
     <div class="page-title text-center">
-        <div class="col-12 d-flex justify-content-start container mb-4">
+        {{-- <div class="col-12 d-flex justify-content-start container mb-4">
             <a href="{{ route('students') }}" class="btn btn-success">
                 <i class="fa-solid fa-arrow-left me-2"></i>Back
             </a>
-        </div>
+        </div> --}}
 
         <div class="container position-relative">
             <img class="img-fluid" src="{{ asset($student->department->banner) }}" alt="{{ $student->department->fullname }}">
@@ -38,7 +38,7 @@
                             <td>{{ $student->year }}</td>
                         </tr>
                         <tr>
-                            <th>Seat Number:</th>
+                            <th>Roll Number:</th>
                             <td>{{ $student->seat_number }}</td>
                         </tr>
                         

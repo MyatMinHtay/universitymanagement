@@ -18,7 +18,7 @@
                         <th scope="col">Image</th>
                         <th scope="col">Name</th>
                         <th scope="col">Year</th>
-                        <th scope="col">Seat Number</th>
+                        <th scope="col">Roll Number</th>
                         <th scope="col">Department</th>
                         <th scope="col">Edit</th>
                         <th scope="col">View</th>
@@ -80,7 +80,7 @@
                                     <th scope="col">Image</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Year</th>
-                                    <th scope="col">Seat Number</th>
+                                    <th scope="col">Roll Number</th>
                                     <th scope="col">Department</th>
                                     <th scope="col">Edit</th>
                                     <th scope="col">View</th>

@@ -29,7 +29,7 @@
                         <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
                         <h4>{{ $teacher->name }}</h4>
                         <p>{{ $teacher->position }}</p>
-                        <p>{{ $teacher->phone_number }}</p>
+                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
                     </a>
                 @empty
                     <p>No teachers found in this department.</p>
