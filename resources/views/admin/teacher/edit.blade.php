@@ -31,6 +31,13 @@
                 </div>
 
                 <div class="mb-5 form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control inputbox" value="{{ old('email', $teacher->email) }}" name="email"
+                        id="email" placeholder="Enter Email Address">
+                    <x-error name="email"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
                     <label for="department_id">Department</label>
                     <select name="department_id" id="department_id" class="form-control inputbox">
                         <option value="">Select Department</option>

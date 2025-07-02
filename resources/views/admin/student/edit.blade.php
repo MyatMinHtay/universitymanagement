@@ -30,6 +30,20 @@
                 </div>
 
                 <div class="mb-5 form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" class="form-control inputbox" value="{{ old('phone_number', $student->phone_number) }}" name="phone_number"
+                        id="phone_number" placeholder="Enter Phone Number">
+                    <x-error name="phone_number"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" class="form-control inputbox" value="{{ old('email', $student->email) }}" name="email"
+                        id="email" placeholder="Enter Email Address">
+                    <x-error name="email"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
                     <label for="department_id">Department</label>
                     <select name="department_id" id="department_id" class="form-control inputbox">
                         <option value="">Select Department</option>

@@ -13,6 +13,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\FacultyController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -79,6 +80,7 @@ Route::get('/departments/show/{department:id}', [DepartmentController::class, 's
 Route::get('/teachers/search', [TeacherController::class, 'search'])->name('teachers.search');
 Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
 Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
+Route::get('/faculty/search', [FacultyController::class, 'search'])->name('faculty.search');
 
 //Admin Side
 Route::prefix('/admin')->middleware('admincheck:departments')->group(function () {
@@ -106,6 +108,7 @@ Route::prefix('/admin')->middleware('admincheck:students')->group(function () {
 });
 
 Route::get('/teachers', [TeacherController::class, 'userShow'])->name('userteachers');
+Route::get('/faculty', [FacultyController::class, 'userShow'])->name('userfaculty');
 Route::get('/students/{student:id}', [StudentController::class, 'showStudents'])->name('students.usershow'); // dynamic last
 //Teacher Start
 Route::prefix('/admin')->middleware('admincheck:teachers')->group(function () {
@@ -118,3 +121,17 @@ Route::prefix('/admin')->middleware('admincheck:teachers')->group(function () {
     Route::get('/teachers/{teacher:id}', [TeacherController::class, 'show'])->name('teachers.show');
 });
 Route::get('/teachers/{teacher:id}', [TeacherController::class, 'showTeachers'])->name('teachers.usershow');
+
+//Faculty Routes - Public
+Route::get('/faculty/{faculty:id}', [FacultyController::class, 'showFaculty'])->name('faculty.usershow');
+
+//Faculty Routes - Admin
+Route::prefix('/admin')->middleware('admincheck:faculty')->group(function () {
+    Route::get('/faculty', [FacultyController::class, 'index'])->name('faculty');
+    Route::get('/faculty/create', [FacultyController::class, 'create'])->name('faculty.create');
+    Route::post('/faculty/store', [FacultyController::class, 'store'])->name('faculty.store');
+    Route::post('/faculty/update/{faculty:id}', [FacultyController::class, 'update'])->name('faculty.update');
+    Route::get('/faculty/edit/{faculty:id}', [FacultyController::class, 'edit'])->name('faculty.edit');
+    Route::get('/faculty/delete/{faculty:id}', [FacultyController::class, 'destroy'])->name('faculty.delete');
+    Route::get('/faculty/{faculty:id}', [FacultyController::class, 'show'])->name('faculty.show');
+});

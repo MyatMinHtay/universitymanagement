@@ -53,6 +53,11 @@
                                         Teachers</a>
                               </li>
 
+                              <li class="nav-item">
+                                   <a class="nav-link" href="{{ route('faculty') }}">
+                                        <i class="fa-solid fa-f fs-5 icon"></i>
+                                        Faculty</a>
+                              </li>
 
                               <li class="nav-item">
                                    <a class="nav-link" href="/admin/users">

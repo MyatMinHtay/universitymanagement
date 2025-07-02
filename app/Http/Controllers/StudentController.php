@@ -45,6 +45,8 @@ class StudentController extends Controller
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
                   ->orWhere('seat_number', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('email', 'like', '%' . $searchQuery . '%')
                   ->orWhere('year', 'like', '%' . $searchQuery . '%')
                   ->orWhere('id', 'like', '%' . $searchQuery . '%');
             });
@@ -84,6 +86,8 @@ class StudentController extends Controller
             'name' => 'required|string',
             'year' => 'required|string',
             'seat_number' => 'required|string|unique:students,seat_number',
+            'phone_number' => 'nullable|string|unique:students,phone_number',
+            'email' => 'nullable|email|unique:students,email',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'department_id' => 'required|exists:departments,id',
         ]);
@@ -131,6 +135,16 @@ class StudentController extends Controller
             'year' => 'required|string',
             'seat_number' => [
                 'required',
+                Rule::unique('students')->ignore($student->id),
+            ],
+            'phone_number' => [
+                'nullable',
+                'string',
+                Rule::unique('students')->ignore($student->id),
+            ],
+            'email' => [
+                'nullable',
+                'email',
                 Rule::unique('students')->ignore($student->id),
             ],
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',

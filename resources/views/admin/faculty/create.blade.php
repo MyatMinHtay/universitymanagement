@@ -1,37 +1,23 @@
 <x-adminlayout>
     <div class="container mt-5">
-        <h1 class="text-center form_header">Add Student</h1>
+        <h1 class="text-center form_header">Add Faculty</h1>
 
-        <form action="{{ route('students.store') }}" id="studentForm" class="forms py-5" method="post" enctype="multipart/form-data">
+        <form action="{{ route('faculty.store') }}" id="facultyForm" class="forms py-5" method="post" enctype="multipart/form-data">
             @csrf
             <div class="p-3 mx-auto col-12 col-lg-8 rounded-2">
 
                 <div class="mb-5 form-group">
-                    <label for="name">Student Name</label>
+                    <label for="name">Faculty Name</label>
                     <input type="text" class="form-control inputbox" value="{{ old('name') }}" name="name"
-                        id="name" placeholder="Enter Student Name">
+                        id="name" placeholder="Enter Faculty Name">
                     <x-error name="name"></x-error>
                 </div>
 
                 <div class="mb-5 form-group">
-                    <label for="year">Academic Year</label>
-                    <input type="text" class="form-control inputbox" value="{{ old('year') }}" name="year"
-                        id="year" placeholder="Enter Academic Year (e.g. 2024)">
-                    <x-error name="year"></x-error>
-                </div>
-
-                <div class="mb-5 form-group">
-                    <label for="seat_number">Roll Number</label>
-                    <input type="text" class="form-control inputbox" value="{{ old('seat_number') }}"
-                        name="seat_number" id="seat_number" placeholder="Enter Roll Number">
-                    <x-error name="seat_number"></x-error>
-                </div>
-
-                <div class="mb-5 form-group">
-                    <label for="phone_number">Phone Number</label>
-                    <input type="text" class="form-control inputbox" value="{{ old('phone_number') }}" name="phone_number"
-                        id="phone_number" placeholder="Enter Phone Number">
-                    <x-error name="phone_number"></x-error>
+                    <label for="position">Position</label>
+                    <input type="text" class="form-control inputbox" value="{{ old('position') }}" name="position"
+                        id="position" placeholder="Enter Position (e.g. Professor, Associate Professor)">
+                    <x-error name="position"></x-error>
                 </div>
 
                 <div class="mb-5 form-group">
@@ -39,6 +25,13 @@
                     <input type="email" class="form-control inputbox" value="{{ old('email') }}" name="email"
                         id="email" placeholder="Enter Email Address">
                     <x-error name="email"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="text" class="form-control inputbox" value="{{ old('phone_number') }}" name="phone_number"
+                        id="phone_number" placeholder="Enter Phone Number">
+                    <x-error name="phone_number"></x-error>
                 </div>
 
                 <div class="mb-5 form-group">
@@ -55,7 +48,7 @@
                 </div>
 
                 <div class="mb-3 form-group">
-                    <label for="image">Student Photo</label>
+                    <label for="image">Faculty Photo</label>
                     <input type="file" class="form-control inputbox fileinput" name="image" id="image">
                     <x-error name="image"></x-error>
                 </div>
@@ -63,8 +56,8 @@
             </div>
 
             <div class="mx-auto mt-5 d-flex justify-content-center col-6">
-                <button type="submit" id="submitbtn" name="submitStudent" class="formSubtmiBtn">Submit</button>
+                <button type="submit" id="submitbtn" name="submitFaculty" class="formSubtmiBtn">Submit</button>
             </div>
         </form>
     </div>
-</x-adminlayout>
+</x-adminlayout> 

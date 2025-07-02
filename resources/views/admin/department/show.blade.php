@@ -4,16 +4,18 @@
 
      
     <div class="page-title text-center">
-        {{-- <div class="col-12 d-flex justify-content-start container mb-5">
-            <a href="{{ route('departments') }}" class="btn btn-success"><i class="fa-solid fa-arrow-left me-3"></i>Back</a>
-        </div> --}}
+
+        
+        
         <div class="container position-relative">
-           
-            <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
-            <div class="my-4">
-                <img class="rounded-circle shadow" src="{{ asset($department->logo) }}" width="100" height="100" alt="Logo">
+
+            <div class="my-4 col-12 d-flex justify-content-start align-items-center">
+                <img class="rounded-circle shadow me-5" src="{{ asset($department->logo) }}" width="100" height="100" alt="Logo">
                 <h1 class="mt-3">Department of {{ $department->fullname }}</h1>
             </div>
+           
+            <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
+            
         </div>
     </div>
     <!-- End Page Title -->

@@ -46,6 +46,8 @@ class TeacherController extends Controller
             $query->where(function ($q) use ($searchQuery) {
                 $q->where('name', 'like', '%' . $searchQuery . '%')
                   ->orWhere('position', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('email', 'like', '%' . $searchQuery . '%')
                   ->orWhere('id', 'like', '%' . $searchQuery . '%');
             });
         }
@@ -92,6 +94,7 @@ class TeacherController extends Controller
             'name' => 'required|string',
             'position' => 'required|string',
             'phone_number' => 'required|string|unique:teachers,phone_number',
+            'email' => 'nullable|email|unique:teachers,email',
             'department_id' => 'required|exists:departments,id',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048'
         ]);
@@ -139,6 +142,11 @@ class TeacherController extends Controller
             'position' => 'required|string',
             'phone_number' => [
                 'required',
+                Rule::unique('teachers')->ignore($teacher->id),
+            ],
+            'email' => [
+                'nullable',
+                'email',
                 Rule::unique('teachers')->ignore($teacher->id),
             ],
             'department_id' => 'required|exists:departments,id',

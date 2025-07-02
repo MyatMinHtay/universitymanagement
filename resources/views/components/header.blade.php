@@ -10,10 +10,11 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="/" class="active">Home</a></li>
-          <li><a href="/departments">Departments</a></li>
-          <li><a href="/teachers">Teachers</a></li>
-          <li><a href="/students">Students</a></li>
+          <li><a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
+                          <li><a href="/departments" class="{{ request()->is('departments') ? 'active' : '' }}">Departments</a></li>
+                <li><a href="/teachers" class="{{ request()->is('teachers') ? 'active' : '' }}">Teachers</a></li>
+                <li><a href="/faculty" class="{{ request()->is('faculty') ? 'active' : '' }}">Faculty</a></li>
+                <li><a href="/students" class="{{ request()->is('students') ? 'active' : '' }}">Students</a></li>
           
           @auth
                <li class="dropdown"><a href="#"><span>{{Auth::user()->username}}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>

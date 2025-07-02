@@ -2,15 +2,15 @@
     <main class="main mt-5">
         <!-- Page Title with Banner & Profile -->
         <div class="page-title text-center">
-            @if($teacher->department && $teacher->department->banner)
+            @if($faculty->department && $faculty->department->banner)
             <div class="container position-relative">
-                <img class="img-fluid rounded shadow" src="{{ asset($teacher->department->banner) }}" alt="{{ $teacher->department->fullname }}">
+                <img class="img-fluid rounded shadow" src="{{ asset($faculty->department->banner) }}" alt="{{ $faculty->department->fullname }}">
                 <div class="my-4">
-                    <img class="rounded-circle shadow" src="{{ asset($teacher->image) }}" width="100" height="100" alt="{{ $teacher->name }}">
-                    <h1 class="mt-3">{{ $teacher->name }}</h1>
+                    <img class="rounded-circle shadow" src="{{ asset($faculty->image) }}" width="100" height="100" alt="{{ $faculty->name }}">
+                    <h1 class="mt-3">{{ $faculty->name }}</h1>
                     <h5 class="text-muted">
-                        @if($teacher->department)
-                            Department of {{ $teacher->department->fullname }}
+                        @if($faculty->department)
+                            Department of {{ $faculty->department->fullname }}
                         @else
                             No Department Assigned
                         @endif
@@ -25,25 +25,25 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     <div class="card shadow-sm p-4 border-0 rounded-4">
-                        <h4 class="mb-3 text-primary"><i class="fas fa-info-circle me-2"></i> Teacher Information</h4>
+                        <h4 class="mb-3 text-primary"><i class="fas fa-info-circle me-2"></i> Faculty Information</h4>
                         <table class="table table-borderless mb-0">
                             <tr>
                                 <th style="width:35%;">ID:</th>
-                                <td>{{ $teacher->id }}</td>
+                                <td>{{ $faculty->id }}</td>
                             </tr>
                             <tr>
                                 <th>Name:</th>
-                                <td>{{ $teacher->name }}</td>
+                                <td>{{ $faculty->name }}</td>
                             </tr>
                             <tr>
                                 <th>Position:</th>
-                                <td>{{ $teacher->position }}</td>
+                                <td>{{ $faculty->position }}</td>
                             </tr>
                             <tr>
                                 <th>Phone:</th>
                                 <td>
-                                    @if($teacher->phone_number)
-                                        <a href="tel:{{ $teacher->phone_number }}">{{ $teacher->phone_number }}</a>
+                                    @if($faculty->phone_number)
+                                        <a href="tel:{{ $faculty->phone_number }}">{{ $faculty->phone_number }}</a>
                                     @else
                                         <span class="text-muted">N/A</span>
                                     @endif
@@ -51,9 +51,11 @@
                             </tr>
                             <tr>
                                 <th>Department:</th>
-                                <td>{{ $teacher->department->fullname ?? 'No Department Assigned' }}</td>
+                                <td>{{ $faculty->department->fullname ?? 'No Department Assigned' }}</td>
                             </tr>
                         </table>
+    
+                        
                     </div>
                 </div>
             </div>

@@ -3,14 +3,16 @@
             <!-- Page Title -->
         <div class="page-title">
             <div class="container position-relative ">
+              <div class="col-12 d-flex justify-content-start align-items-center my-5">
+                <img class="mt-5 me-3" style="object-fit: cover" src="{{ asset($department->logo) }}" width="100px" height="100px" alt="">
+                <h1 class="mt-5 ms-3">Department Of {{ $department->fullname }}</h1>
+              </div>
               <div class="col-12 dep-banner">
                 <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
-                <div class="col-12 dep-logo">
-                  <img class="mt-5" style="object-fit: cover" src="{{ asset($department->logo) }}" width="100px" height="100px" alt="">
-                </div>
+                
               </div>
               
-              <h1 class="mt-5">Department Of {{ $department->fullname }}</h1>
+              
             </div>
         </div>
     <!-- End Page Title -->
