@@ -1,88 +1,96 @@
 <x-layout>
-
-    <main>
-        <!-- Page Title -->
-        <div class="page-title">
-            <div class="container position-relative">
-              
-              <h1 class="mt-5">All Teachers ({{ $teachers->count() }})</h1>
-            </div>
-        </div>
-    <!-- End Page Title -->
-
-    <div class="container">
-        <div class="row mb-5">
-          <div class="col-lg-12 mx-auto">
-            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-              <div class="input-group">
-                <input type="text" id="searchteacher" class="form-control" placeholder="Search Teachers">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="dpsection">
-            <h3 class="section-title">Teachers</h3>
-            <div class="card-grid" id="teacher-list">
-                @forelse ($teachers as $teacher)
-                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card">
-                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
-                        <h4>{{ $teacher->name }}</h4>
-                        <p>{{ $teacher->position }}</p>
-                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
-                    </a>
-                @empty
-                    <p>No teachers found in this department.</p>
-                @endforelse
-            </div>
-
-            <div>
-                {{ $teachers->links() }}
-            </div>
+    <main class="container cus-margin">
+     <!-- Page Title -->
+     <div class="page-title">
+        <div class="container position-relative">
+          
+          <h1 class="mt-5">All Teachers ({{ $teachers->count() }})</h1>
         </div>
     </div>
+<!-- End Page Title -->
+  
+  
+  <div class="my-4">
+    <input type="text" id="searchteacher" class="form-control" placeholder="Search Teachers">
+  </div>
+  
+  <div class="table-responsive" id="teacher-list">
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Image</th>
+          <th>Name</th>
+          <th>Position</th>
+          <th>Phone</th>
+          <th>Department</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody>
+        @forelse ($teachers as $teacher)
+          <tr>
+            <td>{{ $teacher->id }}</td>
+            <td><img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}" style="width:60px;"></td>
+            <td>{{ $teacher->name }}</td>
+            <td>{{ $teacher->position }}</td>
+            <td>{{ $teacher->phone_number }}</td>
+            <td>{{ $teacher->department->fullname ?? 'N/A' }}</td>
+            <td><a href="{{ route('teachers.usershow', $teacher->id) }}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a></td>
+          </tr>
+        @empty
+          <tr>
+            <td colspan="6" class="text-center">No teachers found in this department.</td>
+          </tr>
+        @endforelse
+      </tbody>
+    </table>
+  </div>
+  
+  
     </main>
-    
-</x-layout>
-
-<script>
-    $(document).ready(function () {
-        $('#searchteacher').on('keyup', function () {
-            let searchQuery = $(this).val();
-
-            $.ajax({
-                type: 'GET',
-                url: '{{ route('teachers.search') }}',
-                data: { search: searchQuery },
-                dataType: 'json',
-                success: function (data) {
-                    let cardsHtml = '';
-
-                    if (data.length === 0) {
-                        cardsHtml = '<p class="text-center w-100">No teachers found in this department.</p>';
-                    } else {
-                        $.each(data, function (index, teacher) {
-                            let showUrl = `/teachers/${teacher.id}`;
-                            let imageUrl = `/${teacher.image}`;
-
-                            cardsHtml += `
-                                <a href="${showUrl}" class="info-card">
-                                    <img src="${imageUrl}" alt="${teacher.name}">
-                                    <h4>${teacher.name}</h4>
-                                    <p>${teacher.position}</p>
-                                    <p>${teacher.phone_number}</p>
-                                </a>
-                            `;
-                        });
-                    }
-
-                    $('#teacher-list').html(cardsHtml);
-                },
-                error: function (xhr) {
-                    $('#teacher-list').html('<p class="text-danger">Something went wrong while searching.</p>');
-                }
+  </x-layout>
+  
+  <script>
+  $(document).ready(function () {
+    $('#searchteacher').on('keyup', function () {
+      let searchQuery = $(this).val();
+      $.ajax({
+        type: 'GET',
+        url: '{{ route('teachers.search') }}',
+        data: { search: searchQuery },
+        dataType: 'json',
+        success: function (data) {
+          let tableHtml = '<table class="table table-striped table-hover"><thead><tr>' +
+            '<th>ID</th><th>Image</th><th>Name</th><th>Position</th><th>Phone</th><th>Department</th><th>View</th></tr></thead><tbody>';
+  
+          if (data.length === 0) {
+            tableHtml += '<tr><td colspan="6" class="text-center">No teachers found.</td></tr>';
+          } else {
+            $.each(data, function (index, teacher) {
+              let imageUrl = '/' + teacher.image;
+              let showUrl = `/teachers/${teacher.id}`;
+              let department = teacher.department?.fullname || 'N/A';
+              tableHtml += `<tr>
+                <td>${teacher.id}</td>
+                <td><img src="${imageUrl}" alt="${teacher.name}" style="width:60px;"></td>
+                <td>${teacher.name}</td>
+                <td>${teacher.position}</td>
+                <td>${teacher.phone_number}</td>
+                <td>${department}</td>
+                <td><a href="${showUrl}" class="btn btn-primary"><i class="fa-solid fa-eye"></i></a></td>
+              </tr>`;
             });
-        });
+          }
+  
+          tableHtml += '</tbody></table>';
+          $('#teacher-list').html(tableHtml);
+        },
+        error: function () {
+          $('#teacher-list').html('<p class="text-danger">Something went wrong while searching.</p>');
+        }
+      });
     });
-</script>
-
+  });
+  </script>
+  

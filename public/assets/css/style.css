@@ -133,9 +133,9 @@
 .card-grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: start;
+    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .info-card {
@@ -147,6 +147,11 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     text-align: center;
     transition: transform 0.2s ease;
+}
+
+.dpsection.professor .card-grid .info-card{
+    max-width: 350px;
+    padding: 1.8rem;
 }
 
 .info-card.home-card{

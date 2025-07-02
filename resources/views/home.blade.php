@@ -101,23 +101,45 @@
                 </div>
 
                 <div class="col-12">
-                    <div class="dpsection">
+                    <div class="dpsection professor">
                         
                         <div class="card-grid d-flex justify-content-center align-items-center" id="teacher-list">
                             @forelse ($teachers as $teacher)
-                                <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card home-card">
-                                    <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
-                                    <h4>{{ $teacher->name }}</h4>
-                                    <p>{{ $teacher->position }}</p>
-                                    <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
-                                </a>
+                                @if ($teacher->position == 'Professor/Head')
+                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card home-card">
+                                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
+                                        <h4>{{ $teacher->name }}</h4>
+                                        <p>{{ $teacher->position }}</p>
+                                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
+                                    </a>
+                                @endif
                             @empty
                                 <p>No teachers found in this department.</p>
                             @endforelse
                         </div>
             
                         
+                    </div>
+
+                    <div class="dpsection">
+                        
+                        <div class="card-grid d-flex justify-content-center align-items-center" id="teacher-list">
+                            @forelse ($teachers as $teacher)
+                                @if ($teacher->position != 'Professor/Head')
+                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card home-card">
+                                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
+                                        <h4>{{ $teacher->name }}</h4>
+                                        <p>{{ $teacher->position }}</p>
+                                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
+                                    </a>
+                                @endif
+                            @empty
+                                <p>No teachers found in this department.</p>
+                            @endforelse
                         </div>
+            
+                        
+                    </div>
                 </div>
 
                 <div class="col-12">
