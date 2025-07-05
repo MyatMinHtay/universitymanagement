@@ -63,6 +63,9 @@
     <!-- jquery js1  -->
     <script src="{{ asset('/assets/js/jquery.min.js') }}" type="text/javascript"></script>
 
+    {{-- match height js  --}}
+    <script src="{{ asset('/assets/js/jquery.matchHeight-min.js') }}" type="text/javascript"></script>
+
     <!-- custom js  -->
     <script src="{{ asset('/assets/js/app.js') }}" type="text/javascript"></script>
 

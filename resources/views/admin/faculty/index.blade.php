@@ -77,7 +77,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center">No Faculty Members Found</td>
+                            <td colspan="7" class="text-center">No Faculty Members Found</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -86,7 +86,10 @@
     
     </main>
     
-    <script>
+  
+    </x-adminlayout>
+
+      <script>
         $(document).ready(function () {
             $('#searchfaculty').on('keyup', function () {
                 var searchQuery = $(this).val();
@@ -101,6 +104,7 @@
                             <table class="table table-hover table-bordered border-1 table-primary">
                                 <thead>
                                     <tr>
+                                        <th>Id</th>
                                         <th>Name</th>
                                         <th>Position</th>
                                         <th>Email</th>
@@ -115,7 +119,7 @@
                         if (data.length === 0) {
                             tableHtml += `
                                 <tr>
-                                    <td colspan="6" class="text-center">No faculty members found.</td>
+                                    <td colspan="7" class="text-center">No faculty members found.</td>
                                 </tr>
                             `;
                         } else {
@@ -153,6 +157,5 @@
             });
         });
     </script>
-    </x-adminlayout>
     
             

@@ -48,7 +48,12 @@ class StudentController extends Controller
                   ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
                   ->orWhere('email', 'like', '%' . $searchQuery . '%')
                   ->orWhere('year', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('id', 'like', '%' . $searchQuery . '%');
+                  ->orWhere('id', 'like', '%' . $searchQuery . '%')
+                  ->orWhereHas('department', function ($deptQuery) use ($searchQuery) {
+                      $deptQuery->where('fullname', 'like', '%' . $searchQuery . '%')
+                               ->orWhere('shortname', 'like', '%' . $searchQuery . '%')
+                               ->orWhere('deptCode', 'like', '%' . $searchQuery . '%');
+                  });
             });
         }
         

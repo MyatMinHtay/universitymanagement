@@ -90,6 +90,9 @@
     
     </main>
     
+  
+    </x-layout>
+
     <script>
         $(document).ready(function () {
             $('#searchfaculty').on('keyup', function () {
@@ -163,5 +166,4 @@
             });
         });
     </script>
-    </x-layout>
     

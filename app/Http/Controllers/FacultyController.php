@@ -48,7 +48,12 @@ class FacultyController extends Controller
                   ->orWhere('position', 'like', '%' . $searchQuery . '%')
                   ->orWhere('email', 'like', '%' . $searchQuery . '%')
                   ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('id', 'like', '%' . $searchQuery . '%');
+                  ->orWhere('id', 'like', '%' . $searchQuery . '%')
+                  ->orWhereHas('department', function ($deptQuery) use ($searchQuery) {
+                      $deptQuery->where('fullname', 'like', '%' . $searchQuery . '%')
+                               ->orWhere('shortname', 'like', '%' . $searchQuery . '%')
+                               ->orWhere('deptCode', 'like', '%' . $searchQuery . '%');
+                  });
             });
         }
         

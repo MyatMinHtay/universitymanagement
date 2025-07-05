@@ -82,6 +82,9 @@ Route::get('/students/search', [StudentController::class, 'search'])->name('stud
 Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
 Route::get('/faculty/search', [FacultyController::class, 'search'])->name('faculty.search');
 
+// Home page real-time search
+Route::get('/home/search', [HomeController::class, 'homeSearch'])->name('home.search');
+
 //Admin Side
 Route::prefix('/admin')->middleware('admincheck:departments')->group(function () {
     Route::get('/departments', [DepartmentController::class, 'index'])->name('departments');
