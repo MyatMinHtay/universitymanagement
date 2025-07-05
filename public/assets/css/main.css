@@ -148,7 +148,7 @@ h6 {
   --background-color: rgba(255, 255, 255, 0);
   --default-color: #ffffff;
   --heading-color: #ffffff;
-  color: var(--default-color);
+  color: var(--accent-color);
   background-color: var(--background-color);
   padding: 15px 0;
   transition: all 0.5s;
@@ -4117,10 +4117,9 @@ section,
 # Faculty  Staff Section
 --------------------------------------------------------------*/
 .faculty--staff .search-container {
-  background-color: var(--surface-color);
+  background-color: transparent;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
   margin-bottom: 30px;
 }
 

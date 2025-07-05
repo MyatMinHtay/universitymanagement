@@ -93,13 +93,15 @@
 
           {{-- Start Search Box  --}}
 
-          <section>
+          <section class="search-section">
              <div class="container">
                 <div class="row mb-5">
-                    <div class="col-lg-12 mx-auto">
-                      <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-                        <div class="input-group">
-                          <input type="text" id="mainsearch" class="form-control" placeholder="Search departments, teachers, students, faculty...">
+                    <div class="col-lg-10 mx-auto">
+                      <div class="main-search-container" data-aos="fade-up" data-aos-delay="200">
+                        <div class="search-wrapper-main">
+                          <i class="fas fa-search search-icon-main"></i>
+                          <input type="text" id="mainsearch" class="form-control search-input-main" placeholder="Search departments, teachers, students, faculty...">
+                          <div class="search-border-main"></div>
                         </div>
                       </div>
                     </div>
@@ -108,24 +110,21 @@
                 {{-- Filter Pills --}}
                 <div class="row mb-4" id="filter-pills-container">
                     <div class="col-12">
-                        <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
-                            <button class="filter-pill active" data-filter="all">
+                        <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
+                            <button class="filter-pill-modern active" data-filter="all">
                                 <i class="bi bi-grid-3x3-gap"></i> All
                             </button>
-                            <button class="filter-pill" data-filter="departments">
+                            <button class="filter-pill-modern" data-filter="departments">
                                 <i class="bi bi-building"></i> Departments
                             </button>
-                            <button class="filter-pill" data-filter="teachers">
+                            <button class="filter-pill-modern" data-filter="teachers">
                                 <i class="bi bi-person-badge"></i> Teachers
                             </button>
-                            <button class="filter-pill" data-filter="students">
+                            <button class="filter-pill-modern" data-filter="students">
                                 <i class="bi bi-mortarboard"></i> Students
                             </button>
-                            <button class="filter-pill" data-filter="faculty">
-                                <i class="bi bi-people"></i> Faculty
-                            </button>
                         </div>
-                        <div class="filter-help">
+                        <div class="filter-help-modern">
                             <i class="bi bi-info-circle"></i> Click multiple filters to combine search results (max 3 filters)
                         </div>
                     </div>
@@ -134,24 +133,24 @@
                 {{-- Search Results Container --}}
                 <div class="row" id="search-results-container" style="display: none;">
                     <div class="col-12">
-                        <div class="search-results-wrapper">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h4 class="search-results-title">Search Results</h4>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" id="clear-search">
-                                    <i class="bi bi-x"></i> Clear
+                        <div class="search-results-wrapper-modern">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h4 class="search-results-title-modern">Search Results</h4>
+                                <button type="button" class="btn btn-outline-primary rounded-pill" id="clear-search">
+                                    <i class="bi bi-x"></i> Clear Search
                                 </button>
                             </div>
                             
                             {{-- Single Results Container --}}
-                            <div id="results-list" class="row">
+                            <div id="results-list" class="modern-results-grid">
                                 <!-- Results will be dynamically loaded here -->
                             </div>
                             
                             {{-- No Results --}}
-                            <div id="no-results" class="text-center py-4" style="display: none;">
-                                <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
-                                <h5 class="mt-3 text-muted">No results found</h5>
-                                <p class="text-muted">Try searching with different keywords</p>
+                            <div id="no-results" class="no-results-modern" style="display: none;">
+                                <i class="bi bi-search"></i>
+                                <h5>No results found</h5>
+                                <p>Try searching with different keywords or adjust your filters</p>
                             </div>
                         </div>
                     </div>
@@ -163,101 +162,174 @@
 
           {{-- Start Our Teacher Section  --}}
 
-          <section>
+          <section class="teachers-section">
             <div class="container">
               <div class="row">
                 <div class="col-md-12">
-                  <h2 class="text-center fw-bold">Our Teachers</h2>
+                  <div class="section-header-main">
+                    <h2 class="section-title-main">
+                      <i class="fas fa-chalkboard-teacher me-3"></i>
+                      Our Distinguished Faculty
+                    </h2>
+                    <p class="section-subtitle">Meet our experienced educators and academic leaders</p>
+                  </div>
                 </div>
 
                 <div class="col-12">
-                    <div class="dpsection professor">
-                        
-                        <div class="card-grid d-flex justify-content-center align-items-center" id="teacher-list">
+                    {{-- Professors/Heads Section --}}
+                    <div class="faculty-section professors-section">
+                        <h3 class="faculty-subsection-title">
+                          <i class="fas fa-crown me-2"></i>
+                          Department Heads & Professors
+                        </h3>
+                        <div class="modern-card-grid" id="professor-list">
                             @forelse ($teachers as $teacher)
                                 @if ($teacher->position == 'Professor/Head')
-                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card home-card">
-                                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
-                                        <h4>{{ $teacher->name }}</h4>
-                                        <p>{{ $teacher->position }}</p>
-                                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
+                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="modern-person-card professor-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}" class="person-image-modern">
+                                            <div class="card-overlay-modern">
+                                                <i class="fas fa-crown"></i>
+                                            </div>
+                                            <div class="position-badge professor-badge">Professor</div>
+                                        </div>
+                                        <div class="card-content-wrapper">
+                                            <h4 class="person-name-modern">{{ $teacher->name }}</h4>
+                                            <p class="person-position-modern">{{ $teacher->position }}</p>
+                                            <p class="person-department-modern">
+                                                <i class="fas fa-building me-2"></i>{{ $teacher->department->fullname ?? 'N/A' }}
+                                            </p>
+                                            <div class="card-action-modern">
+                                                <span class="view-profile-modern">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                    View Profile
+                                                </span>
+                                            </div>
+                                        </div>
                                     </a>
                                 @endif
                             @empty
-                                <p>No teachers found in this department.</p>
+                                <div class="no-data-modern">
+                                    <i class="fas fa-crown"></i>
+                                    <p>No professors found.</p>
+                                </div>
                             @endforelse
                         </div>
-            
-                        
                     </div>
 
-                    <div class="dpsection">
-                        
-                        <div class="card-grid d-flex justify-content-center align-items-center" id="teacher-list">
+                    {{-- Regular Teachers Section --}}
+                    <div class="faculty-section teachers-section">
+                        <h3 class="faculty-subsection-title">
+                          <i class="fas fa-user-tie me-2"></i>
+                          Teaching Faculty
+                        </h3>
+                        <div class="modern-card-grid" id="teacher-list">
                             @forelse ($teachers as $teacher)
                                 @if ($teacher->position != 'Professor/Head')
-                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card home-card">
-                                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
-                                        <h4>{{ $teacher->name }}</h4>
-                                        <p>{{ $teacher->position }}</p>
-                                        <p>Department of {{ $teacher->department->fullname ?? 'N/A' }}</p>
+                                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="modern-person-card teacher-card">
+                                        <div class="card-image-wrapper">
+                                            <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}" class="person-image-modern">
+                                            <div class="card-overlay-modern">
+                                                <i class="fas fa-user-tie"></i>
+                                            </div>
+                                            <div class="position-badge teacher-badge">{{ $teacher->position }}</div>
+                                        </div>
+                                        <div class="card-content-wrapper">
+                                            <h4 class="person-name-modern">{{ $teacher->name }}</h4>
+                                            <p class="person-position-modern">{{ $teacher->position }}</p>
+                                            <p class="person-department-modern">
+                                                <i class="fas fa-building me-2"></i>{{ $teacher->department->fullname ?? 'N/A' }}
+                                            </p>
+                                            <div class="card-action-modern">
+                                                <span class="view-profile-modern">
+                                                    <i class="fas fa-arrow-right"></i>
+                                                    View Profile
+                                                </span>
+                                            </div>
+                                        </div>
                                     </a>
                                 @endif
                             @empty
-                                <p>No teachers found in this department.</p>
+                                <div class="no-data-modern">
+                                    <i class="fas fa-user-tie"></i>
+                                    <p>No teachers found.</p>
+                                </div>
                             @endforelse
                         </div>
-            
-                        
                     </div>
                 </div>
 
                 <div class="col-12">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <a href="{{ route('userteachers') }}" class="btn btn-primary">View All Teachers</a>
+                    <div class="view-all-container">
+                        <a href="{{ route('userteachers') }}" class="btn-view-all">
+                            <i class="fas fa-users me-2"></i>
+                            View All Teachers
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
               </div>
             </div>
           </section>
 
-
-
           {{-- End Our Teacher Section  --}}
 
           {{-- Start Our Student Section  --}}
 
-          <section>
+          <section class="students-section">
             <div class="container">
               <div class="row">
                 <div class="col-md-12">
-                  <h2 class="text-center fw-bold">Our Students</h2>
+                  <div class="section-header-main">
+                    <h2 class="section-title-main">
+                      <i class="fas fa-user-graduate me-3"></i>
+                      Our Bright Students
+                    </h2>
+                    <p class="section-subtitle">Discover the talented minds shaping our future</p>
+                  </div>
                 </div>
 
                 <div class="col-12">
-                    <div class="dpsection">
-                        
-                        <div class="card-grid col-12 d-flex justify-content-start align-items-center" id="student-list">
-                            @forelse ($students as $student)
-                                <a href="{{ route('students.usershow', $student->id) }}" class="info-card home-card">
-                                    <img src="{{ asset($student->image) }}" alt="{{ $student->name }}">
-                                    <h4>{{ $student->name }}</h4>
-                                    <p>Year: {{ $student->year }}</p>
-                                    <p>Roll No: {{ $student->seat_number }}</p>
-                                    
-                                </a>
-                            @empty
+                    <div class="modern-card-grid" id="student-list">
+                        @forelse ($students as $student)
+                            <a href="{{ route('students.usershow', $student->id) }}" class="modern-person-card student-card">
+                                <div class="card-image-wrapper">
+                                    <img src="{{ asset($student->image) }}" alt="{{ $student->name }}" class="person-image-modern">
+                                    <div class="card-overlay-modern">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <div class="position-badge student-badge">Year {{ $student->year }}</div>
+                                </div>
+                                <div class="card-content-wrapper">
+                                    <h4 class="person-name-modern">{{ $student->name }}</h4>
+                                    <p class="person-year-modern">Academic Year: {{ $student->year }}</p>
+                                    <p class="person-roll-modern">
+                                        <i class="fas fa-id-card me-2"></i>Roll: {{ $student->seat_number }}
+                                    </p>
+                                    <div class="card-action-modern">
+                                        <span class="view-profile-modern">
+                                            <i class="fas fa-arrow-right"></i>
+                                            View Profile
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        @empty
+                            <div class="no-data-modern">
+                                <i class="fas fa-user-graduate"></i>
                                 <p>No students found.</p>
-                            @endforelse
-                        </div>
-        
-                        
+                            </div>
+                        @endforelse
                     </div>
                 </div>
 
                 <div class="col-12">
-                    <div class="d-flex justify-content-center align-items-center">
-                        <a href="{{ route('userstudents') }}" class="btn btn-primary">View All Teachers</a>
+                    <div class="view-all-container">
+                        <a href="{{ route('userstudents') }}" class="btn-view-all">
+                            <i class="fas fa-users me-2"></i>
+                            View All Students
+                            <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
                     </div>
                 </div>
               </div>
@@ -269,101 +341,604 @@
 
 </main>
 
-{{-- Custom CSS for Search --}}
+{{-- Enhanced Modern CSS --}}
 <style>
-.search-results-wrapper {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 25px;
-    margin-bottom: 30px;
+/* Main Search Section */
+.search-section {
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    padding: 4rem 0;
+    margin: 2rem 0;
 }
 
-.badge.badge-primary{
-    background-color: #007bff;
-    color: #fff;
+.main-search-container {
+    margin-bottom: 3rem;
 }
 
-.badge.badge-success{
-    background-color: #28a745;
-    color: #fff;
+.search-wrapper-main {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
 }
 
-.badge.badge-info{
-    background-color: #17a2b8;
-    color: #fff;
+.search-icon-main {
+    position: absolute;
+    left: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 2;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
 }
 
-.badge.badge-warning{
-    background-color: #ffc107;
-    color: #fff;
+.search-input-main {
+    padding: 20px 25px 20px 60px !important;
+    border: 3px solid #e9ecef !important;
+    border-radius: 50px !important;
+    font-size: 1.1rem !important;
+    background: white !important;
+    transition: all 0.4s ease !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
 }
 
-
-
-
-.search-card {
-    height: 350px;
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
-    margin-bottom: 15px;
+.search-input-main:focus {
+    border-color: #4361ee !important;
+    box-shadow: 0 12px 35px rgba(67, 97, 238, 0.2) !important;
+    transform: translateY(-3px) !important;
+    outline: none !important;
 }
 
-.search-card:hover {
-    text-decoration: none;
-    color: inherit;
-    transform: translateY(-3px);
+.search-input-main:focus ~ .search-icon-main {
+    color: #4361ee;
 }
 
-.search-card .card {
-    border: none;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    height: 100%;
+.search-border-main {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #4361ee, #7209b7);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+    border-radius: 50px;
 }
 
-.search-card:hover .card {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+.search-input-main:focus + .search-border-main {
+    transform: scaleX(1);
 }
 
-
-.search-card .card-img-top {
-    height: 200px;
-    object-fit: contain;
-    border-radius: 8px 8px 0 0;
-}
-
-
-.search-card .card-body {
-    padding: 15px;
-}
-
-.search-card .card-title {
-    font-size: 1.1rem;
+/* Modern Filter Pills */
+.filter-pill-modern {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 30px;
+    padding: 12px 20px;
+    margin: 6px;
+    font-size: 0.95rem;
     font-weight: 600;
-    margin-bottom: 8px;
+    color: #495057;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.filter-pill-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.6s ease;
+}
+
+.filter-pill-modern:hover::before {
+    left: 100%;
+}
+
+.filter-pill-modern:hover {
+    background: #f8f9fa;
+    border-color: #4361ee;
+    color: #4361ee;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.2);
+}
+
+.filter-pill-modern.active {
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    border-color: #4361ee;
+    color: white;
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+    transform: translateY(-2px);
+}
+
+.filter-pill-modern.active::after {
+    content: "✓";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+    border: 2px solid white;
+}
+
+.filter-pill-modern i {
+    font-size: 0.9rem;
+}
+
+.filter-help-modern {
+    font-size: 0.9rem;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 10px;
+    font-style: italic;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 8px 16px;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+/* Search Results */
+.search-results-wrapper-modern {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #e9ecef;
+}
+
+.search-results-title-modern {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.modern-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.no-results-modern {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6c757d;
+}
+
+.no-results-modern i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-results-modern h5 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #495057;
+}
+
+.no-results-modern p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* Section Headers */
+.section-header-main {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title-main {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Faculty Sections */
+.teachers-section, .students-section {
+    padding: 4rem 0;
+}
+
+.teachers-section {
+    background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
+}
+
+.students-section {
+    background: linear-gradient(135deg, #f0fff4 0%, #ffffff 100%);
+}
+
+.faculty-section {
+    margin-bottom: 3rem;
+}
+
+.faculty-subsection-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.professors-section .faculty-subsection-title i {
+    color: #ffd700;
+}
+
+.teachers-section .faculty-subsection-title i {
+    color: #e76f51;
+}
+
+/* Modern Card Grid */
+.modern-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* Modern Person Cards */
+.modern-person-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modern-person-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+
+.card-image-wrapper {
+    position: relative;
+    height: 250px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.person-image-modern {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid white;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transition: all 0.4s ease;
+}
+
+.modern-person-card:hover .person-image-modern {
+    transform: scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+}
+
+.card-overlay-modern {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    font-size: 1.2rem;
+}
+
+.professor-card .card-overlay-modern {
+    color: #ffd700;
+}
+
+.teacher-card .card-overlay-modern {
+    color: #e76f51;
+}
+
+.student-card .card-overlay-modern {
+    color: #08915e;
+}
+
+.modern-person-card:hover .card-overlay-modern {
+    opacity: 1;
+    transform: rotate(15deg);
+}
+
+.position-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.professor-badge {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
     color: #333;
 }
 
-.search-card .card-text {
+.teacher-badge {
+    background: linear-gradient(135deg, #e76f51, #f4a261);
+}
+
+.student-badge {
+    background: linear-gradient(135deg, #08915e, #2a9d8f);
+}
+
+.modern-person-card:hover .position-badge {
+    opacity: 1;
+}
+
+.card-content-wrapper {
+    padding: 1.5rem;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.person-name-modern {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.professor-card:hover .person-name-modern {
+    color: #b8860b;
+}
+
+.teacher-card:hover .person-name-modern {
+    color: #e76f51;
+}
+
+.student-card:hover .person-name-modern {
+    color: #08915e;
+}
+
+.person-position-modern, .person-year-modern {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+.professor-card .person-position-modern {
+    color: #b8860b;
+}
+
+.teacher-card .person-position-modern {
+    color: #e76f51;
+}
+
+.student-card .person-year-modern {
+    color: #08915e;
+}
+
+.person-department-modern, .person-roll-modern {
+    color: #6c757d;
     font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 5px;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
-.search-card .badge {
-    font-size: 0.75rem;
-    padding: 4px 8px;
+.card-action-modern {
+    margin-top: auto;
 }
 
+.view-profile-modern {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.professor-card .view-profile-modern {
+    color: #b8860b;
+}
+
+.teacher-card .view-profile-modern {
+    color: #e76f51;
+}
+
+.student-card .view-profile-modern {
+    color: #08915e;
+}
+
+.view-profile-modern i {
+    transition: transform 0.3s ease;
+}
+
+.modern-person-card:hover .view-profile-modern i {
+    transform: translateX(5px);
+}
+
+/* View All Button */
+.view-all-container {
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.btn-view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.4s ease;
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+}
+
+.btn-view-all:hover {
+    background: linear-gradient(135deg, #7209b7, #4361ee);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 35px rgba(67, 97, 238, 0.4);
+    text-decoration: none;
+    color: white;
+}
+
+.btn-view-all i:last-child {
+    transition: transform 0.3s ease;
+}
+
+.btn-view-all:hover i:last-child {
+    transform: translateX(5px);
+}
+
+/* Modern Search Cards for AJAX */
+.search-card-modern {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    text-decoration: none;
+    color: inherit;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-card-modern:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    text-decoration: none;
+    color: inherit;
+}
+
+.search-card-modern .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.search-card-modern:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.search-card-modern .card-body {
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.search-card-modern .card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #2c3e50;
+}
+
+.search-card-modern .card-text {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.search-card-modern .badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-weight: 600;
+    margin-top: auto;
+}
+
+.badge-primary { background: linear-gradient(135deg, #4361ee, #7209b7); }
+.badge-success { background: linear-gradient(135deg, #08915e, #2a9d8f); }
+.badge-info { background: linear-gradient(135deg, #17a2b8, #20c997); }
+.badge-warning { background: linear-gradient(135deg, #ffc107, #ffed4e); color: #333; }
+
+/* No Data Styling */
+.no-data-modern {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 2rem;
+    color: #6c757d;
+}
+
+.no-data-modern i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.no-data-modern p {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+/* Loading Spinner */
 .loading-spinner {
     display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4361ee;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -373,119 +948,92 @@
     100% { transform: rotate(360deg); }
 }
 
-#mainsearch {
-    border-radius: 25px;
-    padding: 12px 20px;
-    border: 2px solid #e9ecef;
-    font-size: 1.1rem;
-}
-
-#mainsearch:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-/* Filter Pills Styles */
-.filter-pill {
-    background: #f8f9fa;
-    border: 2px solid #e9ecef;
-    border-radius: 25px;
-    padding: 8px 16px;
-    margin: 4px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: #6c757d;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    position: relative;
-}
-
-.filter-pill:hover {
-    background: #e9ecef;
-    border-color: #dee2e6;
-    color: #495057;
-    transform: translateY(-2px);
-}
-
-.filter-pill.active {
-    background: #007bff;
-    border-color: #007bff;
-    color: #fff;
-    box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3);
-}
-
-.filter-pill.active::after {
-    content: "✓";
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #28a745;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-.filter-pill i {
-    font-size: 0.8rem;
-}
-
-/* Helper text for multiple selection */
-.filter-help {
-    font-size: 0.8rem;
-    color: #6c757d;
-    text-align: center;
-    margin-top: 5px;
-    font-style: italic;
-}
-
-#filter-pills-container {
-    opacity: 1;
-    transform: translateY(0);
-    transition: all 0.3s ease;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-    .filter-pill {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        margin: 2px;
+    .section-title-main {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .modern-card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .modern-results-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .filter-pill-modern {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        margin: 4px;
+    }
+
+    .search-input-main {
+        padding: 15px 20px 15px 50px !important;
+        font-size: 1rem !important;
+    }
+
+    .modern-person-card {
+        height: 380px;
+    }
+
+    .card-image-wrapper {
+        height: 220px;
+    }
+
+    .person-image-modern {
+        width: 120px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 576px) {
+    .modern-card-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .search-wrapper-main {
+        margin: 0 1rem;
+    }
+
+    .faculty-subsection-title {
+        font-size: 1.3rem;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .teachers-section, .students-section {
+        padding: 2rem 0;
     }
 }
 </style>
 
-{{-- JavaScript for Real-time Search --}}
+{{-- Enhanced JavaScript for Modern Search --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('mainsearch');
     const searchResultsContainer = document.getElementById('search-results-container');
     const clearSearchBtn = document.getElementById('clear-search');
     const filterPillsContainer = document.getElementById('filter-pills-container');
-    const filterPills = document.querySelectorAll('.filter-pill');
+    const filterPills = document.querySelectorAll('.filter-pill-modern');
     const resultsList = document.getElementById('results-list');
     let searchTimeout;
-    let currentFilters = ['all']; // Changed to array to support multiple filters
-    const maxFilters = 3; // Maximum number of filters that can be selected
+    let currentFilters = ['all'];
+    const maxFilters = 3;
 
-    // Search function
+    // Enhanced search function with modern styling
     function performSearch(query) {
         if (query.trim().length < 2) {
             hideSearchResults();
             return;
         }
 
-        // Show loading state
         showLoadingState();
-
-        // Convert filters array to string for URL
         const filtersParam = currentFilters.join(',');
 
         fetch(`{{ route('home.search') }}?query=${encodeURIComponent(query)}&filter=${filtersParam}`, {
@@ -501,11 +1049,11 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Search error:', error);
-            hideSearchResults();
+            showErrorState();
         });
     }
 
-    // Display search results
+    // Enhanced display results with modern cards
     function displaySearchResults(data) {
         if (!data.results || data.results.length === 0) {
             showNoResults();
@@ -520,71 +1068,125 @@ document.addEventListener('DOMContentLoaded', function() {
             loadingContainer.remove();
         }
 
-        // Display results
         displayResults(data.results);
-
-        // Hide no results
         document.getElementById('no-results').style.display = 'none';
     }
 
-    // Display results in single container
+    // Modern card display function
     function displayResults(results) {
         resultsList.innerHTML = results.map(item => {
             let cardContent = '';
+            let cardClass = 'search-card-modern';
             
             if (item.type === 'department') {
                 cardContent = `
-                    <h6 class="card-title">Department Of ${item.name}</h6>
-                    <p class="card-text text-muted">${item.shortname}</p>
-                    <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                    <div class="card-body">
+                        <h6 class="card-title">Department Of ${item.name}</h6>
+                        <p class="card-text text-muted">${item.shortname}</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-building me-1"></i>
+                                Academic Department
+                            </small>
+                            <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                        </div>
+                    </div>
                 `;
             } else if (item.type === 'teacher') {
                 cardContent = `
-                    <h6 class="card-title">${item.name}</h6>
-                    <p class="card-text text-muted">${item.position} - <small>Department Of ${item.department}</small></p>
-                    <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                    <div class="card-body">
+                        <h6 class="card-title">${item.name}</h6>
+                        <p class="card-text text-muted">${item.position}</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-building me-1"></i>
+                                ${item.department}
+                            </small>
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-chalkboard-teacher me-1"></i>
+                                Teacher
+                            </small>
+                            <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                        </div>
+                    </div>
                 `;
             } else if (item.type === 'student') {
                 cardContent = `
-                    <h6 class="card-title">${item.name}</h6>
-                    <p class="card-text text-muted">Year ${item.year} - <small>Roll: ${item.seat_number}</small></p>
-                    <p class="card-text"><small>Department Of ${item.department}</small></p>
-                    <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                    <div class="card-body">
+                        <h6 class="card-title">${item.name}</h6>
+                        <p class="card-text text-muted">Academic Year ${item.year}</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-id-card me-1"></i>
+                                Roll: ${item.seat_number}
+                            </small>
+                        </p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-building me-1"></i>
+                                ${item.department}
+                            </small>
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-user-graduate me-1"></i>
+                                Student
+                            </small>
+                            <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                        </div>
+                    </div>
                 `;
             } else if (item.type === 'faculty') {
                 cardContent = `
-                    <h6 class="card-title">${item.name}</h6>
-                    <p class="card-text text-muted">${item.position} - <small>Department Of ${item.department}</small></p>
-                    <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                    <div class="card-body">
+                        <h6 class="card-title">${item.name}</h6>
+                        <p class="card-text text-muted">${item.position}</p>
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="fas fa-building me-1"></i>
+                                ${item.department}
+                            </small>
+                        </p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <small class="text-muted">
+                                <i class="fas fa-user-tie me-1"></i>
+                                Faculty
+                            </small>
+                            <span class="badge badge-${item.badge_color}">${item.badge}</span>
+                        </div>
+                    </div>
                 `;
             }
 
             const imageUrl = item.image || item.logo || '{{ asset("assets/img/default-avatar.png") }}';
             
             return `
-                <div class="col-md-4 col-sm-6">
-                    <a href="${item.url}" class="search-card home-card">
-                        <div class="card">
-                            <img src="${imageUrl}" class="card-img-top" alt="${item.name}" onerror="this.src='{{ asset('assets/img/default-avatar.png') }}'">
-                            <div class="card-body">
-                                ${cardContent}
+                <div class="search-result-item">
+                    <a href="${item.url}" class="${cardClass}">
+                        <div class="card-image-container">
+                            <img src="${imageUrl}" class="card-img-top" alt="${item.name}" 
+                                 onerror="this.src='{{ asset('assets/img/default-avatar.png') }}'">
+                            <div class="card-overlay-search">
+                                <i class="fas fa-${item.type === 'department' ? 'building' : 
+                                                  item.type === 'teacher' ? 'chalkboard-teacher' : 
+                                                  item.type === 'student' ? 'user-graduate' : 'user-tie'}"></i>
                             </div>
                         </div>
+                        ${cardContent}
                     </a>
                 </div>
             `;
         }).join('');
     }
 
-    // Show loading state
+    // Enhanced loading state
     function showLoadingState() {
         searchResultsContainer.style.display = 'block';
-        
-        // Hide no results
         document.getElementById('no-results').style.display = 'none';
         
-        // Show loading in the search wrapper
-        const searchWrapper = document.querySelector('.search-results-wrapper');
+        const searchWrapper = document.querySelector('.search-results-wrapper-modern');
         if (searchWrapper) {
             const existingLoading = searchWrapper.querySelector('.loading-container');
             if (existingLoading) {
@@ -592,29 +1194,51 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-container text-center py-4';
+            loadingDiv.className = 'loading-container text-center py-5';
             loadingDiv.innerHTML = `
-                <div class="loading-spinner"></div>
-                <p class="mt-2 text-muted">Searching...</p>
+                <div class="loading-spinner mb-3"></div>
+                <p class="text-muted">Searching across all departments...</p>
+                <div class="search-progress">
+                    <div class="progress-bar"></div>
+                </div>
             `;
             searchWrapper.appendChild(loadingDiv);
         }
     }
 
-    // Show no results
-    function showNoResults() {
+    // Enhanced error state
+    function showErrorState() {
         searchResultsContainer.style.display = 'block';
         
-        // Remove loading spinner
         const loadingContainer = document.querySelector('.loading-container');
         if (loadingContainer) {
             loadingContainer.remove();
         }
         
-        // Clear results
-        resultsList.innerHTML = '';
+        resultsList.innerHTML = `
+            <div class="error-state text-center py-5">
+                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                <h5 class="mt-3 text-muted">Search Error</h5>
+                <p class="text-muted">Something went wrong while searching. Please try again.</p>
+                <button class="btn btn-outline-primary btn-sm" onclick="performSearch('${searchInput.value}')">
+                    <i class="fas fa-retry me-2"></i>Try Again
+                </button>
+            </div>
+        `;
         
-        // Show no results message
+        document.getElementById('no-results').style.display = 'none';
+    }
+
+    // Enhanced no results state
+    function showNoResults() {
+        searchResultsContainer.style.display = 'block';
+        
+        const loadingContainer = document.querySelector('.loading-container');
+        if (loadingContainer) {
+            loadingContainer.remove();
+        }
+        
+        resultsList.innerHTML = '';
         document.getElementById('no-results').style.display = 'block';
     }
 
@@ -623,7 +1247,7 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResultsContainer.style.display = 'none';
     }
 
-    // Clear search
+    // Enhanced clear search
     function clearSearch() {
         searchInput.value = '';
         hideSearchResults();
@@ -632,9 +1256,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset filters to 'all'
         currentFilters = ['all'];
         updateActiveFilters();
+        
+        // Add smooth transition
+        searchInput.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+            searchInput.style.transform = 'scale(1)';
+        }, 200);
     }
 
-    // Update active filters - handles multiple selections
+    // Enhanced filter management
     function updateActiveFilters() {
         filterPills.forEach(pill => {
             const filterValue = pill.dataset.filter;
@@ -647,43 +1277,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Check if we can add more filters
     function canAddFilter() {
-        // If 'all' is selected, can't add more
         if (currentFilters.includes('all')) {
             return false;
         }
-        // Check if we haven't reached the maximum
         return currentFilters.length < maxFilters;
     }
 
-    // Handle filter toggle
     function toggleFilter(filterValue) {
         if (filterValue === 'all') {
-            // If 'all' is clicked, clear other filters and set only 'all'
             currentFilters = ['all'];
         } else {
-            // Remove 'all' if it exists when selecting specific filters
             if (currentFilters.includes('all')) {
                 currentFilters = [];
             }
             
-            // Toggle the specific filter
             if (currentFilters.includes(filterValue)) {
-                // Remove filter if already selected
                 currentFilters = currentFilters.filter(f => f !== filterValue);
                 
-                // If no filters left, default to 'all'
                 if (currentFilters.length === 0) {
                     currentFilters = ['all'];
                 }
             } else {
-                // Add filter if not selected and we can add more
                 if (canAddFilter()) {
                     currentFilters.push(filterValue);
                 } else {
-                    // Show message if max filters reached
-                    alert(`You can select maximum ${maxFilters} filters at once.`);
+                    // Show modern notification
+                    showFilterLimitNotification();
                     return;
                 }
             }
@@ -691,14 +1311,38 @@ document.addEventListener('DOMContentLoaded', function() {
         
         updateActiveFilters();
         
-        // Perform search with new filters if there's a query
         const query = searchInput.value.trim();
         if (query.length >= 2) {
             performSearch(query);
         }
     }
 
-    // Event listeners
+    // Modern notification for filter limit
+    function showFilterLimitNotification() {
+        const notification = document.createElement('div');
+        notification.className = 'filter-notification';
+        notification.innerHTML = `
+            <i class="fas fa-info-circle me-2"></i>
+            Maximum ${maxFilters} filters can be selected at once
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(-20px)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 3000);
+    }
+
+    // Enhanced event listeners
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         const query = this.value.trim();
@@ -708,12 +1352,27 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Visual feedback while typing
+        this.style.borderColor = '#4361ee';
+        
         searchTimeout = setTimeout(() => {
             performSearch(query);
-        }, 300); // Debounce search
+        }, 300);
     });
 
-    // Filter pill click handlers - updated for multiple selection
+    searchInput.addEventListener('focus', function() {
+        this.style.transform = 'translateY(-2px)';
+        if (this.value.trim().length >= 2) {
+            performSearch(this.value.trim());
+        }
+    });
+
+    searchInput.addEventListener('blur', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.borderColor = '#e9ecef';
+    });
+
+    // Filter pill click handlers
     filterPills.forEach(pill => {
         pill.addEventListener('click', function() {
             const filterValue = this.dataset.filter;
@@ -734,17 +1393,92 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Show results when focusing on search input (if there's a query)
-    searchInput.addEventListener('focus', function() {
-        if (this.value.trim().length >= 2) {
-            performSearch(this.value.trim());
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            clearSearch();
         }
     });
 
-    // Initialize filters
+    // Initialize
     updateActiveFilters();
 });
 </script>
+
+{{-- Additional CSS for notifications and enhancements --}}
+<style>
+.filter-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #4361ee, #7209b7);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.search-progress {
+    width: 100%;
+    height: 4px;
+    background: #e9ecef;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4361ee, #7209b7);
+    border-radius: 2px;
+    animation: progress 2s infinite;
+}
+
+@keyframes progress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+}
+
+.card-overlay-search {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    color: #4361ee;
+}
+
+.search-card-modern:hover .card-overlay-search {
+    opacity: 1;
+    transform: rotate(15deg);
+}
+
+.card-image-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.search-result-item {
+    height: 100%;
+}
+
+.error-state {
+    grid-column: 1 / -1;
+}
+</style>
 
 </x-layout>
 

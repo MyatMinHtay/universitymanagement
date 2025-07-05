@@ -22,9 +22,11 @@ class StudentController extends Controller
 
     public function userShow(){
         $students = Student::with('department')->paginate(20);
+        $studentcounts = Student::count();
 
         return view('userstudentshow', [
             'students' => $students,
+            'studentcounts' => $studentcounts
         ]);
     }
 
@@ -32,6 +34,12 @@ class StudentController extends Controller
     {
         $searchQuery = $request->input('search');
         $departmentId = $request->input('department_id');
+        $filters = $request->input('filter', ['all']); // Accept array of filters
+        
+        // Ensure filters is always an array
+        if (!is_array($filters)) {
+            $filters = [$filters];
+        }
         
         $query = Student::with('department');
         
@@ -40,20 +48,75 @@ class StudentController extends Controller
             $query->where('department_id', $departmentId);
         }
         
-        // Apply search filters
+        // Apply search filters - focusing on specific fields: id, name, year, seat_number, phone, email
         if ($searchQuery) {
-            $query->where(function ($q) use ($searchQuery) {
-                $q->where('name', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('seat_number', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('phone_number', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('email', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('year', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('id', 'like', '%' . $searchQuery . '%')
-                  ->orWhereHas('department', function ($deptQuery) use ($searchQuery) {
-                      $deptQuery->where('fullname', 'like', '%' . $searchQuery . '%')
-                               ->orWhere('shortname', 'like', '%' . $searchQuery . '%')
-                               ->orWhere('deptCode', 'like', '%' . $searchQuery . '%');
-                  });
+            // Split search query into multiple keywords
+            $keywords = explode(' ', trim($searchQuery));
+            
+            $query->where(function ($q) use ($keywords, $filters) {
+                foreach ($keywords as $index => $keyword) {
+                    if (empty(trim($keyword))) continue;
+                    
+                    $method = $index === 0 ? 'where' : 'orWhere';
+                    
+                    $q->$method(function ($subQuery) use ($keyword, $filters) {
+                        // Check if 'all' filter is selected or if specific filters are selected
+                        if (in_array('all', $filters)) {
+                            $subQuery->where('id', $keyword)
+                                   ->orWhere('name', 'like', '%' . $keyword . '%')
+                                   ->orWhere('year', 'like', '%' . $keyword . '%')
+                                   ->orWhere('seat_number', 'like', '%' . $keyword . '%')
+                                   ->orWhere('phone_number', 'like', '%' . $keyword . '%')
+                                   ->orWhere('email', 'like', '%' . $keyword . '%')
+                                   ->orWhereHas('department', function ($deptQuery) use ($keyword) {
+                                       $deptQuery->where('fullname', 'like', '%' . $keyword . '%')
+                                               ->orWhere('shortname', 'like', '%' . $keyword . '%');
+                                   });
+                        } else {
+                            // Apply specific filters
+                            $hasCondition = false;
+                            
+                            if (in_array('id', $filters)) {
+                                $subQuery->where('id', $keyword);
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('name', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('name', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('year', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('year', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('phone', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('phone_number', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('email', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('email', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('department', $filters)) {
+                                $method = $hasCondition ? 'orWhereHas' : 'whereHas';
+                                $subQuery->$method('department', function ($deptQuery) use ($keyword) {
+                                    $deptQuery->where('fullname', 'like', '%' . $keyword . '%')
+                                            ->orWhere('shortname', 'like', '%' . $keyword . '%')
+                                            ->orWhere('deptCode', 'like', '%' . $keyword . '%');
+                                });
+                                $hasCondition = true;
+                            }
+                        }
+                    });
+                }
             });
         }
         

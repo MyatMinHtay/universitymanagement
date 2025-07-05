@@ -149,6 +149,11 @@
     transition: transform 0.2s ease;
 }
 
+.info-card.stu-show-card,
+.info-card.tea-show-card{
+    max-width: 100%;
+}
+
 .dpsection.professor .card-grid .info-card{
     max-width: 350px;
     padding: 1.8rem;

@@ -1,158 +1,688 @@
 <x-layout>
     <main class="main">
-            <!-- Page Title -->
+        <!-- Page Title -->
         <div class="page-title">
-            <div class="container position-relative ">
-              <div class="col-12 d-flex justify-content-start align-items-center my-5">
-                <img class="mt-5 me-3" style="object-fit: cover" src="{{ asset($department->logo) }}" width="100px" height="100px" alt="">
-                <h1 class="mt-5 ms-3">Department Of {{ $department->fullname }}</h1>
-              </div>
-              <div class="col-12 dep-banner">
-                <img class="img-fluid" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
-                
-              </div>
-              
-              
-            </div>
-        </div>
-    <!-- End Page Title -->
-
-    <div class="container my-5">
-        
-
-        
-
-        <div class="row mb-5">
-          <div class="col-lg-12 mx-auto">
-            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-              <div class="input-group">
-                <input type="text" id="searchtr" class="form-control" placeholder="Search Teachers">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="dpsection">
-            <h3 class="section-title">Teachers</h3>
-            <div class="card-grid" id="teacher-list">
-                @forelse ($department->teachers as $teacher)
-                    <a href="{{ route('teachers.usershow', $teacher->id) }}" class="info-card">
-                        <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}">
-                        <h4>{{ $teacher->name }}</h4>
-                        <p>{{ $teacher->position }}</p>
-                        <p>{{ $teacher->phone_number }}</p>
-                    </a>
-                @empty
-                    <p>No teachers found in this department.</p>
-                @endforelse
-            </div>
-        </div>
-
-        <div class="row mb-5">
-            <div class="col-lg-12 mx-auto">
-              <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-                <div class="input-group">
-                  <input type="text" id="searchst" class="form-control" placeholder="Search Students">
+            <div class="container position-relative">
+              <div class="department-header">
+                <div class="dept-info">
+                  <div class="dept-logo-container">
+                    <img class="dept-logo-main" src="{{ asset($department->logo) }}" alt="{{ $department->fullname }}">
+                  </div>
+                  <div class="dept-details">
+                    <h1 class="dept-title">Department Of {{ $department->fullname }}</h1>
+                    
+                  </div>
+                </div>
+                <div class="dept-banner-container">
+                  <img class="dept-banner" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
                 </div>
               </div>
             </div>
         </div>
+        <!-- End Page Title -->
 
-        <div class="dpsection">
-            <h3 class="section-title">Students</h3>
-            <div class="card-grid" id="student-list">
-                @forelse ($department->students as $student)
-                    <a href="{{ route('students.usershow', $student->id) }}" class="info-card">
-                        <img src="{{ asset($student->image) }}" alt="{{ $student->name }}">
-                        <h4>{{ $student->name }}</h4>
-                        <p>Year: {{ $student->year }}</p>
-                        <p>Seat No: {{ $student->seat_number }}</p>
-                    </a>
-                @empty
-                    <p>No students found in this department.</p>
-                @endforelse
+        <div class="container my-5">
+
+            <!-- Teachers Section -->
+            <div class="section-wrapper">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-chalkboard-teacher me-3"></i>
+                        Our Teachers
+                    </h3>
+                    <div class="section-count">{{ $department->teachers->count() }} Members</div>
+                </div>
+
+                <div class="search-container-modern">
+                    <div class="search-wrapper-modern">
+                        <i class="fas fa-search search-icon-modern"></i>
+                        <input type="text" id="searchtr" class="search-input-modern" placeholder="Search teachers by name, position...">
+                        <div class="search-border-modern teachers"></div>
+                    </div>
+                </div>
+
+                <div class="card-grid-modern teachers-grid" id="teacher-list">
+                    @forelse ($department->teachers as $teacher)
+                        <a href="{{ route('teachers.usershow', $teacher->id) }}" class="person-card teacher-card">
+                            <div class="card-image-container">
+                                <img src="{{ asset($teacher->image) }}" alt="{{ $teacher->name }}" class="person-image">
+                                <div class="card-overlay">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                            </div>
+                            <div class="card-content-modern">
+                                <h4 class="person-name">{{ $teacher->name }}</h4>
+                                <p class="person-position">{{ $teacher->position }}</p>
+                                
+                                <div class="card-action">
+                                    <span class="view-profile">
+                                        <i class="fas fa-arrow-right"></i>
+                                        View Profile
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="no-data">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                            <h4>No Teachers Found</h4>
+                            <p>This department currently has no teachers assigned.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <!-- Students Section -->
+            <div class="section-wrapper">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-graduate me-3"></i>
+                        Our Students
+                    </h3>
+                    <div class="section-count">{{ $department->students->count() }} Students</div>
+                </div>
+
+                <div class="search-container-modern">
+                    <div class="search-wrapper-modern">
+                        <i class="fas fa-search search-icon-modern"></i>
+                        <input type="text" id="searchst" class="search-input-modern" placeholder="Search students by name, year, seat number...">
+                        <div class="search-border-modern students"></div>
+                    </div>
+                </div>
+
+                <div class="card-grid-modern students-grid" id="student-list">
+                    @forelse ($department->students as $student)
+                        <a href="{{ route('students.usershow', $student->id) }}" class="person-card student-card">
+                            <div class="card-image-container">
+                                <img src="{{ asset($student->image) }}" alt="{{ $student->name }}" class="person-image">
+                                <div class="card-overlay">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                            </div>
+                            <div class="card-content-modern">
+                                <h4 class="person-name">{{ $student->name }}</h4>
+                                <p class="person-year">Year: {{ $student->year }}</p>
+                                <p class="person-seat">
+                                    <i class="fas fa-id-card me-2"></i>Roll: {{ $student->seat_number }}
+                                </p>
+                                <div class="card-action">
+                                    <span class="view-profile">
+                                        <i class="fas fa-arrow-right"></i>
+                                        View Profile
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                    @empty
+                        <div class="no-data">
+                            <i class="fas fa-user-graduate"></i>
+                            <h4>No Students Found</h4>
+                            <p>This department currently has no students enrolled.</p>
+                        </div>
+                    @endforelse
+                </div>
             </div>
         </div>
-    </div>
+
+        <!-- Enhanced Styling -->
+        <style>
+            /* Department Header */
+            .department-header {
+                margin-bottom: 3rem;
+            }
+
+            .dept-info {
+                display: flex;
+                align-items: center;
+                gap: 2rem;
+                margin-bottom: 2rem;
+                padding: 2rem;
+                background: white;
+                border-radius: 20px;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .dept-logo-container {
+                flex-shrink: 0;
+            }
+
+            .dept-logo-main {
+                width: 100px;
+                height: 100px;
+                object-fit: cover;
+                border-radius: 50%;
+                
+                box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+            }
+
+            .dept-details {
+                flex: 1;
+            }
+
+            .dept-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-bottom: 1rem;
+                line-height: 1.2;
+            }
+
+            .dept-code-badge {
+                background: linear-gradient(135deg, #4361ee, #7209b7);
+                color: white;
+                padding: 0.5rem 1.5rem;
+                border-radius: 25px;
+                font-weight: 600;
+                display: inline-block;
+                margin: 0;
+            }
+
+            .dept-banner-container {
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            }
+
+            .dept-banner {
+                width: 100%;
+                height: 400px;
+                object-fit: cover;
+                transition: transform 0.5s ease;
+            }
+
+            .dept-banner:hover {
+                transform: scale(1.02);
+            }
+
+            /* Section Styling */
+            .section-wrapper {
+                margin-bottom: 4rem;
+                background: white;
+                border-radius: 20px;
+                padding: 2rem;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+            }
+
+            .section-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 2rem;
+                padding-bottom: 1rem;
+                border-bottom: 2px solid #f8f9fa;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin: 0;
+                display: flex;
+                align-items: center;
+            }
+
+            .section-title.teachers i {
+                color: #e76f51;
+            }
+
+            .section-title.students i {
+                color: #08915e;
+            }
+
+            .section-count {
+                background: #f8f9fa;
+                padding: 0.5rem 1rem;
+                border-radius: 20px;
+                font-weight: 600;
+                color: #6c757d;
+                font-size: 0.9rem;
+            }
+
+            /* Modern Search Container */
+            .search-container-modern {
+                margin-bottom: 2rem;
+            }
+
+            .search-wrapper-modern {
+                position: relative;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .search-icon-modern {
+                position: absolute;
+                left: 20px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #6c757d;
+                z-index: 2;
+                transition: color 0.3s ease;
+            }
+
+            .search-input-modern {
+                width: 100%;
+                padding: 15px 20px 15px 55px;
+                border: 2px solid #e9ecef;
+                border-radius: 30px;
+                font-size: 1rem;
+                background: #f8f9fa;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            }
+
+            .search-input-modern:focus {
+                outline: none;
+                background: white;
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            }
+
+            .search-input-modern:focus ~ .search-icon-modern {
+                color: #4361ee;
+            }
+
+            .search-border-modern {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 2px;
+                transform: scaleX(0);
+                transition: transform 0.3s ease;
+                border-radius: 30px;
+            }
+
+            
+
+            .search-input-modern:focus + .search-border-modern {
+                transform: scaleX(1);
+            }
+
+            /* Card Grid */
+            .card-grid-modern {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .person-card {
+                width: 100%;
+                max-width: 300px;
+                background: white;
+                border-radius: 15px;
+                overflow: hidden;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+                transition: all 0.4s ease;
+                text-decoration: none;
+                color: inherit;
+                position: relative;
+            }
+
+            .person-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .card-image-container {
+                position: relative;
+                height: 200px;
+                overflow: hidden;
+                background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .person-image {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 4px solid white;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                transition: all 0.3s ease;
+            }
+
+            .person-card:hover .person-image {
+                transform: scale(1.05);
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            }
+
+            .card-overlay {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                width: 40px;
+                height: 40px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: all 0.3s ease;
+            }
+
+            .teacher-card .card-overlay {
+                color: #e76f51;
+            }
+
+            .student-card .card-overlay {
+                color: #08915e;
+            }
+
+            .person-card:hover .card-overlay {
+                opacity: 1;
+                transform: rotate(15deg);
+            }
+
+            .card-content-modern {
+                padding: 1.5rem;
+                text-align: center;
+            }
+
+            .person-name {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #2c3e50;
+                margin-bottom: 0.5rem;
+                transition: color 0.3s ease;
+            }
+
+            .teacher-card:hover .person-name {
+                color: #e76f51;
+            }
+
+            .student-card:hover .person-name {
+                color: #08915e;
+            }
+
+            .person-position, .person-year {
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                font-size: 1rem;
+            }
+
+            .teacher-card .person-position {
+                color: #e76f51;
+            }
+
+            .student-card .person-year {
+                color: #08915e;
+            }
+
+            .person-contact, .person-seat {
+                color: #6c757d;
+                font-size: 0.9rem;
+                margin-bottom: 1rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+
+            .card-action {
+                margin-top: auto;
+            }
+
+            .view-profile {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                font-weight: 600;
+                font-size: 0.9rem;
+                transition: all 0.3s ease;
+            }
+
+            .teacher-card .view-profile {
+                color: #e76f51;
+            }
+
+            .student-card .view-profile {
+                color: #08915e;
+            }
+
+            .view-profile i {
+                transition: transform 0.3s ease;
+            }
+
+            .person-card:hover .view-profile i {
+                transform: translateX(5px);
+            }
+
+            /* No Data Styling */
+            .no-data {
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 3rem 2rem;
+                color: #6c757d;
+            }
+
+            .no-data i {
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                opacity: 0.5;
+            }
+
+            .no-data h4 {
+                font-size: 1.3rem;
+                font-weight: 600;
+                margin-bottom: 0.5rem;
+                color: #495057;
+            }
+
+            .no-data p {
+                font-size: 1rem;
+                opacity: 0.8;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .dept-info {
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 1rem;
+                }
+
+                .dept-title {
+                    font-size: 2rem;
+                }
+
+                .section-header {
+                    flex-direction: column;
+                    gap: 1rem;
+                    text-align: center;
+                }
+
+                .card-grid-modern {
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 1rem;
+                }
+
+                .dept-banner {
+                    height: 200px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .section-wrapper {
+                    padding: 1rem;
+                }
+
+                .dept-info {
+                    padding: 1rem;
+                }
+
+                .card-grid-modern {
+                    grid-template-columns: 1fr;
+                }
+
+                .search-wrapper-modern {
+                    margin: 0 1rem;
+                }
+            }
+        </style>
 
     </main>
 </x-layout>
 
 <script>
     $(document).ready(function () {
+      let originalTeachersContent = $('#teacher-list').html();
+      let originalStudentsContent = $('#student-list').html();
+      
       // Teacher search functionality
       $('#searchtr').on('keyup', function () {
         var searchQuery = $(this).val();
         var departmentId = {{ $department->id ?? 'null' }};
+        
+        if (searchQuery.length === 0) {
+            $('#teacher-list').html(originalTeachersContent);
+            return;
+        }
+        
         $.ajax({
           type: 'GET',
-          url: '{{ route('teachers.search') }}', // ✅ Adjust to your correct route
+          url: '{{ route('teachers.search') }}',
           data: { 
             search: searchQuery,
-             department_id: departmentId
+            department_id: departmentId
           },
           dataType: 'json',
           success: function (data) {
             $('#teacher-list').html('');
 
+            if (data.length === 0) {
+                $('#teacher-list').html(`
+                    <div class="no-data">
+                        <i class="fas fa-search"></i>
+                        <h4>No Teachers Found</h4>
+                        <p>No teachers match your search criteria in this department.</p>
+                    </div>
+                `);
+                return;
+            }
   
             $.each(data, function (index, teacher) {
               var imageUrl = '/' + teacher.image;
+              var showUrl = '/teachers/' + teacher.id;
   
               var teacherHtml = `
-                <div class="info-card">
-                  <img src="${imageUrl}" alt="${teacher.name}">
-                  <h4>${teacher.name}</h4>
-                  <p>${teacher.position}</p>
-                  <p>${teacher.phone_number}</p>
-                </div>
+                <a href="${showUrl}" class="person-card teacher-card">
+                    <div class="card-image-container">
+                        <img src="${imageUrl}" alt="${teacher.name}" class="person-image">
+                        <div class="card-overlay">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-modern">
+                        <h4 class="person-name">${teacher.name}</h4>
+                        <p class="person-position">${teacher.position}</p>
+                        
+                        <div class="card-action">
+                            <span class="view-profile">
+                                <i class="fas fa-arrow-right"></i>
+                                View Profile
+                            </span>
+                        </div>
+                    </div>
+                </a>
               `;
   
               $('#teacher-list').append(teacherHtml);
             });
           },
-          
+          error: function () {
+            $('#teacher-list').html(`
+                <div class="no-data">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Search Error</h4>
+                    <p>Something went wrong while searching teachers.</p>
+                </div>
+            `);
+          }
         });
       });
 
       // Student search functionality
       $('#searchst').on('keyup', function () {
         var searchQuery = $(this).val();
+        
+        if (searchQuery.length === 0) {
+            $('#student-list').html(originalStudentsContent);
+            return;
+        }
   
         $.ajax({
           type: 'GET',
           url: '{{ route('students.search') }}',
           data: { 
             search: searchQuery,
-            department_id: {{ $department->id }} // Pass the current department ID
+            department_id: {{ $department->id }}
           },
           dataType: 'json',
           success: function (data) {
             $('#student-list').html('');
-  
+
+            if (data.length === 0) {
+                $('#student-list').html(`
+                    <div class="no-data">
+                        <i class="fas fa-search"></i>
+                        <h4>No Students Found</h4>
+                        <p>No students match your search criteria in this department.</p>
+                    </div>
+                `);
+                return;
+            }
   
             $.each(data, function (index, student) {
               var imageUrl = '/' + student.image;
+              var showUrl = '/students/' + student.id;
   
               var studentHtml = `
-                <div class="info-card">
-                  <img src="${imageUrl}" alt="${student.name}">
-                  <h4>${student.name}</h4>
-                  <p>Year: ${student.year}</p>
-                  <p>Seat No: ${student.seat_number}</p>
-                </div>
+                <a href="${showUrl}" class="person-card student-card">
+                    <div class="card-image-container">
+                        <img src="${imageUrl}" alt="${student.name}" class="person-image">
+                        <div class="card-overlay">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                    </div>
+                    <div class="card-content-modern">
+                        <h4 class="person-name">${student.name}</h4>
+                        <p class="person-year">Year: ${student.year}</p>
+                        <p class="person-seat">
+                            <i class="fas fa-id-card me-2"></i>Roll: ${student.seat_number}
+                        </p>
+                        <div class="card-action">
+                            <span class="view-profile">
+                                <i class="fas fa-arrow-right"></i>
+                                View Profile
+                            </span>
+                        </div>
+                    </div>
+                </a>
               `;
   
               $('#student-list').append(studentHtml);
             });
           },
-          error: function (xhr, status, error) {
-            console.error(error);
+          error: function () {
+            $('#student-list').html(`
+                <div class="no-data">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h4>Search Error</h4>
+                    <p>Something went wrong while searching students.</p>
+                </div>
+            `);
           }
         });
       });
     });
-  </script>
+</script>
   
 
 

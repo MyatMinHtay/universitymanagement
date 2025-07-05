@@ -13,7 +13,7 @@
           <li><a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Home</a></li>
                           <li><a href="/departments" class="{{ request()->is('departments') ? 'active' : '' }}">Departments</a></li>
                 <li><a href="/teachers" class="{{ request()->is('teachers') ? 'active' : '' }}">Teachers</a></li>
-                <li><a href="/faculty" class="{{ request()->is('faculty') ? 'active' : '' }}">Faculty</a></li>
+                
                 <li><a href="/students" class="{{ request()->is('students') ? 'active' : '' }}">Students</a></li>
           
           @auth
