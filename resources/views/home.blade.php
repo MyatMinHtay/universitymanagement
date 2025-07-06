@@ -26,70 +26,50 @@
               </div>
           </div>
 
-          <div class="event-ticker">
-              <div class="container">
-              <div class="row gy-4">
-                  <div class="col-md-6 col-xl-4 col-12 ticker-item">
-                  <span class="date">NOV 15</span>
-                  <span class="title">Open House Day</span>
-                  <a href="#" class="btn-register">Register</a>
-                  </div>
-                  <div class="col-md-6 col-12 col-xl-4  ticker-item">
-                  <span class="date">DEC 5</span>
-                  <span class="title">Application Workshop</span>
-                  <a href="#" class="btn-register">Register</a>
-                  </div>
-                  <div class="col-md-6 col-12 col-xl-4 ticker-item">
-                  <span class="date">JAN 10</span>
-                  <span class="title">International Student Orientation</span>
-                  <a href="#" class="btn-register">Register</a>
-                  </div>
-              </div>
-              </div>
-          </div>
+          
 
           </section><!-- /Hero Section -->
 
-          <!-- About Section -->
-          <section id="about" class="about section">
+           <!-- About Section -->
+           <section id="about" class="about section">
 
-          <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-              
-
-              <div class="row mission-vision-row g-4">
-              <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                  <div class="value-card h-100">
-                  <div class="card-icon">
-                      <i class="bi bi-rocket-takeoff"></i>
-                  </div>
-                  <h3>Our Mission</h3>
-                  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint occaecat.</p>
-                  </div>
-              </div>
-              <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                  <div class="value-card h-100">
-                  <div class="card-icon">
-                      <i class="bi bi-eye"></i>
-                  </div>
-                  <h3>Our Vision</h3>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim.</p>
-                  </div>
-              </div>
-              <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                  <div class="value-card h-100">
-                  <div class="card-icon">
-                      <i class="bi bi-star"></i>
-                  </div>
-                  <h3>Our Values</h3>
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur adipiscing elit.</p>
-                  </div>
-              </div>
-              </div>
-
-          </div>
-
-          </section><!-- /About Section -->
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+  
+                
+  
+                <div class="row mission-vision-row g-4">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="value-card h-100">
+                    <div class="card-icon">
+                        <i class="bi bi-rocket-takeoff"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <p>The mission of the University of Mandalay is to promote high quality teaching and training , advance cutting-edge research, build strong infrastructure and foster collaborations with both local and international partners , all aimed at enriching knowledge and benefiting society.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="value-card h-100">
+                    <div class="card-icon">
+                        <i class="bi bi-eye"></i>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <p>The vision of the University of Mandalay is to strive towards the emergence of a leading National Research University.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="value-card h-100">
+                    <div class="card-icon">
+                        <i class="bi bi-star"></i>
+                    </div>
+                    <h3>Our Values</h3>
+                    <p>The cole values are high quality education, academic oriented research, applied research progress, internationalization and contribution to the needs of local and global community aligned with environmental responsibility. </p>
+                    </div>
+                </div>
+                </div>
+  
+            </div>
+  
+            </section><!-- /About Section -->
 
           {{-- Start Search Box  --}}
 
@@ -169,9 +149,9 @@
                   <div class="section-header-main">
                     <h2 class="section-title-main">
                       <i class="fas fa-chalkboard-teacher me-3"></i>
-                      Our Distinguished Faculty
+                      Our Teachers
                     </h2>
-                    <p class="section-subtitle">Meet our experienced educators and academic leaders</p>
+                   
                   </div>
                 </div>
 
@@ -182,7 +162,7 @@
                           <i class="fas fa-crown me-2"></i>
                           Department Heads & Professors
                         </h3>
-                        <div class="modern-card-grid" id="professor-list">
+                        <div class="modern-card-grid d-flex justify-content-center align-items-center" id="professor-list">
                             @forelse ($teachers as $teacher)
                                 @if ($teacher->position == 'Professor/Head')
                                     <a href="{{ route('teachers.usershow', $teacher->id) }}" class="modern-person-card professor-card">
@@ -221,7 +201,7 @@
                     <div class="faculty-section teachers-section">
                         <h3 class="faculty-subsection-title">
                           <i class="fas fa-user-tie me-2"></i>
-                          Teaching Faculty
+                          Teachers
                         </h3>
                         <div class="modern-card-grid" id="teacher-list">
                             @forelse ($teachers as $teacher)
@@ -283,9 +263,9 @@
                   <div class="section-header-main">
                     <h2 class="section-title-main">
                       <i class="fas fa-user-graduate me-3"></i>
-                      Our Bright Students
+                      Our Students
                     </h2>
-                    <p class="section-subtitle">Discover the talented minds shaping our future</p>
+                   
                   </div>
                 </div>
 
@@ -398,7 +378,6 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: linear-gradient(90deg, #4361ee, #7209b7);
     transform: scaleX(0);
     transition: transform 0.4s ease;
     border-radius: 50px;
@@ -458,24 +437,7 @@
     box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
     transform: translateY(-2px);
 }
-
-.filter-pill-modern.active::after {
-    content: "✓";
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #28a745;
-    color: white;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.8rem;
-    font-weight: bold;
-    border: 2px solid white;
-}
+  
 
 .filter-pill-modern i {
     font-size: 0.9rem;
@@ -610,6 +572,8 @@
 
 /* Modern Person Cards */
 .modern-person-card {
+    width: 100%;
+    max-width: 350px;
     background: white;
     border-radius: 20px;
     overflow: hidden;

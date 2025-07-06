@@ -19,7 +19,6 @@
           @auth
                <li class="dropdown"><a href="#"><span>{{Auth::user()->username}}</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
             <ul>
-              <li><a href="/profile">Profile</a></li>
               <li><a href="/admin/users">Dashboard</a></li>
               <li><a href="/logout">Logout</a></li>
             </ul>

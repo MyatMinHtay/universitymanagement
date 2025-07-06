@@ -11,7 +11,7 @@
     
         <!-- Enhanced Search Box -->
         <div class="my-4">
-            <input type="text" id="searchfaculty" class="form-control" placeholder="Search faculty with multiple keywords: e.g., 'Dr Smith Professor' or 'John'">
+            <input type="text" id="searchfaculty" class="form-control" placeholder="Search faculty with multiple keywords">
         </div>
 
         <!-- Filter Pills -->
@@ -35,6 +35,9 @@
                     </button>
                     <button class="filter-pill" data-filter="email">
                         <i class="bi bi-envelope"></i> Email
+                    </button>
+                    <button class="filter-pill" data-filter="department">
+                        <i class="bi bi-building"></i> Department
                     </button>
                 </div>
                 <div class="filter-help">
@@ -87,7 +90,7 @@
                                     <span class="text-muted">N/A</span>
                                 @endif
                             </td>
-                            <td>{{ $member->department->fullname ?? 'N/A' }}</td>
+                            <td>{{ $member->department }}</td>
                             <td class="text-center">
                                 @if($member->email)
                                     <a href="mailto:{{ $member->email }}" class="btn btn-outline-primary btn-sm me-1" title="Send Email">
@@ -333,7 +336,7 @@
                 $.each(data, function (index, faculty) {
                     let editUrl = '/admin/faculty/edit/' + faculty.id;
                     let showUrl = '/admin/faculty/' + faculty.id;
-                    let departmentName = faculty.department?.fullname || 'N/A';
+                    let departmentName = faculty.department || 'N/A';
 
                     tableHtml += `
                         <tr>

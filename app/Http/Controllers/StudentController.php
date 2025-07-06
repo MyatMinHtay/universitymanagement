@@ -14,12 +14,17 @@ class StudentController extends Controller
     public function index()
     {
         $students = Student::with('department')->paginate(10);
+        $studentcounts = Student::count();
 
         return view('admin.student.index', [
             'students' => $students,
+            'studentcounts' => $studentcounts
         ]);
     }
 
+    /**
+     * Display students on the public user page with pagination
+     */
     public function userShow(){
         $students = Student::with('department')->paginate(20);
         $studentcounts = Student::count();
@@ -30,6 +35,11 @@ class StudentController extends Controller
         ]);
     }
 
+    /**
+     * Advanced search for students with multiple filters and keyword support
+     * Handles: ID (exact match), name, year, seat_number, phone, email, department searches
+     * Supports multiple keywords separated by spaces using OR logic
+     */
     public function search(Request $request)
     {
         $searchQuery = $request->input('search');
@@ -93,6 +103,12 @@ class StudentController extends Controller
                                 $hasCondition = true;
                             }
                             
+                            if (in_array('seat_number', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('seat_number', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
+                            
                             if (in_array('phone', $filters)) {
                                 $method = $hasCondition ? 'orWhere' : 'where';
                                 $subQuery->$method('phone_number', 'like', '%' . $keyword . '%');
@@ -141,6 +157,9 @@ class StudentController extends Controller
         ]);
     }
 
+    /**
+     * Display individual student details on public user page
+     */
     public function showStudents(Student $student)
     {
         return view('admin.student.userstushow', [
@@ -148,6 +167,10 @@ class StudentController extends Controller
         ]);
     }
 
+    /**
+     * Create new student with image upload and organized file storage
+     * Images are stored in assets/students/{seat_number}/ directory
+     */
     public function store(Request $request)
     {
         $formData = $request->validate([
@@ -196,6 +219,10 @@ class StudentController extends Controller
         ]);
     }
 
+    /**
+     * Update student with image handling and file cleanup
+     * Removes old image and creates new organized directory structure
+     */
     public function update(Request $request, Student $student)
     {
         $formData = $request->validate([
@@ -252,6 +279,10 @@ class StudentController extends Controller
         return redirect()->route('students')->with('success', 'Student updated successfully.');
     }
 
+    /**
+     * Delete student and cleanup associated files/directories
+     * Removes entire student directory from assets/students/{seat_number}
+     */
     public function destroy(Student $student)
     {
         try {

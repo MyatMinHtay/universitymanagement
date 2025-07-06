@@ -13,22 +13,31 @@ class FacultyController extends Controller
 {
     public function index()
     {
-        $faculty = Faculty::with('department')->paginate(20);
+        $faculty = Faculty::paginate(20);
 
         return view('admin.faculty.index', [
             'faculty' => $faculty
         ]);
     }
 
+    /**
+     * Display faculty members on the public user page with pagination
+     */
     public function userShow()
     {
-        $faculty = Faculty::with('department')->paginate(20);
+        $faculty = Faculty::paginate(20);
 
         return view('userfacultyshow', [
             'faculty' => $faculty
         ]);
     }
 
+    /**
+     * Advanced search for faculty with multiple filters and keyword support
+     * Handles: ID (exact match), name, position, phone, email, department searches
+     * Department is handled as string field (no relationship)
+     * Supports multiple keywords separated by spaces using OR logic
+     */
     public function search(Request $request)
     {
         $searchQuery = $request->input('search');
@@ -40,7 +49,7 @@ class FacultyController extends Controller
             $filters = [$filters];
         }
 
-        $query = Faculty::with('department');
+        $query = Faculty::query();
         
         // Filter by department_id if provided
         if($departmentId) {
@@ -65,7 +74,8 @@ class FacultyController extends Controller
                                    ->orWhere('name', 'like', '%' . $keyword . '%')
                                    ->orWhere('position', 'like', '%' . $keyword . '%')
                                    ->orWhere('phone_number', 'like', '%' . $keyword . '%')
-                                   ->orWhere('email', 'like', '%' . $keyword . '%');
+                                   ->orWhere('email', 'like', '%' . $keyword . '%')
+                                   ->orWhere('department', 'like', '%' . $keyword . '%');
                         } else {
                             // Apply specific filters
                             $hasCondition = false;
@@ -98,6 +108,12 @@ class FacultyController extends Controller
                                 $subQuery->$method('email', 'like', '%' . $keyword . '%');
                                 $hasCondition = true;
                             }
+                            
+                            if (in_array('department', $filters)) {
+                                $method = $hasCondition ? 'orWhere' : 'where';
+                                $subQuery->$method('department', 'like', '%' . $keyword . '%');
+                                $hasCondition = true;
+                            }
                         }
                     });
                 }
@@ -116,6 +132,9 @@ class FacultyController extends Controller
         ]);
     }
 
+    /**
+     * Display individual faculty member details on public user page
+     */
     public function showFaculty(Faculty $faculty)
     {
         return view('userfacultydetail', [
@@ -132,6 +151,10 @@ class FacultyController extends Controller
         ]);
     }
 
+    /**
+     * Create new faculty member with image upload and organized file storage
+     * Images are stored in assets/faculty/{phone_number}/ directory
+     */
     public function store(Request $request)
     {
         $formData = $request->validate([
@@ -179,6 +202,10 @@ class FacultyController extends Controller
         ]);
     }
 
+    /**
+     * Update faculty member with image handling and file cleanup
+     * Removes old image and creates new organized directory structure
+     */
     public function update(Request $request, Faculty $faculty)
     {
         $formData = $request->validate([
@@ -233,6 +260,10 @@ class FacultyController extends Controller
         return redirect()->route('faculty')->with('success', 'Faculty member updated successfully.');
     }
 
+    /**
+     * Delete faculty member and cleanup associated files/directories
+     * Removes entire faculty directory from assets/faculty/{phone_number}
+     */
     public function destroy(Faculty $faculty)
     {
         try {

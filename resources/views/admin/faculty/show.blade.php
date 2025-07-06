@@ -40,11 +40,7 @@
                                 <tr>
                                     <th><i class="fas fa-building me-2"></i>Department</th>
                                     <td>
-                                        @if($faculty->department)
-                                          Department Of {{ $faculty->department->fullname }}
-                                        @else
-                                            No Department Assigned
-                                        @endif
+                                        {{ $faculty->department }}
                                     </td>
                                 </tr>
                                 <tr>

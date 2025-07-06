@@ -53,7 +53,11 @@ class AuthController extends Controller
         ]);
     }
 
-    //create
+    /**
+     * Register new user with strict validation and auto-login
+     * Requires strong password and handles image upload
+     * Automatically logs in user after successful registration
+     */
     public function store()
     {
 
@@ -108,7 +112,11 @@ class AuthController extends Controller
         return view('auth/login');
     }
 
-    //login
+    /**
+     * Handle user login with detailed error feedback
+     * Supports "remember me" functionality
+     * Provides specific error messages for email vs password issues
+     */
     public function postLogin(Request $request)
     {
        
@@ -143,6 +151,11 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Update user profile with password verification and image handling
+     * Requires current password verification for password changes
+     * Handles image cleanup and uploads to avatars directory
+     */
     public function updateprofile(Request $request)
     {
 
@@ -225,6 +238,10 @@ class AuthController extends Controller
         //return back()->with('success','Update Success');
     }
 
+    /**
+     * Handle user logout with proper session cleanup
+     * Invalidates session and regenerates CSRF token for security
+     */
     public function logout(Request $request)
     {
         auth()->logout();

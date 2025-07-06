@@ -12,7 +12,7 @@
         <div class="my-4">
             <div class="search-container" data-aos="fade-up" data-aos-delay="200">
                 <div class="input-group">
-                    <input type="text" id="searchteacher" class="form-control" placeholder="Search teachers with multiple keywords: e.g., 'Dr Smith Professor' or 'Computer Science'">
+                    <input type="text" id="searchteacher" class="form-control" placeholder="Search teachers with multiple keywords">
                 </div>
             </div>
         </div>
@@ -24,6 +24,9 @@
                     <button class="filter-pill active" data-filter="all">
                         <i class="bi bi-grid-3x3-gap"></i> All
                     </button>
+                    <button class="filter-pill" data-filter="name">
+                        <i class="bi bi-person"></i> Name
+                    </button>
                     <button class="filter-pill" data-filter="position">
                         <i class="bi bi-person-badge"></i> Position
                     </button>
@@ -32,7 +35,7 @@
                     </button>
                 </div>
                 <div class="filter-help">
-                    <i class="bi bi-info-circle"></i> Type multiple keywords separated by spaces. Use filters to search specific fields only.
+                    <i class="bi bi-info-circle"></i> Type multiple keywords separated by spaces. Click multiple filter buttons to search in multiple fields simultaneously.
                 </div>
             </div>
         </div>
@@ -51,7 +54,7 @@
                             <div class="card-body text-center">
                                 <h5 class="card-title">{{ $teacher->name }}</h5>
                                 <p class="card-text position-badge">{{ $teacher->position }}</p>
-                                <p class="card-text department">{{ $teacher->department->shortname ?? 'N/A' }}</p>
+                                <p class="card-text department">{{ $teacher->department->fullname ?? 'N/A' }}</p>
                                 @if($teacher->position == 'Professor' || $teacher->position == 'Professor/Head')
                                     <span class="badge badge-professor">Professor</span>
                                 @else
@@ -75,7 +78,7 @@
         <div id="no-results" class="text-center py-4" style="display: none;">
             <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
             <h5 class="mt-3 text-muted">No teachers found</h5>
-            <p class="text-muted">Try different keywords or change the search filter. You can search multiple terms separated by spaces.</p>
+            <p class="text-muted">Try different keywords or select multiple search filters. You can search multiple terms separated by spaces.</p>
         </div>
 
         <!-- Pagination -->
@@ -290,7 +293,7 @@
 <!-- Enhanced JavaScript -->
 <script>
     $(document).ready(function () {
-        let currentFilter = 'all';
+        let activeFilters = ['all']; // Start with 'all' filter active
         let searchTimeout;
         let originalTeachers = null;
         
@@ -299,13 +302,40 @@
             originalTeachers = $('#teacher-list').html();
         }
         
-        // Filter pill click handler
+        // Filter pill click handler - now supports multiple selection
         $('.filter-pill').on('click', function() {
-            $('.filter-pill').removeClass('active');
-            $(this).addClass('active');
-            currentFilter = $(this).data('filter');
+            const filterValue = $(this).data('filter');
             
-            // Re-run search with new filter
+            if (filterValue === 'all') {
+                // If 'all' is clicked, deselect all others and select only 'all'
+                $('.filter-pill').removeClass('active');
+                $(this).addClass('active');
+                activeFilters = ['all'];
+            } else {
+                // If any other filter is clicked, toggle it
+                if ($(this).hasClass('active')) {
+                    // Remove this filter
+                    $(this).removeClass('active');
+                    activeFilters = activeFilters.filter(f => f !== filterValue);
+                    
+                    // If no filters left, activate 'all'
+                    if (activeFilters.length === 0) {
+                        $('.filter-pill[data-filter="all"]').addClass('active');
+                        activeFilters = ['all'];
+                    }
+                } else {
+                    // Add this filter
+                    $(this).addClass('active');
+                    // Remove 'all' if it was active
+                    if (activeFilters.includes('all')) {
+                        $('.filter-pill[data-filter="all"]').removeClass('active');
+                        activeFilters = activeFilters.filter(f => f !== 'all');
+                    }
+                    activeFilters.push(filterValue);
+                }
+            }
+            
+            // Re-run search with new filters
             const searchQuery = $('#searchteacher').val();
             if (searchQuery.length > 0) {
                 performSearch(searchQuery);
@@ -325,7 +355,7 @@
             searchTimeout = setTimeout(function() {
                 if (searchQuery.length === 0) {
                     resetToOriginal();
-                } else if (searchQuery.length >= 2) {
+                } else if (searchQuery.length >= 0) {
                     performSearch(searchQuery);
                 }
             }, 300);
@@ -342,7 +372,7 @@
                 url: '{{ route('teachers.search') }}',
                 data: { 
                     search: query,
-                    filter: currentFilter
+                    filters: activeFilters // Send array of active filters
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -366,7 +396,7 @@
                 $.each(data, function (index, teacher) {
                     let imageUrl = teacher.image ? `/${teacher.image}` : '/assets/img/default-teacher.png';
                     let showUrl = `/teachers/${teacher.id}`;
-                    let departmentName = teacher.department?.shortname || 'N/A';
+                    let departmentName = teacher.department?.fullname || 'N/A';
                     let badgeClass = '';
                     let badgeText = '';
                     
@@ -400,7 +430,14 @@
                 $('#teacher-list').html(cardsHtml);
                 $('#no-results').hide();
                 
-                const filterText = currentFilter === 'all' ? 'all fields' : `${currentFilter} field`;
+                // Create filter text description
+                let filterText = '';
+                if (activeFilters.includes('all')) {
+                    filterText = 'all fields';
+                } else {
+                    filterText = activeFilters.join(', ') + ' field' + (activeFilters.length > 1 ? 's' : '');
+                }
+                
                 $('#search-message').show().html(`<p class="text-info"><i class="bi bi-search"></i> Found ${data.length} teacher(s) matching "${query}" in ${filterText}</p>`);
             }
         }

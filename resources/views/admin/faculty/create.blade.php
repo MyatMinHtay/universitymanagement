@@ -35,16 +35,10 @@
                 </div>
 
                 <div class="mb-5 form-group">
-                    <label for="department_id">Department</label>
-                    <select name="department_id" id="department_id" class="form-control inputbox">
-                        <option value="">Select Department</option>
-                        @foreach ($departments as $department)
-                            <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
-                                {{ $department->fullname }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <x-error name="department_id"></x-error>
+                    <label for="department">Department</label>
+                    <input type="text" class="form-control inputbox" value="{{ old('department') }}" name="department"
+                        id="department" placeholder="Enter Department">
+                    <x-error name="department"></x-error>
                 </div>
 
                 <div class="mb-3 form-group">

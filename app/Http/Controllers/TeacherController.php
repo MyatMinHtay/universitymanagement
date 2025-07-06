@@ -14,17 +14,20 @@ class TeacherController extends Controller
     public function index()
     {
         $teachers = Teacher::with('department')->paginate(20);
+        $teachercounts = Teacher::count();
 
         return view('admin.teacher.index', [
-            'teachers' => $teachers
+            'teachers' => $teachers,
+            'teachercounts' => $teachercounts
         ]);
     }
 
+    /**
+     * Display teachers on the public user page with pagination
+     */
     public function userShow(){
         $teachers = Teacher::with('department')->paginate(20);
         $teachercounts = Teacher::count();
-
-     
 
         return view('userteachershow', [
             'teachers' => $teachers,
@@ -32,6 +35,11 @@ class TeacherController extends Controller
         ]);
     }
 
+    /**
+     * Advanced search for teachers with multiple filters and keyword support
+     * Handles: ID (exact match), name, position, phone, email, department searches
+     * Supports multiple keywords separated by spaces using OR logic
+     */
     public function search(Request $request)
     {
         $searchQuery = $request->input('search');
@@ -42,11 +50,11 @@ class TeacherController extends Controller
         if (!is_array($filters)) {
             $filters = [$filters];
         }
-
+        
         $query = Teacher::with('department');
         
         // Filter by department_id if provided
-        if($departmentId) {
+        if ($departmentId) {
             $query->where('department_id', $departmentId);
         }
         
@@ -133,16 +141,15 @@ class TeacherController extends Controller
         ]);
     }
 
+    /**
+     * Display individual teacher details on public user page
+     */
     public function showTeachers(Teacher $teacher)
     {
         return view('admin.teacher.userteachershow', [
-            'teacher' => $teacher
+            'teacher' => $teacher,
         ]);
     }
-
-    
-
-
 
     public function create()
     {
@@ -153,15 +160,19 @@ class TeacherController extends Controller
         ]);
     }
 
+    /**
+     * Create new teacher with image upload and organized file storage
+     * Images are stored in assets/teachers/{phone_number}/ directory
+     */
     public function store(Request $request)
     {
         $formData = $request->validate([
             'name' => 'required|string',
             'position' => 'required|string',
-            'phone_number' => 'required|string|unique:teachers,phone_number',
+            'phone_number' => 'nullable|string|unique:teachers,phone_number',
             'email' => 'nullable|email|unique:teachers,email',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'department_id' => 'required|exists:departments,id',
-            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048'
         ]);
 
         if ($request->hasFile('image')) {
@@ -176,7 +187,7 @@ class TeacherController extends Controller
             }
 
             $file->move($uploadPath, $fileName);
-            $formData['image'] = "assets/teachers/{$formData['phone_number']}/{$fileName}";
+            $formData['image'] = "assets/teachers/{$formData['phone_number']}/$fileName";
         }else{
             $formData['image'] = "assets/teachers/profile.png";
         }
@@ -200,13 +211,18 @@ class TeacherController extends Controller
         ]);
     }
 
+    /**
+     * Update teacher with image handling and file cleanup
+     * Removes old image and creates new organized directory structure
+     */
     public function update(Request $request, Teacher $teacher)
     {
         $formData = $request->validate([
             'name' => 'required|string',
             'position' => 'required|string',
             'phone_number' => [
-                'required',
+                'nullable',
+                'string',
                 Rule::unique('teachers')->ignore($teacher->id),
             ],
             'email' => [
@@ -214,8 +230,8 @@ class TeacherController extends Controller
                 'email',
                 Rule::unique('teachers')->ignore($teacher->id),
             ],
-            'department_id' => 'required|exists:departments,id',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
+            'department_id' => 'required|exists:departments,id',
         ]);
 
         if ($request->hasFile('image')) {
@@ -237,7 +253,7 @@ class TeacherController extends Controller
             }
 
             $file->move($uploadPath, $fileName);
-            $formData['image'] = "assets/teachers/{$formData['phone_number']}/{$fileName}";
+            $formData['image'] = "assets/teachers/{$formData['phone_number']}/$fileName";
         } else {
             $formData['image'] = $teacher->image;
         }
@@ -251,6 +267,10 @@ class TeacherController extends Controller
         return redirect()->route('teachers')->with('success', 'Teacher updated successfully.');
     }
 
+    /**
+     * Delete teacher and cleanup associated files/directories
+     * Removes entire teacher directory from assets/teachers/{phone_number}
+     */
     public function destroy(Teacher $teacher)
     {
         try {

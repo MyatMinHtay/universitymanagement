@@ -15,16 +15,10 @@ class Faculty extends Model
         'name',
         'position',
         'image',
-        'department_id',
+        'department',
         'phone_number',
         'email',
     ];
 
-    /**
-     * Get the department that the faculty belongs to.
-     */
-    public function department()
-    {
-        return $this->belongsTo(Department::class);
-    }
+    // Department is now stored as a string field, no relationship needed
 } 

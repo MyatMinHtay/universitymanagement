@@ -11,7 +11,7 @@
     
         <!-- Enhanced Search Box -->
         <div class="my-4">
-            <input type="text" id="searchteacher" class="form-control" placeholder="Search teachers with multiple keywords: e.g., 'Dr Smith Professor' or 'Computer Science'">
+            <input type="text" id="searchteacher" class="form-control" placeholder="Search teachers with multiple keywords">
         </div>
 
         <!-- Filter Pills -->

@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use Exception;
 use Carbon\Carbon;
-use App\Models\Mtc;
-use App\Models\Blog;
 use App\Models\User;
-use App\Models\Chapter;
-use App\Models\Subscribe;
 use App\Models\SystemRole;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -62,6 +58,11 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Create new user with strict password requirements and image upload
+     * Password must contain: uppercase, lowercase, number, and special character
+     * Images are stored in assets/avatars/ directory
+     */
     public function createuser()
     {
 
@@ -70,7 +71,7 @@ class UserController extends Controller
         $formData = request()->validate([
 
             'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'username' => ['required', 'max:255', 'min:3', Rule::unique('users', 'username'), 'regex:/^[A-Za-z0-9]+$/'],
+            'username' => ['required', 'max:255', 'min:3', Rule::unique('users', 'username'), 'regex:/^[A-Za-z0-9 ]+$/'],
             'password' => [
                 'required',
                 'confirmed', // Make sure the password confirmation field is present and matches the password field
@@ -128,6 +129,11 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * Update user with image handling and file cleanup
+     * Removes old image if new one is uploaded (except default image)
+     * Maintains same password requirements if password is being changed
+     */
     public function updateuser(User $user, Request $request)
     {
 
@@ -138,7 +144,7 @@ class UserController extends Controller
         $formData = $request->validate([
 
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'username' => ['required', 'max:255', 'min:3', Rule::unique('users')->ignore($user->id), 'regex:/^[A-Za-z0-9]+$/'],
+            'username' => ['required', 'max:255', 'min:3', Rule::unique('users')->ignore($user->id), 'regex:/^[A-Za-z0-9 ]+$/'],
             'role_id' => ['required', 'integer'],
             'userphoto' => ['mimes:jpeg,png,jpg', 'max:2048', 'sometimes'],
             'password' => 'nullable|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
@@ -191,8 +197,7 @@ class UserController extends Controller
     public function deleteuser(User $user)
     {
         try {
-            $user->status = "D";
-            $user->save();
+            $user->delete();
 
             return redirect()->route('users')->with('success', 'User Account Delete Successfully');
         } catch (QueryException $e) {
@@ -200,6 +205,10 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Lock user account by setting status to "L" (Locked)
+     * Prevents user from logging in until unlocked
+     */
     public function lockuser(User $user)
     {
         try {
@@ -212,6 +221,10 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Unlock user account by setting status to "A" (Active)
+     * Allows user to log in again
+     */
     public function unlockuser(User $user)
     {
         try {

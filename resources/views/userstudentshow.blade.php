@@ -1,91 +1,4 @@
 <x-layout>
-    <main class="container my-5">
-
-        <!-- Page Title -->
-        <div class="page-title text-center">
-            <div class="container position-relative">
-                <h1 class="mt-5">Students ({{ $studentcounts }})</h1>
-            </div>
-        </div>
-        <!-- End Page Title -->
-
-        <!-- Enhanced Search Box -->
-        <div class="my-4">
-            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
-                <div class="input-group">
-                    <input type="text" id="searchstudent" class="form-control" placeholder="Search students with multiple keywords: e.g., 'John 2023' or 'Computer Science'">
-                </div>
-            </div>
-        </div>
-
-        <!-- Filter Pills -->
-        <div class="row mb-4" id="filter-pills-container">
-            <div class="col-12">
-                <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
-                    <button class="filter-pill active" data-filter="all">
-                        <i class="bi bi-grid-3x3-gap"></i> All
-                    </button>
-                    <button class="filter-pill" data-filter="name">
-                        <i class="bi bi-person"></i> Name
-                    </button>
-                    <button class="filter-pill" data-filter="year">
-                        <i class="bi bi-calendar"></i> Year
-                    </button>
-                    <button class="filter-pill" data-filter="department">
-                        <i class="bi bi-building"></i> Department
-                    </button>
-                </div>
-                <div class="filter-help">
-                    <i class="bi bi-info-circle"></i> Type multiple keywords separated by spaces. Use filters to search specific fields only.
-                </div>
-            </div>
-        </div>
-
-        <!-- Students Card Grid -->
-        <div class="dpsection">
-            <div class="card-grid col-12 d-flex flex-wrap justify-content-start align-items-start gap-4" id="student-list">
-                @forelse ($students as $student)
-                    <a href="{{ route('students.usershow', $student->id) }}" class="student-card text-decoration-none">
-                        <div class="card h-100">
-                            <div class="card-img-container">
-                                <img src="{{ $student->image ? asset($student->image) : asset('assets/img/default-student.png') }}"
-                                     alt="{{ $student->name }}"
-                                     class="card-img-top">
-                            </div>
-                            <div class="card-body text-center">
-                                <h5 class="card-title">{{ $student->name }}</h5>
-                                <p class="card-text year-badge">Year {{ $student->year }}</p>
-                                <p class="card-text roll-number">Roll: {{ $student->seat_number }}</p>
-                                <p class="card-text department">{{ $student->department->shortname ?? 'N/A' }}</p>
-                                <span class="badge badge-student">Student</span>
-                            </div>
-                        </div>
-                    </a>
-                @empty
-                    <div class="col-12 text-center">
-                        <p class="text-muted">No students found.</p>
-                    </div>
-                @endforelse
-            </div>
-        </div>
-
-        <!-- Search Results Message -->
-        <div id="search-message" class="text-center mt-3" style="display: none;"></div>
-
-        <!-- No Results -->
-        <div id="no-results" class="text-center py-4" style="display: none;">
-            <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
-            <h5 class="mt-3 text-muted">No students found</h5>
-            <p class="text-muted">Try different keywords or change the search filter. You can search multiple terms separated by spaces.</p>
-        </div>
-
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-4" id="pagination-container">
-            {{ $students->links() }}
-        </div>
-
-    </main>
-
     <!-- Custom CSS for Enhanced Search -->
     <style>
         /* Search Container Styling */
@@ -278,6 +191,97 @@
             }
         }
     </style>
+    <main class="container my-5">
+
+        <!-- Page Title -->
+        <div class="page-title text-center">
+            <div class="container position-relative">
+                <h1 class="mt-5">Students ({{ $studentcounts }})</h1>
+            </div>
+        </div>
+        <!-- End Page Title -->
+
+        <!-- Enhanced Search Box -->
+        <div class="my-4">
+            <div class="search-container" data-aos="fade-up" data-aos-delay="200">
+                <div class="input-group">
+                    <input type="text" id="searchstudent" class="form-control" placeholder="Search students with multiple keywords">
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="row mb-4" id="filter-pills-container">
+            <div class="col-12">
+                <div class="d-flex justify-content-center align-items-center flex-wrap gap-2">
+                    <button class="filter-pill active" data-filter="all">
+                        <i class="bi bi-grid-3x3-gap"></i> All
+                    </button>
+                    <button class="filter-pill" data-filter="name">
+                        <i class="bi bi-person"></i> Name
+                    </button>
+                    <button class="filter-pill" data-filter="seat_number">
+                        <i class="bi bi-hash"></i> Roll Number
+                    </button>
+                    <button class="filter-pill" data-filter="year">
+                        <i class="bi bi-calendar"></i> Year
+                    </button>
+                    <button class="filter-pill" data-filter="department">
+                        <i class="bi bi-building"></i> Department
+                    </button>
+                </div>
+                <div class="filter-help">
+                    <i class="bi bi-info-circle"></i> Type multiple keywords separated by spaces. Click multiple filter buttons to search in multiple fields simultaneously.
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Card Grid -->
+        <div class="dpsection">
+            <div class="card-grid col-12 d-flex flex-wrap justify-content-start align-items-start gap-4" id="student-list">
+                @forelse ($students as $student)
+                    <a href="{{ route('students.usershow', $student->id) }}" class="student-card text-decoration-none">
+                        <div class="card h-100">
+                            <div class="card-img-container">
+                                <img src="{{ $student->image ? asset($student->image) : asset('assets/img/default-student.png') }}"
+                                     alt="{{ $student->name }}"
+                                     class="card-img-top">
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ $student->name }}</h5>
+                                <p class="card-text year-badge">Year {{ $student->year }}</p>
+                                <p class="card-text roll-number">Roll: {{ $student->seat_number }}</p>
+                                <p class="card-text department">{{ $student->department->fullname ?? 'N/A' }}</p>
+                                <span class="badge badge-student">Student</span>
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="col-12 text-center">
+                        <p class="text-muted">No students found.</p>
+                    </div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Search Results Message -->
+        <div id="search-message" class="text-center mt-3" style="display: none;"></div>
+
+        <!-- No Results -->
+        <div id="no-results" class="text-center py-4" style="display: none;">
+            <i class="bi bi-search" style="font-size: 3rem; color: #6c757d;"></i>
+            <h5 class="mt-3 text-muted">No students found</h5>
+            <p class="text-muted">Try different keywords or select multiple search filters. You can search multiple terms separated by spaces.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4" id="pagination-container">
+            {{ $students->links() }}
+        </div>
+
+    </main>
+
+    
 
     
 
@@ -287,7 +291,7 @@
 <!-- Enhanced JavaScript -->
 <script>
     $(document).ready(function () {
-        let currentFilter = 'all';
+        let activeFilters = ['all']; // Start with 'all' filter active
         let searchTimeout;
         let originalStudents = null;
         
@@ -296,13 +300,40 @@
             originalStudents = $('#student-list').html();
         }
         
-        // Filter pill click handler
+        // Filter pill click handler - now supports multiple selection
         $('.filter-pill').on('click', function() {
-            $('.filter-pill').removeClass('active');
-            $(this).addClass('active');
-            currentFilter = $(this).data('filter');
+            const filterValue = $(this).data('filter');
             
-            // Re-run search with new filter
+            if (filterValue === 'all') {
+                // If 'all' is clicked, deselect all others and select only 'all'
+                $('.filter-pill').removeClass('active');
+                $(this).addClass('active');
+                activeFilters = ['all'];
+            } else {
+                // If any other filter is clicked, toggle it
+                if ($(this).hasClass('active')) {
+                    // Remove this filter
+                    $(this).removeClass('active');
+                    activeFilters = activeFilters.filter(f => f !== filterValue);
+                    
+                    // If no filters left, activate 'all'
+                    if (activeFilters.length === 0) {
+                        $('.filter-pill[data-filter="all"]').addClass('active');
+                        activeFilters = ['all'];
+                    }
+                } else {
+                    // Add this filter
+                    $(this).addClass('active');
+                    // Remove 'all' if it was active
+                    if (activeFilters.includes('all')) {
+                        $('.filter-pill[data-filter="all"]').removeClass('active');
+                        activeFilters = activeFilters.filter(f => f !== 'all');
+                    }
+                    activeFilters.push(filterValue);
+                }
+            }
+            
+            // Re-run search with new filters
             const searchQuery = $('#searchstudent').val();
             if (searchQuery.length > 0) {
                 performSearch(searchQuery);
@@ -322,7 +353,7 @@
             searchTimeout = setTimeout(function() {
                 if (searchQuery.length === 0) {
                     resetToOriginal();
-                } else if (searchQuery.length >= 2) {
+                } else if (searchQuery.length >= 0) {
                     performSearch(searchQuery);
                 }
             }, 300);
@@ -339,7 +370,7 @@
                 url: '{{ route('students.search') }}',
                 data: { 
                     search: query,
-                    filter: currentFilter
+                    filters: activeFilters // Send array of active filters
                 },
                 dataType: 'json',
                 success: function (data) {
@@ -363,7 +394,7 @@
                 $.each(data, function (index, student) {
                     let imageUrl = student.image ? `/${student.image}` : '/assets/img/default-student.png';
                     let showUrl = `/students/${student.id}`;
-                    let departmentName = student.department?.shortname || 'N/A';
+                    let departmentName = student.department?.fullname || 'N/A';
 
                     cardsHtml += `
                         <a href="${showUrl}" class="student-card text-decoration-none">
@@ -388,7 +419,14 @@
                 $('#student-list').html(cardsHtml);
                 $('#no-results').hide();
                 
-                const filterText = currentFilter === 'all' ? 'all fields' : `${currentFilter} field`;
+                // Create filter text description
+                let filterText = '';
+                if (activeFilters.includes('all')) {
+                    filterText = 'all fields';
+                } else {
+                    filterText = activeFilters.join(', ') + ' field' + (activeFilters.length > 1 ? 's' : '');
+                }
+                
                 $('#search-message').show().html(`<p class="text-info"><i class="bi bi-search"></i> Found ${data.length} student(s) matching "${query}" in ${filterText}</p>`);
             }
         }

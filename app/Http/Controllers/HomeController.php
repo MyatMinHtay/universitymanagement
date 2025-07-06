@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
-use App\Models\Chapter;
-use App\Models\Mtc;
-use App\Models\Order;
-use App\Models\SaveWebtoon;
-use App\Models\StarPackage;
-use App\Models\Subscribe;
+
 use App\Models\User;
 use App\Models\Department;
 use App\Models\Teacher;
@@ -22,69 +16,10 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    public function showabout(){
-        return view('about');
-    }
-    
-    public function showhelp(){
-        return view('help');
-    }
 
-
-
-    public function showAcademics() {
-        return view('academics');
-    }
-
-    public function showAdmissions() {
-        return view('admissions');
-    }
-
-    public function showAlumni() {
-        return view('alumni');
-    }
-
-    public function showCampusFacilities() {
-        return view('campus-facilities');
-    }
-
-    public function showContact() {
-        return view('contact');
-    }
-
-    public function showEventDetails() {
-        return view('event-details');
-    }
-
-    public function showEvents() {
-        return view('events');
-    }
-
-    public function showFacultyStaff() {
-        return view('faculty-staff');
-    }
-
-    public function showNewsDetails() {
-        return view('news-details');
-    }
-
-    public function showNews() {
-        return view('news');
-    }
-
-    public function showPrivacy() {
-        return view('privacy');
-    }
-
-    public function showStudentsLife() {
-        return view('students-life');
-    }
-
-    public function showTermsOfService() {
-        return view('terms-of-service');
-    }
-
-
+    /**
+     * Display user profile page with associated MTC data
+     */
     public function showprofile(User $user){
 
           
@@ -102,6 +37,11 @@ class HomeController extends Controller
         return view('auth.editprofile');
     }
 
+    /**
+     * Global search across all university entities (departments, teachers, students, faculty)
+     * Supports multiple category filters and adjusts result limits dynamically
+     * Returns formatted data for AJAX responses with proper URLs and badges
+     */
     public function homeSearch(Request $request)
     {
         $query = $request->get('query');
@@ -137,7 +77,6 @@ class HomeController extends Controller
                 ->orWhere('shortname', 'LIKE', "%{$query}%")
                 ->orWhere('description', 'LIKE', "%{$query}%")
                 ->orWhere('deptCode', 'LIKE', "%{$query}%")
-                ->limit($limit)
                 ->get()
                 ->map(function ($department) {
                     return [
@@ -166,7 +105,6 @@ class HomeController extends Controller
                     $q->where('fullname', 'LIKE', "%{$query}%")
                       ->orWhere('shortname', 'LIKE', "%{$query}%");
                 })
-                ->limit($limit)
                 ->get()
                 ->map(function ($teacher) {
                     return [
@@ -196,7 +134,6 @@ class HomeController extends Controller
                     $q->where('fullname', 'LIKE', "%{$query}%")
                       ->orWhere('shortname', 'LIKE', "%{$query}%");
                 })
-                ->limit($limit)
                 ->get()
                 ->map(function ($student) {
                     return [
@@ -215,34 +152,7 @@ class HomeController extends Controller
             $results = $results->merge($students);
         }
 
-        if (in_array('all', $filters) || in_array('faculty', $filters)) {
-            $limit = in_array('all', $filters) ? $limitForAll : $limitPerCategory;
-            
-            $faculty = Faculty::with('department')
-                ->where('name', 'LIKE', "%{$query}%")
-                ->orWhere('position', 'LIKE', "%{$query}%")
-                ->orWhere('email', 'LIKE', "%{$query}%")
-                ->orWhereHas('department', function ($q) use ($query) {
-                    $q->where('fullname', 'LIKE', "%{$query}%")
-                      ->orWhere('shortname', 'LIKE', "%{$query}%");
-                })
-                ->limit($limit)
-                ->get()
-                ->map(function ($facultyMember) {
-                    return [
-                        'id' => $facultyMember->id,
-                        'name' => $facultyMember->name,
-                        'position' => $facultyMember->position,
-                        'department' => $facultyMember->department->fullname ?? 'N/A',
-                        'image' => $facultyMember->image ? asset($facultyMember->image) : asset('assets/img/default-faculty.png'),
-                        'url' => route('faculty.usershow', $facultyMember->id),
-                        'type' => 'faculty',
-                        'badge' => 'Faculty',
-                        'badge_color' => 'warning'
-                    ];
-                });
-            $results = $results->merge($faculty);
-        }
+        
 
         return response()->json([
             'results' => $results->values()->all(),

@@ -11,7 +11,7 @@
     
         <!-- Enhanced Search Box -->
         <div class="my-4">
-            <input type="text" id="searchstudent" class="form-control" placeholder="Search students with multiple keywords: e.g., 'John 2023' or 'Computer Science'">
+            <input type="text" id="searchstudent" class="form-control" placeholder="Search students with multiple keywords">
         </div>
 
         <!-- Filter Pills -->
@@ -29,6 +29,9 @@
                     </button>
                     <button class="filter-pill" data-filter="department">
                         <i class="bi bi-building"></i> Department
+                    </button>
+                    <button class="filter-pill" data-filter="seat_number">
+                        # Roll No
                     </button>
                     <button class="filter-pill" data-filter="id">
                         <i class="bi bi-hash"></i> ID
