@@ -45,94 +45,144 @@ class TeacherController extends Controller
         $searchQuery = $request->input('search');
         $departmentId = $request->input('department_id');
         $filters = $request->input('filter', ['all']); // Accept array of filters
-        
+
         // Ensure filters is always an array
         if (!is_array($filters)) {
             $filters = [$filters];
         }
-        
+
         $query = Teacher::with('department');
-        
+
         // Filter by department_id if provided
         if ($departmentId) {
             $query->where('department_id', $departmentId);
         }
-        
-        // Apply search filters - focusing on specific fields: id, name, position, phone, email
+
         if ($searchQuery) {
-            // Split search query into multiple keywords
-            $keywords = explode(' ', trim($searchQuery));
-            
-            $query->where(function ($q) use ($keywords, $filters) {
-                foreach ($keywords as $index => $keyword) {
-                    if (empty(trim($keyword))) continue;
-                    
-                    $method = $index === 0 ? 'where' : 'orWhere';
-                    
-                    $q->$method(function ($subQuery) use ($keyword, $filters) {
-                        // Check if 'all' filter is selected or if specific filters are selected
+            $keywords = array_filter(explode(' ', trim($searchQuery)));
+            $keywordCount = count($keywords);
+
+            $query->where(function ($q) use ($searchQuery, $keywords, $filters, $keywordCount) {
+                if ($keywordCount === 1) {
+                    $keyword = strtolower($keywords[0]);
+
+                    $q->where(function ($subQuery) use ($keyword, $filters) {
                         if (in_array('all', $filters)) {
-                            $subQuery->where('id', $keyword)
-                                   ->orWhere('name', 'like', '%' . $keyword . '%')
-                                   ->orWhere('position', 'like', '%' . $keyword . '%')
-                                   ->orWhere('phone_number', 'like', '%' . $keyword . '%')
-                                   ->orWhere('email', 'like', '%' . $keyword . '%')
-                                   ->orWhereHas('department', function ($deptQuery) use ($keyword) {
-                                       $deptQuery->where('fullname', 'like', '%' . $keyword . '%')
-                                               ->orWhere('shortname', 'like', '%' . $keyword . '%');
-                                   });
+                            $subQuery->whereRaw('LOWER(id) = ?', [$keyword])
+                                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(position) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereHas('department', function ($deptQuery) use ($keyword) {
+                                        $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
+                                                ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
+                                                ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
+                                    });
                         } else {
-                            // Apply specific filters
                             $hasCondition = false;
-                            
+
                             if (in_array('id', $filters)) {
-                                $subQuery->where('id', $keyword);
+                                $subQuery->whereRaw('LOWER(id) = ?', [$keyword]);
                                 $hasCondition = true;
                             }
-                            
+
                             if (in_array('name', $filters)) {
-                                $method = $hasCondition ? 'orWhere' : 'where';
-                                $subQuery->$method('name', 'like', '%' . $keyword . '%');
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(name) LIKE ?', ['%' . $keyword . '%']);
                                 $hasCondition = true;
                             }
-                            
+
                             if (in_array('position', $filters)) {
-                                $method = $hasCondition ? 'orWhere' : 'where';
-                                $subQuery->$method('position', 'like', '%' . $keyword . '%');
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(position) LIKE ?', ['%' . $keyword . '%']);
                                 $hasCondition = true;
                             }
-                            
+
                             if (in_array('phone', $filters)) {
-                                $method = $hasCondition ? 'orWhere' : 'where';
-                                $subQuery->$method('phone_number', 'like', '%' . $keyword . '%');
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%']);
                                 $hasCondition = true;
                             }
-                            
+
                             if (in_array('email', $filters)) {
-                                $method = $hasCondition ? 'orWhere' : 'where';
-                                $subQuery->$method('email', 'like', '%' . $keyword . '%');
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(email) LIKE ?', ['%' . $keyword . '%']);
                                 $hasCondition = true;
                             }
-                            
+
                             if (in_array('department', $filters)) {
                                 $method = $hasCondition ? 'orWhereHas' : 'whereHas';
                                 $subQuery->$method('department', function ($deptQuery) use ($keyword) {
-                                    $deptQuery->where('fullname', 'like', '%' . $keyword . '%')
-                                            ->orWhere('shortname', 'like', '%' . $keyword . '%')
-                                            ->orWhere('deptCode', 'like', '%' . $keyword . '%');
+                                    $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
+                                            ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
+                                            ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
                                 });
-                                $hasCondition = true;
                             }
                         }
                     });
+                } else {
+                    // Case-insensitive full name match
+                    if (in_array('all', $filters) || in_array('name', $filters)) {
+                        $q->whereRaw('LOWER(name) = ?', [strtolower($searchQuery)]);
+                    } else {
+                        // Apply keyword filters for other fields
+                        foreach ($keywords as $index => $keyword) {
+                            if (empty($keyword)) continue;
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->$method(function ($subQuery) use ($keyword, $filters) {
+                                $keyword = strtolower($keyword);
+                                $hasCondition = false;
+
+                                if (in_array('id', $filters)) {
+                                    $subQuery->whereRaw('LOWER(id) = ?', [$keyword]);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('name', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(name) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('position', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(position) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('phone', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('email', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(email) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('department', $filters)) {
+                                    $method = $hasCondition ? 'orWhereHas' : 'whereHas';
+                                    $subQuery->$method('department', function ($deptQuery) use ($keyword) {
+                                        $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
+                                                ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
+                                                ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
+                                    });
+                                }
+                            });
+                        }
+                    }
                 }
             });
         }
-        
+
         $teachers = $query->get();
 
         return response()->json($teachers);
     }
+
 
     public function show(Teacher $teacher)
     {
