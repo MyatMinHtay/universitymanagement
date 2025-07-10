@@ -367,18 +367,25 @@
             $('#pagination-container').hide();
             $('#no-results').hide();
 
+            // Create proper query string for array
+            let queryData = {
+                search: query
+            };
+            
+            // Add filter parameters one by one
+            for (let i = 0; i < activeFilters.length; i++) {
+                queryData['filter[' + i + ']'] = activeFilters[i];
+            }
+
             $.ajax({
                 type: 'GET',
                 url: '{{ route('teachers.search') }}',
-                data: { 
-                    search: query,
-                    filters: activeFilters // Send array of active filters
-                },
+                data: queryData,
                 dataType: 'json',
                 success: function (data) {
                     displaySearchResults(data, query);
                 },
-                error: function () {
+                error: function (xhr, status, error) {
                     $('#teacher-list').html('<div class="col-12 text-danger text-center">Something went wrong while searching.</div>');
                     $('#search-message').hide();
                 }
