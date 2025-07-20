@@ -14,7 +14,7 @@
               <div class="row align-items-center">
                   <div class="col-lg-7" data-aos="zoom-out" data-aos-delay="100">
                   <div class="hero-content">
-                      <h1>Welcome to University Of Mandalay</h1>
+                      <h1>Welcome to University of Mandalay</h1>
                       <p>No other light can complete with the brightess of the light of wisdom</p>
                       <div class="cta-buttons">
                       
@@ -160,9 +160,9 @@
                     <div class="faculty-section professors-section">
                         <h3 class="faculty-subsection-title">
                           <i class="fas fa-crown me-2"></i>
-                          Department Heads & Professors
+                         Department Of Professors / Heads
                         </h3>
-                        <div class="modern-card-grid d-flex justify-content-center align-items-center" id="professor-list">
+                        <div class="modern-card-grid justify-content-center align-items-center" id="professor-list">
                             @forelse ($teachers as $teacher)
                                 @if ($teacher->position == 'Professor/Head')
                                     <a href="{{ route('teachers.usershow', $teacher->id) }}" class="modern-person-card professor-card">
@@ -834,7 +834,7 @@
 
 .search-card-modern .card-img-top {
     height: 200px;
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 

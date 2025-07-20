@@ -37,6 +37,26 @@
                                     <td>{{ $teacher->name }}</td>
                                 </tr>
                                 <tr>
+                                    <th><i class="fas fa-venus-mars me-2"></i>Gender</th>
+                                    <td>
+                                        @if($teacher->gender)
+                                            {{ ucfirst($teacher->gender) }}
+                                        @else
+                                            Not Provided
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-calendar me-2"></i>Date of Birth</th>
+                                    <td>
+                                        @if($teacher->date_of_birth)
+                                            {{ \Carbon\Carbon::parse($teacher->date_of_birth)->format('F j, Y') }}
+                                        @else
+                                            Not Provided
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
                                     <th><i class="fas fa-briefcase me-2"></i>Position</th>
                                     <td>{{ $teacher->position }}</td>
                                 </tr>

@@ -21,10 +21,28 @@
                 </div>
 
                 <div class="mb-5 form-group">
-                    <label for="seat_number">Roll Number</label>
-                    <input type="text" class="form-control inputbox" value="{{ old('seat_number') }}"
-                        name="seat_number" id="seat_number" placeholder="Enter Roll Number">
-                    <x-error name="seat_number"></x-error>
+                    <label for="roll_number">Roll Number</label>
+                    <input type="text" class="form-control inputbox" value="{{ old('roll_number') }}"
+                        name="roll_number" id="roll_number" placeholder="Enter Roll Number">
+                    <x-error name="roll_number"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" class="form-control inputbox">
+                        <option value="">Select Gender</option>
+                        <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Male</option>
+                        <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Female</option>
+                        <option value="other" {{ old('gender') == 'other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                    <x-error name="gender"></x-error>
+                </div>
+
+                <div class="mb-5 form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" class="form-control inputbox" value="{{ old('date_of_birth') }}"
+                        name="date_of_birth" id="date_of_birth">
+                    <x-error name="date_of_birth"></x-error>
                 </div>
 
                 <div class="mb-5 form-group">

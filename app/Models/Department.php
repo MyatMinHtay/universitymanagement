@@ -25,6 +25,7 @@ class Department extends Model
 
     public function students()
     {
+        //One to Many Relationship
         return $this->hasMany(Student::class);
     }
 

@@ -88,7 +88,7 @@
                                 <td><img src="{{ asset($student->image) }}" alt="{{ $student->name }}" width="60" height="auto"></td>
                                 <td>{{ $student->name }}</td>
                                 <td>{{ $student->year }}</td>
-                                <td>{{ $student->seat_number }}</td>
+                                <td>{{ $student->roll_number }}</td>
                             </tr>
                         @empty
                             <tr><td colspan="5" class="text-center">No students found in this department.</td></tr>
@@ -186,7 +186,7 @@
                                     <td><img src="${imageUrl}" width="60" height="auto" alt="${student.name}"></td>
                                     <td>${student.name}</td>
                                     <td>${student.year}</td>
-                                    <td>${student.seat_number}</td>
+                                    <td>${student.roll_number}</td>
                                 </tr>
                             `;
                         });

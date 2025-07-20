@@ -42,7 +42,15 @@
                                 </tr>
                                 <tr>
                                     <th><i class="fas fa-hashtag me-2"></i>Roll Number</th>
-                                    <td>{{ $student->seat_number ?? 'Not Provided' }}</td>
+                                    <td>{{ $student->roll_number ?? 'Not Provided' }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-venus-mars me-2"></i>Gender</th>
+                                    <td>{{ $student->gender ? ucfirst($student->gender) : 'Not Provided' }}</td>
+                                </tr>
+                                <tr>
+                                    <th><i class="fas fa-birthday-cake me-2"></i>Date of Birth</th>
+                                    <td>{{ $student->date_of_birth ? \Carbon\Carbon::parse($student->date_of_birth)->format('F j, Y') : 'Not Provided' }}</td>
                                 </tr>
                                 <tr>
                                     <th><i class="fas fa-building me-2"></i>Department</th>

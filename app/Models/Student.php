@@ -9,10 +9,11 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'name', 'year', 'seat_number', 'image', 'phone_number', 'email', 'department_id'];
+    protected $fillable = ['id', 'name', 'gender', 'date_of_birth', 'year', 'roll_number', 'image', 'phone_number', 'email', 'department_id'];
 
     public function department()
     {
+        //One to Many Relationship
         return $this->belongsTo(Department::class);
     }
 }

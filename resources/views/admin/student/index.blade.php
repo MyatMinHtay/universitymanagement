@@ -4,7 +4,7 @@
         <!-- Page Title -->
         <div class="page-title text-center">
             <div class="container position-relative">
-                <h1 class="mt-5">Students ({{ $students->count() }})</h1>
+                <h1 class="mt-5">Students ({{ $studentcounts }})</h1>
             </div>
         </div>
         <!-- End Page Title -->
@@ -24,13 +24,16 @@
                     <button class="filter-pill" data-filter="name">
                         <i class="bi bi-person"></i> Name
                     </button>
+                    <button class="filter-pill" data-filter="gender">
+                        <i class="fas fa-venus-mars"></i> Gender
+                    </button>
                     <button class="filter-pill" data-filter="year">
                         <i class="bi bi-calendar"></i> Year
                     </button>
                     <button class="filter-pill" data-filter="department">
                         <i class="bi bi-building"></i> Department
                     </button>
-                    <button class="filter-pill" data-filter="seat_number">
+                    <button class="filter-pill" data-filter="roll_number">
                         # Roll No
                     </button>
                     <button class="filter-pill" data-filter="id">
@@ -67,6 +70,7 @@
                         <th>ID</th>
                         <th>Name</th>
                         <th>Year</th>
+                        <th>Gender</th>
                         <th>Roll Number</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -80,7 +84,8 @@
                             <td>{{ $student->id }}</td>
                             <td>{{ $student->name }}</td>
                             <td>{{ $student->year }}</td>
-                            <td>{{ $student->seat_number }}</td>
+                            <td>{{ $student->gender }}</td>
+                            <td>{{ $student->roll_number }}</td>
                             <td>
                                 @if($student->email)
                                     <a href="mailto:{{ $student->email }}">{{ $student->email }}</a>
@@ -321,6 +326,7 @@
                             <th>ID</th>
                             <th>Name</th>
                             <th>Year</th>
+                            <th>Gender</th>
                             <th>Roll Number</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -349,7 +355,8 @@
                             <td>${student.id}</td>
                             <td>${student.name}</td>
                             <td>${student.year}</td>
-                            <td>${student.seat_number}</td>
+                            <td>${student.gender}</td>
+                            <td>${student.roll_number}</td>
                             <td>${student.email ? `<a href="mailto:${student.email}">${student.email}</a>` : '<span class="text-muted">N/A</span>'}</td>
                             <td>${student.phone_number ? `<a href="tel:${student.phone_number}">${student.phone_number}</a>` : '<span class="text-muted">N/A</span>'}</td>
                             <td>${departmentName}</td>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Department;
+use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\QueryException;
@@ -44,11 +46,13 @@ class DepartmentController extends Controller
 
     public function search(Request $request){
         $searchQuery = $request->input('search');
+
+        
         $departments = Department::where(function ($query) use ($searchQuery) {
             $query->where('fullname', 'like', '%' . $searchQuery . '%')
                 ->orWhere('shortname', 'like', '%' . $searchQuery . '%')
                 ->orWhere('deptCode', 'like', '%' . $searchQuery . '%')
-                ->orWhere('id', 'like', '%' . $searchQuery . '%');
+                ->orWhere('id', '=', $searchQuery);
         })->get();
         return response()->json($departments);
     }

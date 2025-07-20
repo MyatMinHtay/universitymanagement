@@ -38,7 +38,7 @@
                 <a href="{{ route('user.departments.show', $department->id) }}" class="department-card">
                     <div class="card-header-dept">
                         <div class="dept-logo">
-                            <img src="{{ asset($department->logo) }}" alt="{{ $department->fullname }}">
+                            <img src="{{ asset($department->logo) ? asset($department->logo) : asset('assets/img/departments/default.png') }}" alt="{{ $department->fullname }}">
                         </div>
                         <div class="dept-overlay">
                             <i class="fas fa-university dept-icon"></i>

@@ -32,8 +32,8 @@ Route::get('/', [AuthController::class, 'index'])->name('home');
 
 
 
-Route::get('/register', [AuthController::class, 'create'])->name('register');
-Route::post('/register', [UserController::class, 'createuser'])->name('postregister');
+Route::get('/register', [AuthController::class, 'create'])->middleware('admincheck:roles')->name('register');
+Route::post('/register', [UserController::class, 'createuser'])->middleware('admincheck:roles')->name('postregister');
 
 //Admin Show Form Submit User
 Route::get('/admin/formsubmitcourse', [AuthController::class, 'submitcourse'])->middleware('admincheck:moderator')->name('admincourse');

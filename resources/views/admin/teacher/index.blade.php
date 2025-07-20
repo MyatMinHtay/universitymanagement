@@ -39,6 +39,12 @@
                     <button class="filter-pill" data-filter="email">
                         <i class="bi bi-envelope"></i> Email
                     </button>
+                    <button class="filter-pill" data-filter="gender">
+                        <i class="bi bi-gender-ambiguous"></i> Gender
+                    </button>
+                    <button class="filter-pill" data-filter="date_of_birth">
+                        <i class="bi bi-calendar"></i> Date of Birth
+                    </button>
                 </div>
                 <div class="filter-help">
                     <i class="bi bi-info-circle"></i> Type multiple keywords separated by spaces. Click multiple filters to search across specific fields.
@@ -63,6 +69,7 @@
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
+                        <th>Gender</th>
                         <th>Position</th>
                         <th>Email</th>
                         <th>Phone</th>
@@ -75,6 +82,14 @@
                         <tr>
                             <td>{{ $teacher->id }}</td>
                             <td>{{ $teacher->name }}</td>
+                            <td>
+                                @if($teacher->gender)
+                                    {{ ucfirst($teacher->gender) }}
+                                @else
+                                    <span class="text-muted">N/A</span>
+                                @endif
+                            </td>
+                            
                             <td>{{ $teacher->position }}</td>
                             <td>
                                 @if($teacher->email)
@@ -92,16 +107,7 @@
                             </td>
                             <td>{{ $teacher->department->fullname ?? 'N/A' }}</td>
                             <td class="text-center">
-                                @if($teacher->email)
-                                    <a href="mailto:{{ $teacher->email }}" class="btn btn-outline-primary btn-sm me-1" title="Send Email">
-                                        <i class="fas fa-envelope"></i>
-                                    </a>
-                                @endif
-                                @if($teacher->phone_number)
-                                    <a href="tel:{{ $teacher->phone_number }}" class="btn btn-outline-success btn-sm me-1" title="Call">
-                                        <i class="fas fa-phone"></i>
-                                    </a>
-                                @endif
+                               
                                 <a href="{{ route('teachers.edit', $teacher->id) }}" class="btn btn-outline-info btn-sm me-1" title="Edit">
                                     <i class="fas fa-pencil-alt"></i>
                                 </a>
@@ -112,7 +118,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center">No Teachers Found</td>
+                            <td colspan="8" class="text-center">No Teachers Found</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -314,6 +320,7 @@
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
+                            <th>Gender</th>
                             <th>Position</th>
                             <th>Email</th>
                             <th>Phone</th>
@@ -327,7 +334,7 @@
             if (data.length === 0) {
                 tableHtml += `
                     <tr>
-                        <td colspan="7" class="text-center">No teachers found.</td>
+                        <td colspan="8" class="text-center">No teachers found.</td>
                     </tr>
                 `;
                 $('#search-message').hide();
@@ -341,13 +348,13 @@
                         <tr>
                             <td>${teacher.id}</td>
                             <td>${teacher.name}</td>
+                            <td>${teacher.gender}</td>
                             <td>${teacher.position}</td>
                             <td>${teacher.email ? `<a href="mailto:${teacher.email}">${teacher.email}</a>` : '<span class="text-muted">N/A</span>'}</td>
                             <td>${teacher.phone_number ? `<a href="tel:${teacher.phone_number}">${teacher.phone_number}</a>` : '<span class="text-muted">N/A</span>'}</td>
                             <td>${departmentName}</td>
                             <td class="text-center">
-                                ${teacher.email ? `<a href="mailto:${teacher.email}" class="btn btn-outline-primary btn-sm me-1" title="Send Email"><i class="fas fa-envelope"></i></a>` : ''}
-                                ${teacher.phone_number ? `<a href="tel:${teacher.phone_number}" class="btn btn-outline-success btn-sm me-1" title="Call"><i class="fas fa-phone"></i></a>` : ''}
+                                
                                 <a href="${editUrl}" class="btn btn-outline-info btn-sm me-1" title="Edit"><i class="fas fa-pencil-alt"></i></a>
                                 <a href="${showUrl}" class="btn btn-primary btn-sm" title="View"><i class="fas fa-eye"></i></a>
                             </td>

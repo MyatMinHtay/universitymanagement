@@ -41,6 +41,33 @@
                     </div>
                 </div>
 
+                <!-- Filter Pills for Teachers -->
+                <div class="filter-container">
+                    <div class="filter-pills-wrapper">
+                        <span class="filter-label">Filter by:</span>
+                        <div class="filter-pills">
+                            <button class="filter-pill teacher-filter active" data-filter="all">
+                                <i class="fas fa-globe"></i> All Fields
+                            </button>
+                            <button class="filter-pill teacher-filter" data-filter="name">
+                                <i class="fas fa-user"></i> Name
+                            </button>
+                            <button class="filter-pill teacher-filter" data-filter="position">
+                                <i class="fas fa-briefcase"></i> Position
+                            </button>
+                            <button class="filter-pill teacher-filter" data-filter="phone">
+                                <i class="fas fa-phone"></i> Phone
+                            </button>
+                            <button class="filter-pill teacher-filter" data-filter="email">
+                                <i class="fas fa-envelope"></i> Email
+                            </button>
+                            <button class="filter-pill teacher-filter" data-filter="gender">
+                                <i class="fas fa-venus-mars"></i> Gender
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card-grid-modern teachers-grid" id="teacher-list">
                     @forelse ($department->teachers as $teacher)
                         <a href="{{ route('teachers.usershow', $teacher->id) }}" class="person-card teacher-card">
@@ -85,8 +112,38 @@
                 <div class="search-container-modern">
                     <div class="search-wrapper-modern">
                         <i class="fas fa-search search-icon-modern"></i>
-                        <input type="text" id="searchst" class="search-input-modern" placeholder="Search students by name, year, seat number...">
+                        <input type="text" id="searchst" class="search-input-modern" placeholder="Search students by name, year, roll number...">
                         <div class="search-border-modern students"></div>
+                    </div>
+                </div>
+
+                <!-- Filter Pills for Students -->
+                <div class="filter-container">
+                    <div class="filter-pills-wrapper">
+                        <span class="filter-label">Filter by:</span>
+                        <div class="filter-pills">
+                            <button class="filter-pill student-filter active" data-filter="all">
+                                <i class="fas fa-globe"></i> All Fields
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="name">
+                                <i class="fas fa-user"></i> Name
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="year">
+                                <i class="fas fa-calendar"></i> Year
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="roll_number">
+                                <i class="fas fa-id-card"></i> Roll Number
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="phone">
+                                <i class="fas fa-phone"></i> Phone
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="email">
+                                <i class="fas fa-envelope"></i> Email
+                            </button>
+                            <button class="filter-pill student-filter" data-filter="gender">
+                                <i class="fas fa-venus-mars"></i> Gender
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -103,7 +160,7 @@
                                 <h4 class="person-name">{{ $student->name }}</h4>
                                 <p class="person-year">Year: {{ $student->year }}</p>
                                 <p class="person-seat">
-                                    <i class="fas fa-id-card me-2"></i>Roll: {{ $student->seat_number }}
+                                    <i class="fas fa-id-card me-2"></i>Roll: {{ $student->roll_number }}
                                 </p>
                                 <div class="card-action">
                                     <span class="view-profile">
@@ -480,6 +537,110 @@
                 opacity: 0.8;
             }
 
+            /* Filter Pills Styling */
+            .filter-container {
+                margin-bottom: 2rem;
+                padding: 1rem;
+                background: #f8f9fa;
+                border-radius: 15px;
+                border: 1px solid #e9ecef;
+            }
+
+            .filter-pills-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                flex-wrap: wrap;
+            }
+
+            .filter-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+
+            .filter-pills {
+                display: flex;
+                gap: 0.5rem;
+                flex-wrap: wrap;
+            }
+
+            .filter-pill {
+                background: white;
+                border: 2px solid #e9ecef;
+                border-radius: 25px;
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+                font-weight: 500;
+                color: #6c757d;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                white-space: nowrap;
+            }
+
+            .filter-pill:hover {
+                background: #08915e;
+                color: white;
+                border-color: #08915e;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(8, 145, 94, 0.3);
+            }
+
+            .filter-pill.active {
+                background: #08915e;
+                color: white;
+                border-color: #08915e;
+                box-shadow: 0 4px 12px rgba(8, 145, 94, 0.3);
+                position: relative;
+            }
+
+            .filter-pill.active:not([data-filter="all"]):after {
+                content: '✓';
+                position: absolute;
+                top: -8px;
+                right: -8px;
+                background: #06a85d;
+                color: white;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                font-size: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: bold;
+                border: 2px solid white;
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            }
+
+            .filter-pill i {
+                font-size: 0.8rem;
+            }
+
+            /* Teacher filter pills styling */
+            .teacher-filter:hover {
+                background: #e76f51;
+                color: white;
+                border-color: #e76f51;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(231, 111, 81, 0.3);
+            }
+
+            .teacher-filter.active {
+                background: #e76f51;
+                color: white;
+                border-color: #e76f51;
+                box-shadow: 0 4px 12px rgba(231, 111, 81, 0.3);
+            }
+
+            .teacher-filter.active:not([data-filter="all"]):after {
+                background: #d63447;
+            }
+
             /* Responsive Design */
             @media (max-width: 768px) {
                 .dept-info {
@@ -505,6 +666,17 @@
 
                 .dept-banner {
                     height: 200px;
+                }
+
+                .filter-pills-wrapper {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.5rem;
+                }
+
+                .filter-pills {
+                    justify-content: center;
+                    width: 100%;
                 }
             }
 
@@ -534,23 +706,29 @@
     $(document).ready(function () {
       let originalTeachersContent = $('#teacher-list').html();
       let originalStudentsContent = $('#student-list').html();
+      let activeStudentFilters = ['all']; // Default filter for students
+      let activeTeacherFilters = ['all']; // Default filter for teachers
       
       // Teacher search functionality
       $('#searchtr').on('keyup', function () {
         var searchQuery = $(this).val();
-        var departmentId = {{ $department->id ?? 'null' }};
         
         if (searchQuery.length === 0) {
             $('#teacher-list').html(originalTeachersContent);
             return;
         }
         
+        performTeacherSearch(searchQuery);
+      });
+      
+      function performTeacherSearch(searchQuery) {
         $.ajax({
           type: 'GET',
           url: '{{ route('teachers.search') }}',
           data: { 
             search: searchQuery,
-            department_id: departmentId
+            department_id: {{ $department->id }},
+            filter: activeTeacherFilters
           },
           dataType: 'json',
           success: function (data) {
@@ -606,6 +784,90 @@
             `);
           }
         });
+      }
+
+      // Filter pill functionality for students
+      $('.student-filter').on('click', function() {
+        var selectedFilter = $(this).data('filter');
+        
+        if (selectedFilter === 'all') {
+          // If "All Fields" is clicked, deactivate all other filters
+          $('.student-filter').removeClass('active');
+          $(this).addClass('active');
+          activeStudentFilters = ['all'];
+        } else {
+          // Remove "All Fields" if a specific filter is selected
+          $('.student-filter[data-filter="all"]').removeClass('active');
+          
+          // Toggle the clicked filter
+          $(this).toggleClass('active');
+          
+          // Update activeStudentFilters array
+          if ($(this).hasClass('active')) {
+            if (!activeStudentFilters.includes(selectedFilter)) {
+              activeStudentFilters.push(selectedFilter);
+            }
+          } else {
+            activeStudentFilters = activeStudentFilters.filter(filter => filter !== selectedFilter);
+          }
+          
+          // Remove 'all' from activeStudentFilters if it exists
+          activeStudentFilters = activeStudentFilters.filter(filter => filter !== 'all');
+          
+          // If no filters are selected, activate "All Fields"
+          if (activeStudentFilters.length === 0) {
+            $('.student-filter[data-filter="all"]').addClass('active');
+            activeStudentFilters = ['all'];
+          }
+        }
+        
+        // Trigger search with current query and new filters
+        var currentQuery = $('#searchst').val();
+        if (currentQuery.length > 0) {
+          performStudentSearch(currentQuery);
+        }
+      });
+      
+      // Filter pill functionality for teachers
+      $('.teacher-filter').on('click', function() {
+        var selectedFilter = $(this).data('filter');
+        
+        if (selectedFilter === 'all') {
+          // If "All Fields" is clicked, deactivate all other filters
+          $('.teacher-filter').removeClass('active');
+          $(this).addClass('active');
+          activeTeacherFilters = ['all'];
+        } else {
+          // Remove "All Fields" if a specific filter is selected
+          $('.teacher-filter[data-filter="all"]').removeClass('active');
+          
+          // Toggle the clicked filter
+          $(this).toggleClass('active');
+          
+          // Update activeTeacherFilters array
+          if ($(this).hasClass('active')) {
+            if (!activeTeacherFilters.includes(selectedFilter)) {
+              activeTeacherFilters.push(selectedFilter);
+            }
+          } else {
+            activeTeacherFilters = activeTeacherFilters.filter(filter => filter !== selectedFilter);
+          }
+          
+          // Remove 'all' from activeTeacherFilters if it exists
+          activeTeacherFilters = activeTeacherFilters.filter(filter => filter !== 'all');
+          
+          // If no filters are selected, activate "All Fields"
+          if (activeTeacherFilters.length === 0) {
+            $('.teacher-filter[data-filter="all"]').addClass('active');
+            activeTeacherFilters = ['all'];
+          }
+        }
+        
+        // Trigger search with current query and new filters
+        var currentQuery = $('#searchtr').val();
+        if (currentQuery.length > 0) {
+          performTeacherSearch(currentQuery);
+        }
       });
 
       // Student search functionality
@@ -616,13 +878,18 @@
             $('#student-list').html(originalStudentsContent);
             return;
         }
-  
+        
+        performStudentSearch(searchQuery);
+      });
+      
+      function performStudentSearch(searchQuery) {
         $.ajax({
           type: 'GET',
           url: '{{ route('students.search') }}',
           data: { 
             search: searchQuery,
-            department_id: {{ $department->id }}
+            department_id: {{ $department->id }},
+            filter: activeStudentFilters
           },
           dataType: 'json',
           success: function (data) {
@@ -655,7 +922,7 @@
                         <h4 class="person-name">${student.name}</h4>
                         <p class="person-year">Year: ${student.year}</p>
                         <p class="person-seat">
-                            <i class="fas fa-id-card me-2"></i>Roll: ${student.seat_number}
+                            <i class="fas fa-id-card me-2"></i>Roll: ${student.roll_number}
                         </p>
                         <div class="card-action">
                             <span class="view-profile">
@@ -680,7 +947,7 @@
             `);
           }
         });
-      });
+      }
     });
 </script>
   

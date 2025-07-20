@@ -15,11 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('year');
-            $table->string('seat_number');
+            $table->string('roll_number');
+            $table->string('gender');
+            $table->date('date_of_birth');
             $table->string('image');
-            $table->unsignedBigInteger('department_id');
+            $table->unsignedBigInteger('department_id');//1
             $table->foreign('department_id')->references('id')->on('departments');
             $table->timestamps();
+
+             // Composite unique constraint
+            $table->unique(['year', 'roll_number']);
         });
     }
 

@@ -17,6 +17,24 @@
                 </div>
 
                 <div class="mb-5 form-group">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" class="form-control inputbox">
+                        <option value="">Select Gender</option>
+                        <option value="male" {{ old('gender', $teacher->gender) == 'male' ? 'selected' : '' }}>Male</option>
+                        <option value="female" {{ old('gender', $teacher->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                        <option value="other" {{ old('gender', $teacher->gender) == 'other' ? 'selected' : '' }}>Other</option>
+                    </select>
+                    <x-error name="gender" />
+                </div>
+
+                <div class="mb-5 form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" class="form-control inputbox" value="{{ old('date_of_birth', $teacher->date_of_birth) }}" name="date_of_birth"
+                        id="date_of_birth">
+                    <x-error name="date_of_birth" />
+                </div>
+
+                <div class="mb-5 form-group">
                     <label for="position">Position</label>
                     <input type="text" class="form-control inputbox" value="{{ old('position', $teacher->position) }}" name="position"
                         id="position" placeholder="Enter Position (e.g. Lecturer, Professor)">

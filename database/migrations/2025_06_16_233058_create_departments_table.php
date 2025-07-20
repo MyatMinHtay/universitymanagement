@@ -8,11 +8,12 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     * //Parent Table 
      */
     public function up(): void
     {
         Schema::create('departments', function (Blueprint $table) {
-            $table->id();
+            $table->id();//1
             $table->string('fullname');
             $table->string('shortname');
             $table->string('deptCode');
@@ -25,6 +26,8 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
+     * 
+     * CREDATE TABLE departments (id, fullname, shortname, deptCode, status, logo, banner, created_at, updated_at)
      */
     public function down(): void
     {

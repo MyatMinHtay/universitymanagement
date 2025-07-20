@@ -55,6 +55,30 @@
                                 </div>
                                 <div class="info-item">
                                     <div class="info-label">
+                                        <i class="fas fa-venus-mars me-2"></i>Gender
+                                    </div>
+                                    <div class="info-value">
+                                        @if($teacher->gender)
+                                            {{ ucfirst($teacher->gender) }}
+                                        @else
+                                            Not Provided
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-calendar me-2"></i>Date of Birth
+                                    </div>
+                                    <div class="info-value">
+                                        @if($teacher->date_of_birth)
+                                            {{ \Carbon\Carbon::parse($teacher->date_of_birth)->format('F j, Y') }}
+                                        @else
+                                            Not Provided
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">
                                         <i class="fas fa-user-tie me-2"></i>Position
                                     </div>
                                     <div class="info-value">{{ $teacher->position }}</div>

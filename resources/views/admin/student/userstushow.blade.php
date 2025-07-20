@@ -66,7 +66,19 @@
                                     <div class="info-label">
                                         <i class="fas fa-id-card me-2"></i>Roll Number
                                     </div>
-                                    <div class="info-value">{{ $student->seat_number ?? 'Not Assigned' }}</div>
+                                    <div class="info-value">{{ $student->roll_number ?? 'Not Assigned' }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-venus-mars me-2"></i>Gender
+                                    </div>
+                                    <div class="info-value">{{ $student->gender ? ucfirst($student->gender) : 'Not Specified' }}</div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-label">
+                                        <i class="fas fa-birthday-cake me-2"></i>Date of Birth
+                                    </div>
+                                    <div class="info-value">{{ $student->date_of_birth ? \Carbon\Carbon::parse($student->date_of_birth)->format('F j, Y') : 'Not Specified' }}</div>
                                 </div>
                                 <div class="info-item full-width">
                                     <div class="info-label">

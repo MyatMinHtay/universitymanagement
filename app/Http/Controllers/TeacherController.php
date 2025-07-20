@@ -23,16 +23,291 @@ class TeacherController extends Controller
     }
 
     /**
-     * Display teachers on the public user page with pagination
+     * Display teachers on the public user page with pagination and advanced search functionality
+     * Supports boolean operators: AND, OR, NOT
+     * Examples: "john AND computer", "NOT physics", "john OR jane AND position:professor"
      */
-    public function userShow(){
-        $teachers = Teacher::with('department')->paginate(20);
-        $teachercounts = Teacher::count();
+    public function userShow(Request $request){
+        $searchQuery = $request->input('search');
+        $filters = $request->input('filter');
+        
+        // Convert comma-separated filters to array
+        if (is_string($filters)) {
+            $filters = array_filter(explode(',', $filters));
+        }
+        
+        if (empty($filters)) {
+            $filters = ['all'];
+        }
+
+        $query = Teacher::with('department');
+        
+        // Apply advanced search if provided
+        if ($searchQuery) {
+            // If 'all' is selected, convert it to all available filter types
+            if (in_array('all', $filters)) {
+                $filters = ['id', 'name', 'position', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
+            }
+
+            $query->where(function ($q) use ($searchQuery, $filters) {
+                $this->parseAdvancedSearch($q, $searchQuery, $filters);
+            });
+        }
+
+        $teachers = $query->paginate(20)->withQueryString();
+        $teachercounts = $query->count();
 
         return view('userteachershow', [
             'teachers' => $teachers,
             'teachercounts' => $teachercounts
         ]);
+    }
+
+    /**
+     * Parse advanced search query with boolean operators (AND, OR, NOT)
+     * Supports field-specific searches like "name:john", "position:professor"
+     * Examples:
+     * - "john AND computer" - both terms must be found
+     * - "john OR jane" - either term can be found
+     * - "NOT physics" - exclude results containing physics
+     * - "name:john AND department:computer" - field-specific search
+     */
+    private function parseAdvancedSearch($query, $searchQuery, $filters)
+    {
+        // Clean and normalize the search query
+        $searchQuery = trim($searchQuery);
+        
+        // Handle parentheses for complex queries
+        if (strpos($searchQuery, '(') !== false) {
+            $this->parseComplexQuery($query, $searchQuery, $filters);
+            return;
+        }
+        
+        // Split by AND/OR operators while preserving them
+        $tokens = $this->tokenizeQuery($searchQuery);
+        
+        if (empty($tokens)) {
+            return;
+        }
+        
+        $this->buildQueryFromTokens($query, $tokens, $filters);
+    }
+    
+    /**
+     * Tokenize the search query into terms and operators
+     */
+    private function tokenizeQuery($searchQuery)
+    {
+        // Replace operators with delimiters
+        $searchQuery = preg_replace('/\s+(AND|OR)\s+/i', '|$1|', $searchQuery);
+        
+        // Split by delimiters
+        $parts = explode('|', $searchQuery);
+        
+        $tokens = [];
+        foreach ($parts as $part) {
+            $part = trim($part);
+            if (!empty($part)) {
+                $tokens[] = $part;
+            }
+        }
+        
+        return $tokens;
+    }
+    
+    /**
+     * Build query from parsed tokens
+     */
+    private function buildQueryFromTokens($query, $tokens, $filters)
+    {
+        $currentOperator = 'AND'; // Default operator
+        
+        for ($i = 0; $i < count($tokens); $i++) {
+            $token = $tokens[$i];
+            
+            if (strtoupper($token) === 'AND' || strtoupper($token) === 'OR') {
+                $currentOperator = strtoupper($token);
+                continue;
+            }
+            
+            $isNegated = false;
+            if (strtoupper(substr($token, 0, 4)) === 'NOT ') {
+                $isNegated = true;
+                $token = trim(substr($token, 4));
+            }
+            
+            // Determine if this is the first condition
+            $isFirst = ($i === 0) || ($i === 1 && strtoupper($tokens[0]) === 'NOT');
+            
+            if ($isFirst) {
+                if ($isNegated) {
+                    $query->whereNot(function ($subQuery) use ($token, $filters) {
+                        $this->applySearchCondition($subQuery, $token, $filters);
+                    });
+                } else {
+                    $query->where(function ($subQuery) use ($token, $filters) {
+                        $this->applySearchCondition($subQuery, $token, $filters);
+                    });
+                }
+            } else {
+                if ($currentOperator === 'AND') {
+                    if ($isNegated) {
+                        $query->whereNot(function ($subQuery) use ($token, $filters) {
+                            $this->applySearchCondition($subQuery, $token, $filters);
+                        });
+                    } else {
+                        $query->where(function ($subQuery) use ($token, $filters) {
+                            $this->applySearchCondition($subQuery, $token, $filters);
+                        });
+                    }
+                } else { // OR
+                    if ($isNegated) {
+                        $query->orWhereNot(function ($subQuery) use ($token, $filters) {
+                            $this->applySearchCondition($subQuery, $token, $filters);
+                        });
+                    } else {
+                        $query->orWhere(function ($subQuery) use ($token, $filters) {
+                            $this->applySearchCondition($subQuery, $token, $filters);
+                        });
+                    }
+                }
+            }
+        }
+    }
+    
+    /**
+     * Apply search condition for a single term
+     */
+    private function applySearchCondition($query, $term, $filters)
+    {
+        // Check if it's a field-specific search (e.g., "name:john")
+        if (strpos($term, ':') !== false) {
+            list($field, $value) = explode(':', $term, 2);
+            $field = trim($field);
+            $value = trim($value);
+            
+            $this->applyFieldSpecificSearch($query, $field, $value);
+        } else {
+            // General search across all selected filters
+            $this->applyGeneralSearch($query, $term, $filters);
+        }
+    }
+    
+    /**
+     * Apply field-specific search
+     */
+    private function applyFieldSpecificSearch($query, $field, $value)
+    {
+        $value = strtolower($value);
+        
+        switch ($field) {
+            case 'id':
+                $query->whereRaw('LOWER(id) = ?', [$value]);
+                break;
+            case 'name':
+                $query->whereRaw('LOWER(name) LIKE ?', ['%' . $value . '%']);
+                break;
+            case 'position':
+                $query->whereRaw('LOWER(position) LIKE ?', ['%' . $value . '%']);
+                break;
+            case 'phone':
+                $query->whereRaw('LOWER(phone_number) LIKE ?', ['%' . $value . '%']);
+                break;
+            case 'email':
+                $query->whereRaw('LOWER(email) LIKE ?', ['%' . $value . '%']);
+                break;
+            case 'department':
+            case 'dept':
+                $query->whereHas('department', function ($deptQuery) use ($value) {
+                    $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $value . '%'])
+                        ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $value . '%'])
+                        ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $value . '%']);
+                });
+                break;
+            case 'gender':
+                $query->whereRaw('LOWER(gender) LIKE ?', ['%' . $value . '%']);
+                break;
+            case 'date_of_birth':
+            case 'dob':
+                $query->whereRaw('LOWER(date_of_birth) LIKE ?', ['%' . $value . '%']);
+                break;
+        }
+    }
+    
+    /**
+     * Apply general search across selected filters
+     */
+    private function applyGeneralSearch($query, $term, $filters)
+    {
+        $term = strtolower($term);
+        $conditions = [];
+        
+        // Build conditions based on selected filters
+        if (in_array('id', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'id', 'operator' => '=', 'value' => $term];
+        }
+        
+        if (in_array('name', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'name', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        if (in_array('position', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'position', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        if (in_array('phone', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'phone_number', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        if (in_array('email', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'email', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        if (in_array('department', $filters)) {
+            $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
+        }
+        
+        if (in_array('gender', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'gender', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        if (in_array('date_of_birth', $filters)) {
+            $conditions[] = ['type' => 'where', 'field' => 'date_of_birth', 'operator' => 'LIKE', 'value' => '%' . $term . '%'];
+        }
+        
+        // Apply conditions with OR logic (any field can match)
+        foreach ($conditions as $index => $condition) {
+            if ($condition['type'] === 'where') {
+                $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
+                $field = $condition['field'];
+                $operator = $condition['operator'];
+                $value = $condition['value'];
+                
+                if ($operator === '=') {
+                    $query->$method("LOWER($field) = ?", [$value]);
+                } else {
+                    $query->$method("LOWER($field) LIKE ?", [$value]);
+                }
+            } elseif ($condition['type'] === 'whereHas') {
+                $method = $index === 0 ? 'whereHas' : 'orWhereHas';
+                $query->$method('department', function ($deptQuery) use ($term) {
+                    $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $term . '%'])
+                        ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $term . '%'])
+                        ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $term . '%']);
+                });
+            }
+        }
+    }
+    
+    /**
+     * Handle complex queries with parentheses (future enhancement)
+     */
+    private function parseComplexQuery($query, $searchQuery, $filters)
+    {
+        // For now, fall back to simple parsing by removing parentheses
+        $cleanQuery = str_replace(['(', ')'], '', $searchQuery);
+        $tokens = $this->tokenizeQuery($cleanQuery);
+        $this->buildQueryFromTokens($query, $tokens, $filters);
     }
 
     /**
@@ -42,6 +317,11 @@ class TeacherController extends Controller
      */
     public function search(Request $request)
     {
+        // Only handle AJAX requests for this method
+        if (!$request->ajax()) {
+            return response()->json(['error' => 'This endpoint only accepts AJAX requests'], 400);
+        }
+
         $searchQuery = $request->input('search');
         $departmentId = $request->input('department_id');
         $filters = $request->input('filter', ['all']);
@@ -57,140 +337,79 @@ class TeacherController extends Controller
         }
 
         if ($searchQuery) {
-            $keywords = array_filter(explode(' ', trim($searchQuery)));
-            $keywordCount = count($keywords);
-
             // If 'all' is selected, convert it to all available filter types
             if (in_array('all', $filters)) {
-                $filters = ['id', 'name', 'position', 'phone', 'email', 'department'];
+                $filters = ['id', 'name', 'position', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
             }
 
-            $query->where(function ($q) use ($searchQuery, $keywords, $filters, $keywordCount) {
-                if ($keywordCount === 1) {
-                    $keyword = strtolower($keywords[0]);
+            $query->where(function ($q) use ($searchQuery, $filters) {
+                $searchTerm = strtolower(trim($searchQuery));
 
-                    // Build search conditions based on selected filters
-                    $q->where(function ($subQuery) use ($keyword, $filters) {
-                        $conditions = [];
-                        
-                        // Collect all conditions first
-                        if (in_array('id', $filters)) {
-                            $conditions[] = ['type' => 'where', 'field' => 'id', 'operator' => '=', 'value' => $keyword];
-                        }
-                        
-                        if (in_array('name', $filters)) {
-                            $conditions[] = ['type' => 'where', 'field' => 'name', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                        }
-                        
-                        if (in_array('position', $filters)) {
-                            $conditions[] = ['type' => 'where', 'field' => 'position', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                        }
-                        
-                        if (in_array('phone', $filters)) {
-                            $conditions[] = ['type' => 'where', 'field' => 'phone_number', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                        }
-                        
-                        if (in_array('email', $filters)) {
-                            $conditions[] = ['type' => 'where', 'field' => 'email', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                        }
-                        
-                        if (in_array('department', $filters)) {
-                            $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
-                        }
-                        
-                        // Apply conditions with proper OR logic
-                        foreach ($conditions as $index => $condition) {
-                            if ($condition['type'] === 'where') {
-                                $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
-                                $field = $condition['field'];
-                                $operator = $condition['operator'];
-                                $value = $condition['value'];
-                                
-                                if ($operator === '=') {
-                                    $subQuery->$method("LOWER($field) = ?", [$value]);
-                                } else {
-                                    $subQuery->$method("LOWER($field) LIKE ?", [$value]);
-                                }
-                            } elseif ($condition['type'] === 'whereHas') {
-                                $method = $index === 0 ? 'whereHas' : 'orWhereHas';
-                                $subQuery->$method('department', function ($deptQuery) use ($keyword) {
-                                    $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
-                                        ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
-                                        ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
-                                });
+                $q->where(function ($subQuery) use ($searchTerm, $filters) {
+                    $conditions = [];
+
+                    if (in_array('id', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'id', 'operator' => '=', 'value' => $searchTerm];
+                    }
+
+                    if (in_array('name', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'name', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('position', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'position', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('phone', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'phone_number', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('email', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'email', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('gender', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'gender', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('date_of_birth', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'date_of_birth', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
+                    }
+
+                    if (in_array('department', $filters)) {
+                        $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
+                    }
+
+                    // Apply conditions with OR logic
+                    foreach ($conditions as $index => $condition) {
+                        if ($condition['type'] === 'where') {
+                            $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
+                            $field = $condition['field'];
+                            $operator = $condition['operator'];
+                            $value = $condition['value'];
+
+                            if ($operator === '=') {
+                                $subQuery->$method("LOWER($field) = ?", [$value]);
+                            } else {
+                                $subQuery->$method("LOWER($field) LIKE ?", [$value]);
                             }
-                        }
-                    });
-                } else {
-                    // Multi-keyword: use exact name match only if name is the only filter
-                    if (in_array('name', $filters) && count($filters) === 1) {
-                        $q->whereRaw('LOWER(name) = ?', [strtolower($searchQuery)]);
-                    } else {
-                        // For multi-keyword searches with multiple filters, use OR logic between keywords
-                        foreach ($keywords as $index => $keyword) {
-                            if (empty($keyword)) continue;
-
-                            $method = $index === 0 ? 'where' : 'orWhere';
-
-                            $q->$method(function ($subQuery) use ($keyword, $filters) {
-                                $keyword = strtolower($keyword);
-                                $conditions = [];
-                                
-                                if (in_array('id', $filters)) {
-                                    $conditions[] = ['type' => 'where', 'field' => 'id', 'operator' => '=', 'value' => $keyword];
-                                }
-                                
-                                if (in_array('name', $filters)) {
-                                    $conditions[] = ['type' => 'where', 'field' => 'name', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                                }
-                                
-                                if (in_array('position', $filters)) {
-                                    $conditions[] = ['type' => 'where', 'field' => 'position', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                                }
-                                
-                                if (in_array('phone', $filters)) {
-                                    $conditions[] = ['type' => 'where', 'field' => 'phone_number', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                                }
-                                
-                                if (in_array('email', $filters)) {
-                                    $conditions[] = ['type' => 'where', 'field' => 'email', 'operator' => 'LIKE', 'value' => '%' . $keyword . '%'];
-                                }
-                                
-                                if (in_array('department', $filters)) {
-                                    $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
-                                }
-                                
-                                foreach ($conditions as $condIndex => $condition) {
-                                    if ($condition['type'] === 'where') {
-                                        $method = $condIndex === 0 ? 'whereRaw' : 'orWhereRaw';
-                                        $field = $condition['field'];
-                                        $operator = $condition['operator'];
-                                        $value = $condition['value'];
-                                        
-                                        if ($operator === '=') {
-                                            $subQuery->$method("LOWER($field) = ?", [$value]);
-                                        } else {
-                                            $subQuery->$method("LOWER($field) LIKE ?", [$value]);
-                                        }
-                                    } elseif ($condition['type'] === 'whereHas') {
-                                        $method = $condIndex === 0 ? 'whereHas' : 'orWhereHas';
-                                        $subQuery->$method('department', function ($deptQuery) use ($keyword) {
-                                            $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
-                                                ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
-                                                ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
-                                        });
-                                    }
-                                }
+                        } elseif ($condition['type'] === 'whereHas') {
+                            $method = $index === 0 ? 'whereHas' : 'orWhereHas';
+                            $subQuery->$method('department', function ($deptQuery) use ($searchTerm) {
+                                $deptQuery->whereRaw('LOWER(fullname) LIKE ?', ['%' . $searchTerm . '%'])
+                                    ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $searchTerm . '%'])
+                                    ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $searchTerm . '%']);
                             });
                         }
                     }
-                }
+                });
             });
         }
 
         $teachers = $query->get();
         return response()->json($teachers);
     }
+
 
 
     public function show(Teacher $teacher)
@@ -227,6 +446,8 @@ class TeacherController extends Controller
     {
         $formData = $request->validate([
             'name' => 'required|string',
+            'gender' => 'nullable|in:male,female,other',
+            'date_of_birth' => 'nullable|date',
             'position' => 'required|string',
             'phone_number' => 'nullable|string|unique:teachers,phone_number',
             'email' => 'nullable|email|unique:teachers,email',
@@ -254,7 +475,7 @@ class TeacherController extends Controller
         try {
             Teacher::create($formData);
         } catch (QueryException $e) {
-            return back()->withErrors(['error' => 'Failed to create teacher: ' . $e->getMessage()])->withInput();
+            return back()->with('error', 'Failed to create teacher: ' . $e->getMessage());
         }
 
         return redirect()->route('teachers')->with('success', 'Teacher created successfully.');
@@ -278,6 +499,8 @@ class TeacherController extends Controller
     {
         $formData = $request->validate([
             'name' => 'required|string',
+            'gender' => 'nullable|in:male,female,other',
+            'date_of_birth' => 'nullable|date',
             'position' => 'required|string',
             'phone_number' => [
                 'nullable',
@@ -320,7 +543,7 @@ class TeacherController extends Controller
         try {
             $teacher->update($formData);
         } catch (QueryException $e) {
-            return back()->withErrors(['error' => 'Failed to update teacher: ' . $e->getMessage()]);
+            return back()->with('error', 'Failed to update teacher: ' . $e->getMessage());
         }
 
         return redirect()->route('teachers')->with('success', 'Teacher updated successfully.');
@@ -341,7 +564,7 @@ class TeacherController extends Controller
 
             $teacher->delete();
         } catch (QueryException $e) {
-            return back()->withErrors(['error' => 'Failed to delete teacher: ' . $e->getMessage()]);
+            return back()->with('error', 'Failed to delete teacher: ' . $e->getMessage());
         }
 
         return redirect()->route('teachers')->with('success', 'Teacher deleted successfully.');
