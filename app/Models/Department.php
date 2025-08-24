@@ -34,5 +34,11 @@ class Department extends Model
         return $this->hasMany(Faculty::class);
     }
 
-
+    /**
+     * Get the name attribute (alias for fullname)
+     */
+    public function getNameAttribute()
+    {
+        return $this->fullname;
+    }
 }

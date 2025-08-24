@@ -2,30 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\Teacher;
 use App\Models\Department;
 use Illuminate\Http\Request;
-use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\File;
 
-class StudentController extends Controller
+class TeacherController extends Controller
 {
     public function index()
     {
-        $students = Student::with('department')->paginate(10);
-        $studentcounts = Student::count();
+        $teachers = Teacher::with('department')->paginate(20);
+        $teachercounts = Teacher::count();
 
-        return view('admin.student.index', [
-            'students' => $students,
-            'studentcounts' => $studentcounts
+        return view('admin.teacher.index', [
+            'teachers' => $teachers,
+            'teachercounts' => $teachercounts
         ]);
     }
 
     /**
-     * Display students on the public user page with pagination and advanced search functionality
+     * Display teachers on the public user page with pagination and advanced search functionality
      * Supports boolean operators: AND, OR, NOT
-     * Examples: "john AND computer", "NOT physics", "john OR jane AND year:2023"
+     * Examples: "john AND computer", "NOT physics", "john OR jane AND position:professor"
      */
     public function userShow(Request $request){
         $searchQuery = $request->input('search');
@@ -40,32 +40,34 @@ class StudentController extends Controller
             $filters = ['all'];
         }
 
-        $query = Student::with('department');
+        $query = Teacher::with('department');
         
         // Apply advanced search if provided
         if ($searchQuery) {
             // If 'all' is selected, convert it to all available filter types
             if (in_array('all', $filters)) {
-                $filters = ['id', 'name', 'year', 'roll_number', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
+                $filters = ['id', 'name', 'position', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
             }
 
             $query->where(function ($q) use ($searchQuery, $filters) {
+
+                
                 $this->parseAdvancedSearch($q, $searchQuery, $filters);
             });
         }
 
-        $students = $query->paginate(20)->withQueryString();
-        $studentcounts = $query->count();
+        $teachers = $query->paginate(20)->withQueryString();
+        $teachercounts = $query->count();
 
-        return view('userstudentshow', [
-            'students' => $students,
-            'studentcounts' => $studentcounts
+        return view('userteachershow', [
+            'teachers' => $teachers,
+            'teachercounts' => $teachercounts
         ]);
     }
 
     /**
      * Parse advanced search query with boolean operators (AND, OR, NOT)
-     * Supports field-specific searches like "name:john", "year:2023"
+     * Supports field-specific searches like "name:john", "position:professor"
      * Examples:
      * - "john AND computer" - both terms must be found
      * - "john OR jane" - either term can be found
@@ -74,11 +76,13 @@ class StudentController extends Controller
      */
     private function parseAdvancedSearch($query, $searchQuery, $filters)
     {
+       
         // Clean and normalize the search query
         $searchQuery = trim($searchQuery);
         
         // Handle parentheses for complex queries
         if (strpos($searchQuery, '(') !== false) {
+           
             $this->parseComplexQuery($query, $searchQuery, $filters);
             return;
         }
@@ -98,16 +102,18 @@ class StudentController extends Controller
      */
     private function tokenizeQuery($searchQuery)
     {
+
+        
         // First handle NOT operator - replace "NOT term" with "|NOT term|"
         // Updated regex to properly handle multi-word terms with spaces
         $searchQuery = preg_replace('/\s+NOT\s+([^|]+?)(?=\s+(?:AND|OR)\s+|$)/i', '|NOT $1|', $searchQuery);
-        
+       
         // Then handle AND/OR operators
         $searchQuery = preg_replace('/\s+(AND|OR)\s+/i', '|$1|', $searchQuery);
         
         // Split by delimiters
         $parts = explode('|', $searchQuery);
-        
+         
         $tokens = [];
         foreach ($parts as $part) {
             $part = trim($part);
@@ -124,6 +130,8 @@ class StudentController extends Controller
      */
     private function buildQueryFromTokens($query, $tokens, $filters)
     {
+
+       
         $query->where(function ($outerQuery) use ($tokens, $filters) {
             $currentOperator = 'AND';
             $isFirst = true;
@@ -157,6 +165,7 @@ class StudentController extends Controller
             }
         });
     }
+
     
     /**
      * Apply search condition for a single term
@@ -200,23 +209,13 @@ class StudentController extends Controller
                     $query->whereRaw('LOWER(name) LIKE ?', ['%' . $value . '%']);
                 }
                 break;
-            case 'year':
+            case 'position':
                 if ($isNegated) {
                     $query->whereNot(function ($q) use ($value) {
-                        $q->whereRaw('LOWER(year) LIKE ?', ['%' . $value . '%']);
+                        $q->whereRaw('LOWER(position) LIKE ?', ['%' . $value . '%']);
                     });
                 } else {
-                    $query->whereRaw('LOWER(year) LIKE ?', ['%' . $value . '%']);
-                }
-                break;
-            case 'roll_number':
-            case 'roll':
-                if ($isNegated) {
-                    $query->whereNot(function ($q) use ($value) {
-                        $q->whereRaw('LOWER(roll_number) LIKE ?', ['%' . $value . '%']);
-                    });
-                } else {
-                    $query->whereRaw('LOWER(roll_number) LIKE ?', ['%' . $value . '%']);
+                    $query->whereRaw('LOWER(position) LIKE ?', ['%' . $value . '%']);
                 }
                 break;
             case 'phone':
@@ -259,6 +258,7 @@ class StudentController extends Controller
                     });
                 }
                 break;
+
             case 'gender':
                 if ($isNegated) {
                     $query->whereNot(function ($q) use ($value) {
@@ -317,15 +317,9 @@ class StudentController extends Controller
             $isFirst = false;
         }
         
-        if (in_array('year', $filters)) {
+        if (in_array('position', $filters)) {
             $method = $isFirst ? 'whereRaw' : 'orWhereRaw';
-            $query->$method('LOWER(year) LIKE ?', ['%' . $term . '%']);
-            $isFirst = false;
-        }
-        
-        if (in_array('roll_number', $filters)) {
-            $method = $isFirst ? 'whereRaw' : 'orWhereRaw';
-            $query->$method('LOWER(roll_number) LIKE ?', ['%' . $term . '%']);
+            $query->$method('LOWER(position) LIKE ?', ['%' . $term . '%']);
             $isFirst = false;
         }
         
@@ -378,11 +372,10 @@ class StudentController extends Controller
     }
 
     /**
-     * Advanced search for students with multiple filters and keyword support
-     * Handles: ID (exact match), name, year, roll_number, phone, email, department searches
-     * Supports multiple keywords separated by spaces using OR logic
+     * Simple AJAX search for teachers with multiple filters
+     * Handles: ID (exact match), name, position, phone, email, department searches
+     * Uses simple LIKE matching without boolean operators
      */
-    
     public function search(Request $request)
     {
         // Only handle AJAX requests for this method
@@ -398,7 +391,7 @@ class StudentController extends Controller
             $filters = [$filters];
         }
 
-        $query = Student::with('department');
+        $query = Teacher::with('department');
 
         if ($departmentId) {
             $query->where('department_id', $departmentId);
@@ -407,61 +400,55 @@ class StudentController extends Controller
         if ($searchQuery) {
             // If 'all' is selected, convert it to all available filter types
             if (in_array('all', $filters)) {
-                $filters = ['id', 'name', 'year', 'roll_number', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
+                $filters = ['id', 'name', 'position', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
             }
 
             $query->where(function ($q) use ($searchQuery, $filters) {
                 $searchTerm = strtolower(trim($searchQuery));
-                
-                // Build search conditions based on selected filters
+
                 $q->where(function ($subQuery) use ($searchTerm, $filters) {
                     $conditions = [];
-                    
-                    // Collect all conditions first
+
                     if (in_array('id', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'id', 'operator' => '=', 'value' => $searchTerm];
                     }
-                    
+
                     if (in_array('name', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'name', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
-                    if (in_array('year', $filters)) {
-                        $conditions[] = ['type' => 'where', 'field' => 'year', 'operator' => '=', 'value' => $searchTerm];
+
+                    if (in_array('position', $filters)) {
+                        $conditions[] = ['type' => 'where', 'field' => 'position', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
-                    if (in_array('roll_number', $filters)) {
-                        $conditions[] = ['type' => 'where', 'field' => 'roll_number', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
-                    }
-                    
+
                     if (in_array('phone', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'phone_number', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
+
                     if (in_array('email', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'email', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
-                    if (in_array('department', $filters)) {
-                        $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
-                    }
-                    
+
                     if (in_array('gender', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'gender', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
+
                     if (in_array('date_of_birth', $filters)) {
                         $conditions[] = ['type' => 'where', 'field' => 'date_of_birth', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
-                    
-                    // Apply conditions with proper OR logic
+
+                    if (in_array('department', $filters)) {
+                        $conditions[] = ['type' => 'whereHas', 'relation' => 'department'];
+                    }
+
+                    // Apply conditions with OR logic
                     foreach ($conditions as $index => $condition) {
                         if ($condition['type'] === 'where') {
                             $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
                             $field = $condition['field'];
                             $operator = $condition['operator'];
                             $value = $condition['value'];
-                            
+
                             if ($operator === '=') {
                                 $subQuery->$method("LOWER($field) = ?", [$value]);
                             } else {
@@ -480,41 +467,41 @@ class StudentController extends Controller
             });
         }
 
-        $students = $query->get();
-        return response()->json($students);
+        $teachers = $query->get();
+        return response()->json($teachers);
     }
 
 
+
+    public function show(Teacher $teacher)
+    {
+        return view('admin.teacher.show', [
+            'teacher' => $teacher
+        ]);
+    }
+
+    /**
+     * Display individual teacher details on public user page
+     */
+    public function showTeachers(Teacher $teacher)
+    {
+        return view('admin.teacher.userteachershow', [
+            'teacher' => $teacher,
+        ]);
+    }
 
     public function create()
     {
         $departments = Department::all();
 
-        return view('admin.student.create', [
-            'departments' => $departments,
-        ]);
-    }
-
-    public function show(Student $student)
-    {
-        return view('admin.student.show', [
-            'student' => $student,
+        return view('admin.teacher.create', [
+            'departments' => $departments
         ]);
     }
 
     /**
-     * Display individual student details on public user page
-     */
-    public function showStudents(Student $student)
-    {
-        return view('admin.student.userstushow', [
-            'student' => $student,
-        ]);
-    }
-
-    /**
-     * Create new student with image upload and organized file storage
-     * Images are stored in assets/students/{roll_number}/ directory
+     * Create new teacher with image upload and organized file storage
+     * Images are stored in assets/teachers/{phone_number}/ directory
      */
     public function store(Request $request)
     {
@@ -522,10 +509,9 @@ class StudentController extends Controller
             'name' => 'required|string',
             'gender' => 'nullable|in:male,female,other',
             'date_of_birth' => 'nullable|date',
-            'year' => 'required|string',
-            'roll_number' => 'required|string',
-            'phone_number' => 'nullable|string|unique:students,phone_number',
-            'email' => 'nullable|email|unique:students,email',
+            'position' => 'required|string',
+            'phone_number' => 'nullable|string|unique:teachers,phone_number',
+            'email' => 'nullable|email|unique:teachers,email',
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'department_id' => 'required|exists:departments,id',
         ]);
@@ -536,69 +522,64 @@ class StudentController extends Controller
             $cleanName = preg_replace('/[^A-Za-z0-9_\-\.]/', '', preg_replace('/\s+/', '_', $originalName));
             $fileName = time() . '_' . $cleanName;
 
-            $uploadPath = public_path("assets/students/{$formData['roll_number']}");
+            $uploadPath = public_path("assets/teachers/{$formData['phone_number']}");
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
 
             $file->move($uploadPath, $fileName);
-            $formData['image'] = "assets/students/{$formData['roll_number']}/$fileName";
+            $formData['image'] = "assets/teachers/{$formData['phone_number']}/$fileName";
         }else{
-            $formData['image'] = "assets/students/profile.png";
+            $formData['image'] = "assets/teachers/profile.png";
         }
 
         try {
-            Student::create($formData);
+            Teacher::create($formData);
         } catch (QueryException $e) {
-
-            if($e->getCode() == 23000){
-                return back()->with('error', 'Roll number and year combination already exists.')->withInput();
-            }
-            return back()->with('error', $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to create teacher: ' . $e->getMessage());
         }
 
-        return redirect()->route('students')->with('success', 'Student created successfully.');
+        return redirect()->route('teachers')->with('success', 'Teacher created successfully.');
     }
 
-    public function edit(Student $student)
+    public function edit(Teacher $teacher)
     {
         $departments = Department::all();
 
-        return view('admin.student.edit', [
-            'student' => $student,
-            'departments' => $departments,
+        return view('admin.teacher.edit', [
+            'teacher' => $teacher,
+            'departments' => $departments
         ]);
     }
 
     /**
-     * Update student with image handling and file cleanup
+     * Update teacher with image handling and file cleanup
      * Removes old image and creates new organized directory structure
      */
-    public function update(Request $request, Student $student)
+    public function update(Request $request, Teacher $teacher)
     {
         $formData = $request->validate([
             'name' => 'required|string',
             'gender' => 'nullable|in:male,female,other',
             'date_of_birth' => 'nullable|date',
-            'year' => 'required|string',
-            'roll_number' => 'required|string',
+            'position' => 'required|string',
             'phone_number' => [
                 'nullable',
                 'string',
-                Rule::unique('students')->ignore($student->id),
+                Rule::unique('teachers')->ignore($teacher->id),
             ],
             'email' => [
                 'nullable',
                 'email',
-                Rule::unique('students')->ignore($student->id),
+                Rule::unique('teachers')->ignore($teacher->id),
             ],
             'image' => 'nullable|file|mimes:jpeg,png,jpg|max:2048',
             'department_id' => 'required|exists:departments,id',
         ]);
 
         if ($request->hasFile('image')) {
-            if (!empty($student->image)) {
-                $oldImagePath = public_path($student->image);
+            if (!empty($teacher->image)) {
+                $oldImagePath = public_path($teacher->image);
                 if (file_exists($oldImagePath)) {
                     unlink($oldImagePath);
                 }
@@ -609,44 +590,44 @@ class StudentController extends Controller
             $cleanName = preg_replace('/[^A-Za-z0-9_\-\.]/', '', preg_replace('/\s+/', '_', $originalName));
             $fileName = time() . '_' . $cleanName;
 
-            $uploadPath = public_path("assets/students/{$formData['roll_number']}");
+            $uploadPath = public_path("assets/teachers/{$formData['phone_number']}");
             if (!file_exists($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
             }
 
             $file->move($uploadPath, $fileName);
-            $formData['image'] = "assets/students/{$formData['roll_number']}/$fileName";
+            $formData['image'] = "assets/teachers/{$formData['phone_number']}/$fileName";
         } else {
-            $formData['image'] = $student->image;
+            $formData['image'] = $teacher->image;
         }
 
         try {
-            $student->update($formData);
+            $teacher->update($formData);
         } catch (QueryException $e) {
-            return back()->with('error', $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to update teacher: ' . $e->getMessage());
         }
 
-        return redirect()->route('students')->with('success', 'Student updated successfully.');
+        return redirect()->route('teachers')->with('success', 'Teacher updated successfully.');
     }
 
     /**
-     * Delete student and cleanup associated files/directories
-     * Removes entire student directory from assets/students/{roll_number}
+     * Delete teacher and cleanup associated files/directories
+     * Removes entire teacher directory from assets/teachers/{phone_number}
      */
-    public function destroy(Student $student)
+    public function destroy(Teacher $teacher)
     {
         try {
-            $folderPath = public_path("assets/students/{$student->roll_number}");
+            $folderPath = public_path("assets/teachers/{$teacher->phone_number}");
 
             if (File::exists($folderPath)) {
                 File::deleteDirectory($folderPath);
             }
 
-            $student->delete();
+            $teacher->delete();
         } catch (QueryException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', 'Failed to delete teacher: ' . $e->getMessage());
         }
 
-        return redirect()->route('students')->with('success', 'Student deleted successfully.');
+        return redirect()->route('teachers')->with('success', 'Teacher deleted successfully.');
     }
 }

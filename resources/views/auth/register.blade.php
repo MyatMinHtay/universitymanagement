@@ -86,14 +86,16 @@
 
                             <div class="form-group mb-3">
                               <label for="exampleInputPassword1">Password</label>
-                              <input
-                              type="password" class="form-control inputbox"
-                              name="password"
-                              required
-
-                              id="password" placeholder="Password">
-
-
+                              <div class="position-relative">
+                                  <input
+                                  type="password" class="form-control inputbox"
+                                  name="password"
+                                  required
+                                  id="password" placeholder="Password">
+                                  <button type="button" id="togglePassword" class="btn btn-outline-secondary position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; width: 30px; height: 30px;">
+                                      <i class="fas fa-eye" id="eyeIcon"></i>
+                                  </button>
+                              </div>
                               <x-error name="password"></x-error>
                             </div>
 
@@ -107,8 +109,12 @@
 
                             <div class="form-group mb-3">
                               <label for="password_confirmation">Confirm Password</label>
-                              <input type="password" class="form-control inputbox" name="password_confirmation" placeholder="Confirm Password" id="password_confirmation" required>
-
+                              <div class="position-relative">
+                                  <input type="password" class="form-control inputbox" name="password_confirmation" placeholder="Confirm Password" id="password_confirmation" required>
+                                  <button type="button" id="togglePasswordConfirmation" class="btn btn-outline-secondary position-absolute" style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: none; padding: 0; width: 30px; height: 30px;">
+                                      <i class="fas fa-eye" id="eyeIconConfirmation"></i>
+                                  </button>
+                              </div>
                               <x-error name="password_confirmation"></x-error>
                               @error('password_confirmation')
                                   <p>{{$message}}</p>
@@ -223,5 +229,43 @@
         $value = $("#password").val();
 
         validatePassword($value);
+    });
+
+    // Password visibility toggle functionality
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const togglePasswordConfirmation = document.getElementById('togglePasswordConfirmation');
+    const passwordConfirmationInput = document.getElementById('password_confirmation');
+    const eyeIconConfirmation = document.getElementById('eyeIconConfirmation');
+
+    // Password visibility toggle
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        if (type === 'password') {
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        } else {
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        }
+    });
+
+    // Password confirmation visibility toggle
+    togglePasswordConfirmation.addEventListener('click', function() {
+        const type = passwordConfirmationInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordConfirmationInput.setAttribute('type', type);
+        
+        // Toggle eye icon
+        if (type === 'password') {
+            eyeIconConfirmation.classList.remove('fa-eye-slash');
+            eyeIconConfirmation.classList.add('fa-eye');
+        } else {
+            eyeIconConfirmation.classList.remove('fa-eye');
+            eyeIconConfirmation.classList.add('fa-eye-slash');
+        }
     });
 </script>

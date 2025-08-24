@@ -40,7 +40,12 @@
 
                             <div class="form-group mx-auto my-1">
                                     <label for="password">Password</label>
-                                    <input type="password" id="password" name="password" value="{{old('passwords')}}" class="form-control inputbox" autocomplete="off" required/>
+                                    <div class="position-relative">
+                                        <input type="password" id="password" name="password" value="{{old('passwords')}}" class="form-control inputbox" autocomplete="off" required/>
+                                        <button type="button" id="togglePassword" class="position-absolute" title="Show password" style="right: 10px; top: 50%; transform: translateY(-50%); border: none; background: transparent; padding: 5px; width: 35px; height: 35px; z-index: 10; cursor: pointer; color: #6c757d; outline: none;">
+                                            <i class="fas fa-eye" id="eyeIcon" style="font-size: 16px;"></i>
+                                        </button>
+                                    </div>
                                    <div id="password-error" class="text-danger mt-3" style="font-family: var(--default-font);"></div>
                             </div>
 
@@ -83,7 +88,38 @@
 
 const passwordInput = document.getElementById('password');
 const passwordError = document.getElementById('password-error');
+const togglePassword = document.getElementById('togglePassword');
+const eyeIcon = document.getElementById('eyeIcon');
 
+// Password visibility toggle
+togglePassword.addEventListener('click', function(e) {
+    e.preventDefault();
+    
+    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+    passwordInput.setAttribute('type', type);
+    
+    // Toggle eye icon
+    if (type === 'text') {
+        // Password is now visible, show eye-slash
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+        togglePassword.setAttribute('title', 'Hide password');
+    } else {
+        // Password is now hidden, show eye
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+        togglePassword.setAttribute('title', 'Show password');
+    }
+});
+
+// Add hover effect for better UX
+togglePassword.addEventListener('mouseenter', function() {
+    this.style.color = '#495057';
+});
+
+togglePassword.addEventListener('mouseleave', function() {
+    this.style.color = '#6c757d';
+});
 
 passwordInput.addEventListener('input', () => {
   const password = passwordInput.value;

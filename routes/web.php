@@ -40,8 +40,8 @@ Route::get('/admin/formsubmitcourse', [AuthController::class, 'submitcourse'])->
 //Admin Dashboard
 Route::get('/admin/dashboard', [DashboardController::class, 'show'])->middleware('admincheck:dashboard');
 
-// Route::get('/preview-pdf/{filename}', [PDFController::class, 'previewPDF'])->name('preview.pdf');
-
+//Admin Analytics
+Route::get('/admin/analytics', [DashboardController::class, 'showAnalytics'])->middleware('admincheck:analytics')->name('admin.analytics');
 
 //Admin User Management 
 

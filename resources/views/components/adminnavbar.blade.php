@@ -30,6 +30,12 @@
                          <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
 
                               <li class="nav-item">
+                                   <a class="nav-link" href="{{ route('admin.analytics') }}">
+                                        <i class="fa-solid fa-a fs-5 icon"></i>
+                                        Analytics</a>
+                              </li>
+
+                              <li class="nav-item">
                                    <a class="nav-link" href="/admin/roles">
                                         <i class="fa-solid fa-r fs-5 icon"></i>
                                         Roles</a>
