@@ -465,6 +465,14 @@
             </div>
         </div>
 
+        <!-- PDF Export Button -->
+        <div class="text-center mb-3">
+            <button id="exportPdfBtn" class="btn btn-success" 
+                    style="display: {{ (request('search') || request('field') || request('value')) && $studentcounts > 0 ? 'inline-block' : 'none' }};">
+                <i class="bi bi-file-earmark-pdf"></i> Export Search Results as PDF
+            </button>
+        </div>
+
         <!-- Bootstrap Filter Modal -->
         <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -629,9 +637,10 @@
     
 
     
+
+
 </x-layout>
 
-<!-- Enhanced JavaScript -->
 <script>
     $(document).ready(function () {
         let searchTimeout;
@@ -809,6 +818,7 @@
                 $('#student-list').html('');
                 $('#no-results').show();
                 $('#search-message').hide();
+                updateExportButton(false); // Hide export button when no results
             } else {
                 $.each(data, function (index, student) {
                     let imageUrl = student.image ? `/${student.image}` : '/assets/img/default-student.png';
@@ -839,6 +849,7 @@
                 $('#no-results').hide();
                 
                 $('#search-message').show().html(`<p class="text-info"><i class="bi bi-search"></i> Found ${data.length} student(s) matching "${query}"</p>`);
+                updateExportButton(true); // Show export button when there are results
             }
         }
 
@@ -847,6 +858,67 @@
             $('#search-message').hide();
             $('#no-results').hide();
             $('#pagination-container').show();
+            updateExportButton(false); // Hide export button when resetting to original
         }
     });
+
+// Export PDF functionality
+document.getElementById('exportPdfBtn')?.addEventListener('click', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const exportUrl = new URL('{{ route("students.export.search.pdf") }}', window.location.origin);
+    
+    // Add current search parameters to export URL
+    const searchQuery = urlParams.get('search') || document.getElementById('searchstudent')?.value || '';
+    if (searchQuery) {
+        exportUrl.searchParams.set('search', searchQuery);
+    }
+    
+    // Add visual query builder parameters
+    const fieldParams = urlParams.getAll('field[]');
+    const valueParams = urlParams.getAll('value[]');
+    const operatorParams = urlParams.getAll('operator[]');
+    
+    fieldParams.forEach((field, index) => {
+        exportUrl.searchParams.append('field[]', field);
+    });
+    valueParams.forEach((value, index) => {
+        exportUrl.searchParams.append('value[]', value);
+    });
+    operatorParams.forEach((operator, index) => {
+        exportUrl.searchParams.append('operator[]', operator);
+    });
+    
+    // Add filters and department
+    const filters = getCurrentFilters();
+    if (filters) {
+        exportUrl.searchParams.set('filter', filters);
+    }
+    
+    const departmentId = getCurrentDepartmentId();
+    if (departmentId) {
+        exportUrl.searchParams.set('department_id', departmentId);
+    }
+    
+    // Open export URL
+    window.open(exportUrl.toString(), '_blank');
+});
+
+// Helper functions
+function getCurrentFilters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('filter') || 'all';
+}
+
+function getCurrentDepartmentId() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('department_id') || '';
+}
+
+// Update export button visibility
+function updateExportButton(hasResults) {
+    const exportBtn = document.getElementById('exportPdfBtn');
+    if (exportBtn) {
+        exportBtn.style.display = hasResults ? 'inline-block' : 'none';
+    }
+}
 </script>

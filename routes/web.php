@@ -82,6 +82,10 @@ Route::get('/students/search', [StudentController::class, 'search'])->name('stud
 Route::get('/departments/search', [DepartmentController::class, 'search'])->name('departments.search');
 Route::get('/faculty/search', [FacultyController::class, 'search'])->name('faculty.search');
 
+// PDF export routes for search results
+Route::get('/teachers/export-search-pdf', [TeacherController::class, 'exportSearchPDF'])->name('teachers.export.search.pdf');
+Route::get('/students/export-search-pdf', [StudentController::class, 'exportSearchPDF'])->name('students.export.search.pdf');
+
 // Home page real-time search
 Route::get('/home/search', [HomeController::class, 'homeSearch'])->name('home.search');
 

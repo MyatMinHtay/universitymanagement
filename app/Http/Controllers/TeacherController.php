@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\File;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TeacherController extends Controller
 {
@@ -766,5 +767,88 @@ class TeacherController extends Controller
         }
 
         return redirect()->route('teachers')->with('success', 'Teacher deleted successfully.');
+    }
+
+    /**
+     * Export teacher search results to PDF
+     * Supports both simple search (AJAX) and advanced search (form-based)
+     */
+    public function exportSearchPDF(Request $request)
+    {
+        $searchQuery = $request->input('search');
+        $departmentId = $request->input('department_id');
+        $filters = $request->input('filter', ['all']);
+    
+        // Handle visual query builder parameters for advanced search
+        $fieldArray = $request->input('field', []);
+        $valueArray = $request->input('value', []);
+        $operatorArray = $request->input('operator', []);
+    
+        // Convert visual query builder to search string if provided
+        if (!empty($fieldArray) && !empty($valueArray)) {
+            $searchQuery = $this->buildSearchQueryFromArrays($fieldArray, $valueArray, $operatorArray);
+        }
+    
+        // Convert comma-separated filters to array
+        if (is_string($filters)) {
+            $filters = array_filter(explode(',', $filters));
+        }
+    
+        if (empty($filters)) {
+            $filters = ['all'];
+        }
+    
+        $query = Teacher::with('department');
+    
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+    
+        if ($searchQuery) {
+            // If 'all' is selected, convert it to all available filter types
+            if (in_array('all', $filters)) {
+                $filters = ['id', 'name', 'position', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
+            }
+    
+            // Use the same advanced search logic as userShow method
+            $query->where(function ($q) use ($searchQuery, $filters) {
+                $this->parseAdvancedSearch($q, $searchQuery, $filters);
+            });
+        }
+    
+        $teachers = $query->get();
+        $searchTerm = $searchQuery ?? 'All Teachers';
+        $exportDate = now()->format('Y-m-d H:i:s');
+        $totalResults = $teachers->count();
+    
+        // Determine search type for display
+        $searchType = 'Simple Search';
+        if (!empty($fieldArray) && !empty($valueArray)) {
+            $searchType = 'Advanced Search (Visual Query Builder)';
+        } elseif ($searchQuery && (strpos($searchQuery, 'AND') !== false || strpos($searchQuery, 'OR') !== false || strpos($searchQuery, 'NOT') !== false)) {
+            $searchType = 'Advanced Search (Boolean)';
+        }
+    
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.teacher.teachers-search-pdf', compact(
+            'teachers', 
+            'searchTerm', 
+            'exportDate', 
+            'totalResults',
+            'searchType',
+            'filters'
+        ));
+        
+        // Set PDF options
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'defaultFont' => 'Arial'
+        ]);
+        
+        $filename = 'teachers-search-results-' . date('Y-m-d-H-i-s') . '.pdf';
+        
+        return $pdf->download($filename);
     }
 }

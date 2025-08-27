@@ -446,6 +446,14 @@
             </div>
         </div>
 
+        <!-- Export Button -->
+        <div class="text-center mb-3">
+            <button id="exportPdfBtn" class="btn btn-success" 
+                    style="display: {{ (request('search') || request('field') || request('value')) && $teachercounts > 0 ? 'inline-block' : 'none' }};">
+                <i class="bi bi-file-earmark-pdf"></i> Export Search Results to PDF
+            </button>
+        </div>
+
         <!-- Bootstrap Filter Modal -->
         <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -1197,6 +1205,7 @@
                 $('#teacher-list').html('');
                 $('#no-results').show();
                 $('#search-message').hide();
+                updateExportButton(false);
             } else {
                 $.each(teachers, function (index, teacher) {
                     let baseUrl = '{{ asset('') }}';
@@ -1245,6 +1254,7 @@
                 }
                 
                 $('#search-message').show().html(`<p class="text-info"><i class="bi bi-search"></i> Found ${teachers.length} teacher(s) matching "${query}"</p>`);
+                updateExportButton(true);
             }
         }
 
@@ -1253,6 +1263,81 @@
             $('#search-message').hide();
             $('#no-results').hide();
             $('#pagination-container').show();
+            updateExportButton(false);
+        }
+
+        // Export functionality
+        $('#exportPdfBtn').on('click', function() {
+            let exportUrl = '{{ route("teachers.export.search.pdf") }}';
+            let params = new URLSearchParams();
+            
+            // Get current search query from AJAX search
+            let ajaxSearchQuery = $('#searchteacher').val();
+            
+            // Get search parameters from URL (for advanced search)
+            let urlParams = new URLSearchParams(window.location.search);
+            let urlSearchQuery = urlParams.get('search');
+            let fieldParams = urlParams.getAll('field[]');
+            let valueParams = urlParams.getAll('value[]');
+            let operatorParams = urlParams.getAll('operator[]');
+            
+            // Use AJAX search query if available, otherwise use URL search query
+            let searchQuery = ajaxSearchQuery || urlSearchQuery;
+            if (searchQuery) {
+                params.append('search', searchQuery);
+            }
+            
+            // Add advanced search parameters if they exist
+            if (fieldParams.length > 0) {
+                fieldParams.forEach(field => params.append('field[]', field));
+            }
+            if (valueParams.length > 0) {
+                valueParams.forEach(value => params.append('value[]', value));
+            }
+            if (operatorParams.length > 0) {
+                operatorParams.forEach(operator => params.append('operator[]', operator));
+            }
+            
+            // Get current filters
+            let currentFilters = getCurrentFilters();
+            if (currentFilters && currentFilters.length > 0) {
+                params.append('filter', currentFilters.join(','));
+            }
+            
+            // Add department filter if applicable
+            let departmentId = urlParams.get('department_id') || getCurrentDepartmentId();
+            if (departmentId) {
+                params.append('department_id', departmentId);
+            }
+            
+            // Open PDF in new window
+            if (params.toString()) {
+                window.open(exportUrl + '?' + params.toString(), '_blank');
+            } else {
+                window.open(exportUrl, '_blank');
+            }
+        });
+
+        // Helper function to get current filters
+        function getCurrentFilters() {
+            // Return the current active filters
+            // This depends on how you're tracking filters in your implementation
+            return ['all']; // Default to 'all' if no specific filters are set
+        }
+
+        // Helper function to get current department ID
+        function getCurrentDepartmentId() {
+            // Return current department ID if filtering by department
+            return null; // Return null if no department filter is active
+        }
+
+        // Show/hide export button based on search
+        function updateExportButton(hasResults) {
+            if (hasResults) {
+                $('#exportPdfBtn').show();
+            } else {
+                $('#exportPdfBtn').hide();
+            }
         }
     });
 </script>

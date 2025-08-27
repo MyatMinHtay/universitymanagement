@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StudentController extends Controller
 {
@@ -454,7 +455,7 @@ class StudentController extends Controller
                         $conditions[] = ['type' => 'where', 'field' => 'date_of_birth', 'operator' => 'LIKE', 'value' => '%' . $searchTerm . '%'];
                     }
                     
-                    // Apply conditions with proper OR logic
+                    // Apply conditions with OR logic
                     foreach ($conditions as $index => $condition) {
                         if ($condition['type'] === 'where') {
                             $method = $index === 0 ? 'whereRaw' : 'orWhereRaw';
@@ -649,4 +650,89 @@ class StudentController extends Controller
 
         return redirect()->route('students')->with('success', 'Student deleted successfully.');
     }
+
+    /**
+     * Export student search results to PDF with support for both simple and advanced search
+     */
+    public function exportSearchPDF(Request $request)
+    {
+        $searchQuery = $request->input('search');
+        $departmentId = $request->input('department_id');
+        $filters = $request->input('filter');
+
+        // Handle visual query builder parameters for advanced search
+        $fieldArray = $request->input('field', []);
+        $valueArray = $request->input('value', []);
+        $operatorArray = $request->input('operator', []);
+
+        // Convert visual query builder to search string if provided
+        if (!empty($fieldArray) && !empty($valueArray)) {
+            $searchQuery = $this->buildSearchQueryFromArrays($fieldArray, $valueArray, $operatorArray);
+        }
+
+        // Convert comma-separated filters to array
+        if (is_string($filters)) {
+            $filters = array_filter(explode(',', $filters));
+        }
+
+        if (empty($filters)) {
+            $filters = ['all'];
+        }
+
+        $query = Student::with('department');
+
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+
+        // Apply advanced search if provided
+        if ($searchQuery) {
+            // If 'all' is selected, convert it to all available filter types
+            if (in_array('all', $filters)) {
+                $filters = ['id', 'name', 'year', 'roll_number', 'phone', 'email', 'department', 'gender', 'date_of_birth'];
+            }
+
+            $query->where(function ($q) use ($searchQuery, $filters) {
+                $this->parseAdvancedSearch($q, $searchQuery, $filters);
+            });
+        }
+
+        $students = $query->get(); // Get all results for PDF
+        $studentcounts = $students->count();
+        $exportDate = now()->format('Y-m-d H:i:s');
+
+        $pdf = PDF::loadView('admin.student.students-search-pdf', compact('students', 'studentcounts', 'searchQuery', 'exportDate'));
+        return $pdf->download('students-search-results.pdf');
+    }
+
+    /**
+     * Helper method to build search query from visual query builder arrays
+     */
+    private function buildSearchQueryFromArrays($fieldArray, $valueArray, $operatorArray)
+    {
+        $queryParts = [];
+        
+        for ($i = 0; $i < count($fieldArray); $i++) {
+            if (!empty($valueArray[$i])) {
+                $field = $fieldArray[$i];
+                $value = $valueArray[$i];
+                
+                if ($field === 'all') {
+                    $queryParts[] = $value;
+                } else {
+                    $queryParts[] = $field . ':' . $value;
+                }
+                
+                // Add operator for next iteration (if not last)
+                if ($i < count($fieldArray) - 1 && !empty($valueArray[$i + 1])) {
+                    $operator = $operatorArray[$i] ?? 'AND';
+                    $queryParts[] = $operator;
+                }
+            }
+        }
+        
+        return implode(' ', $queryParts);
+    }
 }
+
+    
