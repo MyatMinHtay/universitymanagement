@@ -5,20 +5,17 @@
           <h1 class="text-center bg-purple mt-3">Users</h1>
 
           <div class="col-12 d-flex justify-content-end my-3">
-            
-            <a  class="btn btn-primary mx-2" data-bs-target="#usercreatemodal" data-bs-toggle="modal"><i class="fa-solid fa-plus mx-1"></i>Add Users</a>
+            <button type="button" class="btn btn-success me-2" onclick="exportToPDF()">
+                <i class="fa-solid fa-file-pdf mx-1"></i>Export PDF
+            </button>
+            <a class="btn btn-primary mx-2" data-bs-target="#usercreatemodal" data-bs-toggle="modal">
+                <i class="fa-solid fa-plus mx-1"></i>Add Users
+            </a>
           </div>
-
-        
-
 
           <div class="container-fluid my-3">
                <div class="row justify-content-center">
                     <div class="col-md-12">
-                        
-                             
-
-                              
                               <form action="" method="GET">
                                    <div class="d-flex justify-content-between flex-wrap">
                                         <div class="form-group mr-2">
@@ -48,13 +45,9 @@
                                         </div>
                                    </div>
                               </form>
-                          
-                         
                     </div>
                </div>
           </div>
-
-          
 
         <div class="col-12 d-flex my-3">
           <div class="btn-group" role="group" aria-label="Basic outlined example">
@@ -82,9 +75,7 @@
                          <th scope="col">Role</th>
                          <th scope="col">Username</th>
                          <th scope="col">Email</th>
-                         
                          <th scope="col">Edit</th>
-                         
                          <th scope="col">Delete</th>
                     </thead>
                     <tbody>
@@ -94,28 +85,14 @@
                                    <td scope="row">{{$user->role}}</td>
                                    <td scope="row">{{$user->username}}</td>
                                    <td scope="row">{{$user->email}}</td>
-                                   
-
-                                   
-                                 
-                                  
                                    <td scope="row" class="text-center"><a href="/admin/users/edit/{{$user->username}}"  class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a></td>
-                                   {{-- <td scope="row" class="text-center">
-
-                                    <a href="/admin/users/lock/{{$user->username}}" class="btn btn-warning mx-1"><i class="fa-solid fa-lock"></i></a>
-                                    <a href="/admin/users/unlock/{{$user->username}}" class="btn btn-success mx-1"><i class="fa-solid fa-lock-open"></i></a>
-                                  </td> --}}
-                                  
                                    <td scope="row" class="text-center"><a href="/admin/users/delete/{{$user->username}}" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a></td>
                               </tr>
-                              
-                              
                          @empty
                                <tr>
-                                     <td scope="row" colspan="9" class="text-center">There is no record</td>                                                                                                             
+                                     <td scope="row" colspan="6" class="text-center">There is no record</td>                                                                                                             
                                </tr>
                          @endforelse
-                        
                     </tbody>
                </table>
 
@@ -385,5 +362,121 @@
    
        validatePassword($value);
    });
+
+    // PDF Export Function
+    function exportToPDF() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const exportUrl = new URL('/admin/users/export-pdf', window.location.origin);
+        
+        // Add current search parameters to export URL
+        const name = urlParams.get('name') || '';
+        const role = urlParams.get('role') || '';
+        const email = urlParams.get('email') || '';
+        
+        if (name) exportUrl.searchParams.set('name', name);
+        if (role) exportUrl.searchParams.set('role', role);
+        if (email) exportUrl.searchParams.set('email', email);
+        
+        window.open(exportUrl.toString(), '_blank');
+    }
+
+    function validateInput(inputValue) {
+       var containsUppercase = /[A-Z]/.test(inputValue);
+       var containsLowercase = /[a-z]/.test(inputValue);
+       var containsNumber = /\d/.test(inputValue);
+       var hasMinimumLength = inputValue.length >= 3;
+ 
+       if (containsUppercase) {
+           $("#uppercase").removeClass("text-danger");
+           $("#uppercase").addClass("text-success");
+       }else{
+           $("#uppercase").removeClass("text-success");
+           $("#uppercase").addClass("text-danger");
+       }
+ 
+     if (containsLowercase) {
+           $("#lowercase").removeClass("text-danger");
+           $("#lowercase").addClass("text-success");
+     }else{
+         $("#lowercase").removeClass("text-success");
+         $("#lowercase").addClass("text-danger");
+     }
+ 
+     if (containsNumber) {
+         $("#number").removeClass("text-danger");
+         $("#number").addClass("text-success");
+     }else{
+         $("#number").removeClass("text-success");
+         $("#number").addClass("text-danger");
+     }
+ 
+     if (hasMinimumLength) {
+           $("#threecharacter").removeClass('text-danger');
+           $('#threecharacter').addClass('text-success');
+     }else{
+       $('#threecharacter').removeClass('text-success');
+         $("#threecharacter").addClass('text-danger');
+     }
+   }
+ 
+ $("#username").on('keyup',function(){
+     $value = $("#username").val();
+ 
+     validateInput($value);
+ });
+ 
+ function validatePassword(password) {
+   let containsLowercase = /[a-z]/.test(password);
+   let containsUppercase = /[A-Z]/.test(password);
+   let containsSpecialChar = /[@$!%*?&]/.test(password);
+   let containsNumber = /\d/.test(password);
+   let hasMinimumLength = password.length >= 8;
+   
+     if(containsLowercase){
+         $("#passwordlowercase").removeClass("text-danger");
+         $("#passwordlowercase").addClass("text-success");
+     }else{
+         $("#passwordlowercase").removeClass("text-success");
+         $("#passwordlowercase").addClass("text-danger");
+     }
+ 
+     if(containsUppercase){
+         $("#passworduppercase").removeClass("text-danger");
+         $("#passworduppercase").addClass("text-success");
+     }else{
+         $("#passworduppercase").removeClass("text-success");
+         $("#passworduppercase").addClass("text-danger");
+     }
+ 
+     if(containsSpecialChar){
+         $("#passwordspecialcharacter").removeClass("text-danger");
+         $("#passwordspecialcharacter").addClass("text-success");
+     }else{
+         $("#passwordspecialcharacter").removeClass("text-success");
+         $("#passwordspecialcharacter").addClass("text-danger");
+     }
+ 
+     if(containsNumber){
+         $("#passwordnumber").removeClass("text-danger");
+         $("#passwordnumber").addClass("text-success");
+     }else{
+         $("#passwordnumber").removeClass("text-success");
+         $("#passwordnumber").addClass("text-danger");
+     }
+ 
+     if(hasMinimumLength){
+         $("#passwordeightcharacter").removeClass("text-danger");
+         $("#passwordeightcharacter").addClass("text-success");
+     }else{
+         $("#passwordeightcharacter").removeClass("text-success");
+         $("#passwordeightcharacter").addClass("text-danger");
+     }
+ }
+ 
+ $("#password").on('keyup',function(){
+     $value = $("#password").val();
+ 
+     validatePassword($value);
+ });
 </script>
 

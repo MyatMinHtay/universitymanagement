@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\File;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class FacultyController extends Controller
 {
@@ -324,4 +325,177 @@ class FacultyController extends Controller
 
         return redirect()->route('faculty')->with('success', 'Faculty member deleted successfully.');
     }
-} 
+
+    /**
+     * Export faculty search results to PDF
+     * Supports search functionality with filters
+     */
+    // Change the method name from exportPDF to exportSearchPDF (around line 333)
+    public function exportSearchPDF(Request $request)
+    {
+        
+        $searchQuery = $request->input('search');
+        $departmentId = $request->input('department_id');
+        $filters = $request->input('filter', ['all']);
+
+        // Convert comma-separated filters to array
+        if (is_string($filters)) {
+            $filters = array_filter(explode(',', $filters));
+        }
+
+        if (empty($filters)) {
+            $filters = ['all'];
+        }
+
+        $query = Faculty::query();
+
+        // Filter by department_id if provided
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+
+        // Apply search filters using the same logic as the search method
+        if ($searchQuery) {
+            $keywords = array_filter(explode(' ', trim($searchQuery)));
+            $keywordCount = count($keywords);
+
+            $query->where(function ($q) use ($searchQuery, $keywords, $filters, $keywordCount) {
+                if ($keywordCount === 1) {
+                    $keyword = strtolower($keywords[0]);
+
+                    $q->where(function ($subQuery) use ($keyword, $filters) {
+                        if (in_array('all', $filters)) {
+                            $subQuery->whereRaw('LOWER(id) = ?', [$keyword])
+                                    ->orWhereRaw('LOWER(name) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(position) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(email) LIKE ?', ['%' . $keyword . '%'])
+                                    ->orWhereRaw('LOWER(department) LIKE ?', ['%' . $keyword . '%']);
+                        } else {
+                            $hasCondition = false;
+
+                            if (in_array('id', $filters)) {
+                                $subQuery->whereRaw('LOWER(id) = ?', [$keyword]);
+                                $hasCondition = true;
+                            }
+
+                            if (in_array('name', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(name) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+
+                            if (in_array('position', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(position) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+
+                            if (in_array('phone', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+
+                            if (in_array('email', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(email) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+
+                            if (in_array('department', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(department) LIKE ?', ['%' . $keyword . '%']);
+                            }
+                        }
+                    });
+                } else {
+                    // Multi-word: exact name match
+                    if (in_array('all', $filters) || in_array('name', $filters)) {
+                        $q->whereRaw('LOWER(name) = ?', [strtolower($searchQuery)]);
+                    } else {
+                        foreach ($keywords as $index => $keyword) {
+                            if (empty($keyword)) continue;
+                            $method = $index === 0 ? 'where' : 'orWhere';
+
+                            $q->$method(function ($subQuery) use ($keyword, $filters) {
+                                $keyword = strtolower($keyword);
+                                $hasCondition = false;
+
+                                if (in_array('id', $filters)) {
+                                    $subQuery->whereRaw('LOWER(id) = ?', [$keyword]);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('name', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(name) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('position', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(position) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('phone', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(phone_number) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('email', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(email) LIKE ?', ['%' . $keyword . '%']);
+                                    $hasCondition = true;
+                                }
+
+                                if (in_array('department', $filters)) {
+                                    $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                    $subQuery->$method('LOWER(department) LIKE ?', ['%' . $keyword . '%']);
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        $faculty = $query->get();
+        $searchTerm = $searchQuery ?? 'All Faculty';
+        $exportDate = now()->format('Y-m-d H:i:s');
+        $totalResults = $faculty->count();
+
+        // Determine search type for display
+        $searchType = 'Simple Search';
+        if ($searchQuery && (strpos($searchQuery, 'AND') !== false || strpos($searchQuery, 'OR') !== false || strpos($searchQuery, 'NOT') !== false)) {
+            $searchType = 'Advanced Search (Boolean)';
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.faculty.faculty-search-pdf', compact(
+            'faculty', 
+            'searchTerm', 
+            'exportDate', 
+            'totalResults',
+            'searchType',
+            'filters'
+        ));
+        
+        // Set PDF options
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'defaultFont' => 'Arial'
+        ]);
+        
+        $filename = 'faculty-search-results-' . date('Y-m-d-H-i-s') . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+}
+
+
+    

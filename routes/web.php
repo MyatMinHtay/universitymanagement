@@ -85,6 +85,8 @@ Route::get('/faculty/search', [FacultyController::class, 'search'])->name('facul
 // PDF export routes for search results
 Route::get('/teachers/export-search-pdf', [TeacherController::class, 'exportSearchPDF'])->name('teachers.export.search.pdf');
 Route::get('/students/export-search-pdf', [StudentController::class, 'exportSearchPDF'])->name('students.export.search.pdf');
+Route::get('/facultys/export-search-pdf', [FacultyController::class, 'exportSearchPDF'])->name('facultys.export.search.pdf');
+Route::get('/departments/export-search-pdf', [DepartmentController::class, 'exportSearchPDF'])->name('departments.export.search.pdf');
 
 // Home page real-time search
 Route::get('/home/search', [HomeController::class, 'homeSearch'])->name('home.search');
@@ -142,3 +144,9 @@ Route::prefix('/admin')->middleware('admincheck:faculty')->group(function () {
     Route::get('/faculty/delete/{faculty:id}', [FacultyController::class, 'destroy'])->name('faculty.delete');
     Route::get('/faculty/{faculty:id}', [FacultyController::class, 'show'])->name('faculty.show');
 });
+
+
+// Admin PDF Export Routes
+Route::get('/admin/users/export-pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf')->middleware('admincheck:administrator,admin');
+
+

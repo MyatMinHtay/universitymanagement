@@ -6,10 +6,16 @@
             <input type="text" id="searchdp" class="searchinput" placeholder="Search for a department">
         </div>
 
-        <div class="dp-control my-5">
-            
-            <a href="{{ route('departments.create') }}" class="addbtn">Add Department</a>
+        <!-- Add Export PDF Button and Add Department Button -->
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <button onclick="exportToPDF()" class="btn btn-primary">
+                <i class="fa-solid fa-file-pdf"></i> Export PDF
+            </button>
+            <a href="{{ route('departments.create') }}" class="btn btn-success">
+                <i class="fa-solid fa-plus"></i> Add Department
+            </a>
         </div>
+
         <div class="table-responsive" id="department-list">
     <table class="table table-hover table-bordered border-1 table-primary">
         <thead>
@@ -118,4 +124,30 @@
             });
         });
     });
+</script>
+
+<script>
+function exportToPDF() {
+    // Get current search parameters
+    const searchQuery = document.getElementById('searchdp').value;
+    const activeFilters = [];
+    
+    // Build export URL with current search parameters
+    let exportUrl = '{{ route("departments.export.search.pdf") }}';
+    const params = new URLSearchParams();
+    
+    if (searchQuery) {
+        params.append('search', searchQuery);
+    }
+    
+    // Default to 'all' filter for departments
+    params.append('filter', 'all');
+    
+    if (params.toString()) {
+        exportUrl += '?' + params.toString();
+    }
+    
+    // Open PDF in new tab
+    window.open(exportUrl, '_blank');
+}
 </script>

@@ -141,4 +141,8 @@ class DashboardController extends Controller
             'registrationTrend'
         ));
     }
+
+    public function textFun(){
+        dd('hit');
+    }
 }

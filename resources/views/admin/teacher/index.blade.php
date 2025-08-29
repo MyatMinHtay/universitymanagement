@@ -52,8 +52,11 @@
             </div>
         </div>
     
-        <!-- Add Teacher Button -->
-        <div class="mb-4 text-end">
+        <!-- Add Teacher Button and Export PDF Button -->
+        <div class="mb-4 d-flex justify-content-between align-items-center">
+            <button onclick="exportToPDF()" class="btn btn-primary">
+                <i class="fa-solid fa-file-pdf"></i> Export PDF
+            </button>
             <a href="{{ route('teachers.create') }}" class="btn btn-success">
                 <i class="fa-solid fa-plus"></i> Add Teacher
             </a>
@@ -376,5 +379,37 @@
             $('#pagination-container').show();
         }
     });
+</script>
+
+<script>
+function exportToPDF() {
+    // Get current search parameters
+    const searchQuery = document.getElementById('searchteacher').value;
+    const activeFilters = [];
+    
+    // Get active filter pills
+    document.querySelectorAll('.filter-pill.active').forEach(pill => {
+        activeFilters.push(pill.dataset.filter);
+    });
+    
+    // Build export URL with current search parameters
+    let exportUrl = '{{ route("teachers.export.search.pdf") }}';
+    const params = new URLSearchParams();
+    
+    if (searchQuery) {
+        params.append('search', searchQuery);
+    }
+    
+    if (activeFilters.length > 0) {
+        params.append('filter', activeFilters.join(','));
+    }
+    
+    if (params.toString()) {
+        exportUrl += '?' + params.toString();
+    }
+    
+    // Open PDF in new tab
+    window.open(exportUrl, '_blank');
+}
 </script>
 

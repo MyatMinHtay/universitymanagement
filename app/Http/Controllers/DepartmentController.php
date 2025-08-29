@@ -10,6 +10,7 @@ use App\Models\Teacher;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\QueryException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DepartmentController extends Controller
 {
@@ -231,4 +232,105 @@ class DepartmentController extends Controller
         return redirect()->route('departments')->with('success', 'Department deleted successfully.');
     }
 
+    /**
+     * Export department search results to PDF
+     * Supports search functionality with filters
+     */
+    public function exportSearchPDF(Request $request)
+    {
+        $searchQuery = $request->input('search');
+        $filters = $request->input('filter', ['all']);
+
+        // Convert comma-separated filters to array
+        if (is_string($filters)) {
+            $filters = array_filter(explode(',', $filters));
+        }
+
+        if (empty($filters)) {
+            $filters = ['all'];
+        }
+
+        $query = Department::query();
+
+        // Apply search filters
+        if ($searchQuery) {
+            $keywords = array_filter(explode(' ', trim($searchQuery)));
+            $keywordCount = count($keywords);
+
+            $query->where(function ($q) use ($searchQuery, $keywords, $filters, $keywordCount) {
+                if ($keywordCount === 1) {
+                    $keyword = strtolower($keywords[0]);
+
+                    $q->where(function ($subQuery) use ($keyword, $filters) {
+                        if (in_array('all', $filters)) {
+                            $subQuery->whereRaw('LOWER(id) = ?', [$keyword])
+                                ->orWhereRaw('LOWER(fullname) LIKE ?', ['%' . $keyword . '%'])
+                                ->orWhereRaw('LOWER(shortname) LIKE ?', ['%' . $keyword . '%'])
+                                ->orWhereRaw('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
+                        } else {
+                            $hasCondition = false;
+                            
+                            if (in_array('id', $filters)) {
+                                $subQuery->whereRaw('LOWER(id) = ?', [$keyword]);
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('name', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(fullname) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('shortname', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(shortname) LIKE ?', ['%' . $keyword . '%']);
+                                $hasCondition = true;
+                            }
+                            
+                            if (in_array('code', $filters)) {
+                                $method = $hasCondition ? 'orWhereRaw' : 'whereRaw';
+                                $subQuery->$method('LOWER(deptCode) LIKE ?', ['%' . $keyword . '%']);
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        $departments = $query->get();
+        $searchTerm = $searchQuery ?? 'All Departments';
+        $exportDate = now()->format('Y-m-d H:i:s');
+        $totalResults = $departments->count();
+
+        // Determine search type for display
+        $searchType = 'Simple Search';
+        if ($searchQuery && (strpos($searchQuery, 'AND') !== false || strpos($searchQuery, 'OR') !== false || strpos($searchQuery, 'NOT') !== false)) {
+            $searchType = 'Advanced Search (Boolean)';
+        }
+
+        // Generate PDF
+        $pdf = Pdf::loadView('admin.department.departments-search-pdf', compact(
+            'departments', 
+            'searchTerm', 
+            'exportDate', 
+            'totalResults',
+            'searchType',
+            'filters'
+        ));
+        
+        // Set PDF options
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'defaultFont' => 'Arial'
+        ]);
+        
+        $filename = 'departments-search-results-' . date('Y-m-d-H-i-s') . '.pdf';
+        
+        return $pdf->download($filename);
+    }
+
 }
+
+    

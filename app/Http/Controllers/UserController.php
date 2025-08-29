@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Response;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class UserController extends Controller
 {
@@ -237,4 +238,59 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Export users search results to PDF with support for search filters
+     */
+    public function exportPDF(Request $request)
+    {
+        $name = $request->input('name');
+        $role = $request->input('role');
+        $email = $request->input('email');
+        
+        $query = User::query();
+        
+        if ($name) {
+            $query->where('username', 'LIKE', '%' . $name . '%');
+        }
+        
+        if ($role) {
+            $query->where('role', $role);
+        }
+        
+        if ($email) {
+            $query->where('email', 'LIKE', '%' . $email . '%');
+        }
+        
+        $users = $query->join('system_roles', 'users.role_id', '=', 'system_roles.id')
+            ->select('users.*', 'system_roles.role', 'system_roles.id as roleid')
+            ->get();
+            
+        $exportDate = now()->format('Y-m-d H:i:s');
+        $totalResults = $users->count();
+        
+        $searchFilters = [];
+        if ($name) $searchFilters[] = "Name: {$name}";
+        if ($role) $searchFilters[] = "Role: {$role}";
+        if ($email) $searchFilters[] = "Email: {$email}";
+        
+        $searchTerm = !empty($searchFilters) ? implode(', ', $searchFilters) : 'All Users';
+        
+        $pdf = Pdf::loadView('admin.users.users-pdf', compact(
+            'users',
+            'searchTerm',
+            'exportDate',
+            'totalResults'
+        ));
+        
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->setOptions([
+            'isHtml5ParserEnabled' => true,
+            'isPhpEnabled' => true,
+            'defaultFont' => 'Arial'
+        ]);
+        
+        $filename = 'users-export-' . date('Y-m-d-H-i-s') . '.pdf';
+        
+        return $pdf->download($filename);
+    }
 }
