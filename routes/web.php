@@ -149,4 +149,7 @@ Route::prefix('/admin')->middleware('admincheck:faculty')->group(function () {
 // Admin PDF Export Routes
 Route::get('/admin/users/export-pdf', [UserController::class, 'exportPDF'])->name('users.export.pdf')->middleware('admincheck:administrator,admin');
 
+// Project Documentation Export
+Route::get('/project/documentation/export-pdf', [HomeController::class, 'exportProjectDocumentation'])->name('project.documentation.pdf');
+
 

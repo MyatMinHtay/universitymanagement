@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomeController extends Controller
 {
@@ -158,5 +159,24 @@ class HomeController extends Controller
             'results' => $results->values()->all(),
             'filters' => $filters
         ]);
+    }
+
+    /**
+     * Export project documentation as PDF
+     */
+    public function exportProjectDocumentation()
+    {
+        $html = file_get_contents(public_path('../University_Management_System_Documentation.html'));
+        
+        $pdf = Pdf::loadHTML($html)
+            ->setPaper('a4', 'portrait')
+            ->setOptions([
+                'defaultFont' => 'Times-Roman',
+                'isRemoteEnabled' => true,
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => true
+            ]);
+        
+        return $pdf->download('University_Management_System_Documentation.pdf');
     }
 }
