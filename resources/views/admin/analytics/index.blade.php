@@ -149,23 +149,42 @@
             dark: '#2d465e'
         };
 
+        function generateColors(count) {
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                const hue = (i * 360 / count) % 360; // evenly spaced hues
+                colors.push(`hsl(${hue}, 65%, 55%)`); // bright colors
+            }
+            return colors;
+        }
+
         // Students by Department Pie Chart
         const studentsDepData = @json($studentsByDepartment);
+        const teachersDepData = @json($teachersByDepartment);
+
+        // All department names (unique across both)
+        const allDepartments = [...new Set([
+            ...studentsDepData.map(item => item.name),
+            ...teachersDepData.map(item => item.name)
+        ])];
+
+        // Generate colors
+        const depColors = generateColors(allDepartments.length);
+
+        // Map department -> color
+        const colorMap = {};
+        allDepartments.forEach((dep, idx) => {
+            colorMap[dep] = depColors[idx];
+        });
+
+        // Students by Department Pie Chart
         new Chart(document.getElementById('studentsDepartmentChart'), {
             type: 'pie',
             data: {
                 labels: studentsDepData.map(item => item.name),
                 datasets: [{
                     data: studentsDepData.map(item => item.count),
-                    backgroundColor: [
-                        colors.primary,
-                        colors.secondary,
-                        colors.accent,
-                        colors.success,
-                        colors.warning,
-                        colors.info,
-                        colors.danger
-                    ],
+                    backgroundColor: studentsDepData.map(item => colorMap[item.name]),
                     borderWidth: 2,
                     borderColor: '#ffffff'
                 }]
@@ -186,7 +205,6 @@
         });
 
         // Teachers by Department Bar Chart
-        const teachersDepData = @json($teachersByDepartment);
         new Chart(document.getElementById('teachersDepartmentChart'), {
             type: 'bar',
             data: {
@@ -194,8 +212,8 @@
                 datasets: [{
                     label: 'Teachers',
                     data: teachersDepData.map(item => item.count),
-                    backgroundColor: colors.primary,
-                    borderColor: colors.primary,
+                    backgroundColor: teachersDepData.map(item => colorMap[item.name]),
+                    borderColor: teachersDepData.map(item => colorMap[item.name]),
                     borderWidth: 1,
                     borderRadius: 8,
                     borderSkipped: false
@@ -224,6 +242,7 @@
                 }
             }
         });
+
 
         // Students by Gender Donut Chart
         const studentsGenderData = @json($studentsByGender);

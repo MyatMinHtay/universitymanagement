@@ -4,7 +4,10 @@
         <!-- Page Title -->
         <div class="page-title text-center">
             <div class="container position-relative">
-                <h1 class="mt-5">Students ({{ $studentcounts }})</h1>
+                <h1 class="mt-5">Students</h1>
+                <h2 class="col-12 text-end">
+                    Total Student - {{ $studentcounts }}
+                </h2>
             </div>
         </div>
         <!-- End Page Title -->

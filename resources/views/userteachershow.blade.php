@@ -415,7 +415,10 @@
         <!-- Page Title -->
         <div class="page-title text-center">
             <div class="container position-relative">
-                <h1 class="mt-5">Teachers ({{ $teachercounts }})</h1>
+                <h1 class="mt-5">Teachers</h1>
+                <h2 class="col-12 text-end peoplecount">
+                    Total Teacher - {{ $teachercounts }}
+                </h2>
                 @if(request('search'))
                     <div class="mt-3">
                         <div class="alert alert-info d-inline-block">
