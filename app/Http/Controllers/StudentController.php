@@ -56,11 +56,13 @@ class StudentController extends Controller
         }
 
         $students = $query->paginate(20)->withQueryString();
-        $studentcounts = $query->count();
+        $studentcounts = Student::count();
+        $querystudentcounts = $query->count();
 
         return view('userstudentshow', [
             'students' => $students,
-            'studentcounts' => $studentcounts
+            'studentcounts' => $studentcounts,
+            'querystudentcounts' => $querystudentcounts
         ]);
     }
 

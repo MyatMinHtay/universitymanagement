@@ -66,11 +66,12 @@ class TeacherController extends Controller
         }
 
         $teachers = $query->paginate(20)->withQueryString();
-        $teachercounts = $query->count();
-
+        $teachercounts = Teacher::count();
+        $queryteachercounts = $query->count();
         return view('userteachershow', [
             'teachers' => $teachers,
-            'teachercounts' => $teachercounts
+            'teachercounts' => $teachercounts,
+            'queryteachercounts' => $queryteachercounts
         ]);
     }
 

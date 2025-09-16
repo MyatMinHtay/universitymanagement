@@ -4,14 +4,12 @@
         <!-- Page Title -->
         <div class="page-title text-center">
             <div class="container position-relative">
-                <h1 class="mt-5">Students</h1>
-                <h2 class="col-12 text-end">
-                    Total Student - {{ $studentcounts }}
-                </h2>
+                <h1 class="mt-5">The Total Number of Students ({{ $studentcounts }})</h1>
+               
             </div>
         </div>
         <!-- End Page Title -->
-    
+
         <!-- Enhanced Search Box -->
         <div class="my-4">
             <input type="text" id="searchstudent" class="form-control" placeholder="Search students with multiple keywords">

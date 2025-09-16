@@ -423,10 +423,12 @@
         <!-- Page Title -->
         <div class="page-title text-center">
             <div class="container position-relative">
-                <h1 class="mt-5">Students </h1>
-                <h2 class="col-12 text-end">
-                    Total Student - {{ $studentcounts }}
-                </h2>
+                <h1 class="mt-5">The Total Number of Students ({{ $studentcounts }}) </h1>
+                <!-- Search Results Message -->
+                <div id="search-message" class="text-center mt-3" style="display: none;"></div>
+                @if(request('search'))
+                <div id="search-message" class="text-center mt-3"><p class="text-info"><i class="bi bi-search"></i> Found {{ $querystudentcounts }} student(s) matching "{{ request('search') }}"</p></div>
+                @endif
                 @if(request('search'))
                     <div class="mt-3">
                         <div class="alert alert-info d-inline-block">
@@ -618,8 +620,7 @@
             </div>
         </div>
 
-        <!-- Search Results Message -->
-        <div id="search-message" class="text-center mt-3" style="display: none;"></div>
+        
 
         <!-- No Results -->
         <div id="no-results" class="text-center py-4" style="display: none;">
