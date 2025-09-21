@@ -2,7 +2,7 @@
     <main class="main">
 
     <!-- Page Title -->
-    <div class="page-title dark-background" style="background-image: url(assets/img/education/showcase-1.webp);">
+    <div class="page-title dark-background" style="background-image: url(/assets/img/about.jpeg);">
       <div class="container position-relative">
         <h1>Academic Departments</h1>
         <p>Explore our diverse range of academic departments, each dedicated to excellence in teaching, research, and innovation across various disciplines.</p>

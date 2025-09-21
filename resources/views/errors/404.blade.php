@@ -2,7 +2,7 @@
     <main class="main">
 
     <!-- Page Title -->
-    <div class="page-title dark-background" style="background-image: url(assets/img/education/showcase-1.webp);">
+    <div class="page-title dark-background" style="background-image: url(/assets/img/education/showcase-1.webp);">
       <div class="container position-relative">
         <h1>404</h1>
         <p>The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
