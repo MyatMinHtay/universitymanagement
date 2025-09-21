@@ -104,7 +104,7 @@ class AuthController extends Controller
         //login 
         auth()->login($user, $remember = true);
 
-        return redirect('/')->with('success', 'Welcome Dear, ' . $user->username);
+        return redirect()->route('home')->with('success', 'Welcome Dear, ' . $user->username);
     }
 
     public function login()
@@ -134,7 +134,7 @@ class AuthController extends Controller
 
             $request->session()->regenerate();
             $username = auth()->user()->username;
-            return redirect('/')->with('success', "Welcome Back $username");
+            return redirect()->route('home')->with('success', "Welcome Back $username");
         }
 
         // Check if the email is incorrect
@@ -234,7 +234,7 @@ class AuthController extends Controller
 
 
 
-        return redirect('/profile' . '/' . $formData['username'])->with('success', 'Update Success');
+        return redirect()->route('profile.show', ['user' => $formData['username']])->with('success', 'Update Success');
         //return back()->with('success','Update Success');
     }
 
@@ -250,7 +250,7 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Good bye');
+        return redirect()->route('home')->with('success', 'Good bye');
     }
 
 }

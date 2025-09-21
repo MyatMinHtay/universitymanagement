@@ -1214,7 +1214,7 @@
                 $.each(teachers, function (index, teacher) {
                     let baseUrl = '{{ asset('') }}';
                     let imageUrl = teacher.image ? baseUrl + teacher.image : baseUrl + 'assets/img/default-teacher.png';
-                    let showUrl = '{{ url('/teachers') }}/' + teacher.id;
+                    let showUrl = '{{ url(route('teachers.usershow', ['teacher' => 'TEACHER_ID'])) }}'.replace('TEACHER_ID', teacher.id);
                     let departmentName = teacher.department?.fullname || 'N/A';
                     let badgeClass = '';
                     let badgeText = '';

@@ -40,7 +40,7 @@
                 </p>
 
                 <div class="error-actions" data-aos="fade-up" data-aos-delay="800">
-                  <a href="/" class="btn-home">
+                  <a href="{{ route('home') }}" class="btn-home">
                     <i class="bi bi-house-door"></i> Back to Home
                   </a>
                   <a href="#" class="btn-help">

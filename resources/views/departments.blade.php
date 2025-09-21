@@ -155,7 +155,7 @@
             text-decoration: none;
             color: inherit;
             position: relative;
-            height: 280px;
+            /* height: 280px; */
         }
 
         .department-card:hover {

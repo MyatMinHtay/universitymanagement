@@ -25,12 +25,9 @@ use App\Http\Controllers\FacultyController;
 |
 */
 
-
+Route::prefix('university-information-retrieval-system')->group(function () {
 
 Route::get('/', [AuthController::class, 'index'])->name('home');
-
-
-
 
 Route::get('/register', [AuthController::class, 'create'])->middleware('admincheck:roles')->name('register');
 Route::post('/register', [UserController::class, 'createuser'])->middleware('admincheck:roles')->name('postregister');
@@ -46,29 +43,29 @@ Route::get('/admin/analytics', [DashboardController::class, 'showAnalytics'])->m
 //Admin User Management 
 
 Route::get('/admin/users', [UserController::class, 'index'])->middleware('admincheck:users')->name('users');
-Route::post('/admin/users/create', [UserController::class, 'createuser'])->middleware("admincheck:roles");
+Route::post('/admin/users/create', [UserController::class, 'createuser'])->middleware("admincheck:roles")->name('admin.users.create');
 Route::post('/admin/users/update/{user:username}', [UserController::class, 'updateuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles')->name('admin.users.update');
-Route::get('/admin/users/edit/{user:username}', [UserController::class, 'edituser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles');
-Route::get('/admin/users/lock/{user:username}', [UserController::class, 'lockuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles');
-Route::get('/admin/users/unlock/{user:username}', [UserController::class, 'unlockuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles');
-Route::get('/admin/users/delete/{user:username}', [UserController::class, 'deleteuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles');
+Route::get('/admin/users/edit/{user:username}', [UserController::class, 'edituser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles')->name('admin.users.edit');
+Route::get('/admin/users/lock/{user:username}', [UserController::class, 'lockuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles')->name('admin.users.lock');
+Route::get('/admin/users/unlock/{user:username}', [UserController::class, 'unlockuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles')->name('admin.users.unlock');
+Route::get('/admin/users/delete/{user:username}', [UserController::class, 'deleteuser'])->where('username', '[A-Za-z0-9_\-]+')->middleware('admincheck:roles')->name('admin.users.delete');
 
 Route::get('/login', [AuthController::class, 'login'])->middleware('guest')->name('login');
 Route::post('/login', [AuthController::class, 'postLogin'])->middleware('guest')->name('page.login');
-Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::get('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 //Profile 
-Route::get('/profile/{user:username}', [HomeController::class, 'showprofile'])->where('user', '[A-z\d\-_]+')->middleware('auth');
+Route::get('/profile/{user:username}', [HomeController::class, 'showprofile'])->where('user', '[A-z\d\-_]+')->middleware('auth')->name('profile.show');
 Route::post('/editprofile', [AuthController::class, 'updateprofile'])->middleware('auth');
 
 
 //Admin System Roles 
 
 Route::get('/admin/roles', [SystemRoleController::class, 'index'])->middleware('admincheck:roles')->name('roles');
-Route::post('/admin/roles/create', [SystemRoleController::class, 'createrole'])->middleware("admincheck:roles");
-Route::post('/admin/roles/update/{role:role}', [SystemRoleController::class, 'updaterole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles');
-Route::get('/admin/roles/edit/{role:role}', [SystemRoleController::class, 'editrole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles');
-Route::get('/admin/roles/delete/{role:role}', [SystemRoleController::class, 'deleterole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles');
+Route::post('/admin/roles/create', [SystemRoleController::class, 'createrole'])->middleware("admincheck:roles")->name('admin.roles.create');
+Route::post('/admin/roles/update/{role:role}', [SystemRoleController::class, 'updaterole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles')->name('admin.roles.update');
+Route::get('/admin/roles/edit/{role:role}', [SystemRoleController::class, 'editrole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles')->name('admin.roles.edit');
+Route::get('/admin/roles/delete/{role:role}', [SystemRoleController::class, 'deleterole'])->where('role', '[A-z\d\-_]+')->middleware('admincheck:roles')->name('admin.roles.delete');
 
 //Department Start
 
@@ -151,5 +148,7 @@ Route::get('/admin/users/export-pdf', [UserController::class, 'exportPDF'])->nam
 
 // Project Documentation Export
 Route::get('/project/documentation/export-pdf', [HomeController::class, 'exportProjectDocumentation'])->name('project.documentation.pdf');
+
+});
 
 

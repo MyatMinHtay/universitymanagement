@@ -1,7 +1,7 @@
 <x-adminlayout>
     <main class="main mt-5">
         <!-- Page Title with Banner & Profile Image -->
-        <div class="page-title text-center">
+        {{-- <div class="page-title text-center">
             @if($faculty->department && $faculty->department->banner)
                 <div class="container position-relative mb-4">
                     <div class="col-12">
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             @endif
-        </div>
+        </div> --}}
         <!-- End Page Title -->
     
         <div class="container my-5">
@@ -65,14 +65,14 @@
                                 </tr>
                             </tbody>
                         </table>
-                        <div class="text-center mt-4">
+                        {{-- <div class="text-center mt-4">
                             @if($faculty->department)
                                 <a href="{{ route('departments.show', $faculty->department->id) }}" class="btn btn-primary rounded-pill me-2">
                                     <i class="fas fa-eye"></i> View Department
                                 </a>
                             @endif
                             
-                        </div>
+                        </div> --}}
                     </div>
                 </div>
             </div>

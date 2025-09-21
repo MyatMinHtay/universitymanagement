@@ -13,8 +13,8 @@
                     
                   </div>
                 </div>
-                <div class="dept-banner-container">
-                  <img class="dept-banner" src="{{ asset($department->banner) }}" alt="{{ $department->fullname }}">
+                <div class="dept-banner-container dark-background">
+                  <img class="dept-banner" src="{{ asset('assets/img/home.jpg') }}" alt="{{ $department->fullname }}">
                 </div>
               </div>
             </div>

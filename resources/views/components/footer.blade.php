@@ -17,8 +17,8 @@
         <div class="col-lg-2 col-md-4 footer-links">
           <h4>Useful Links</h4>
           <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/departments">Department</a></li>
+            <li><a href="{{ route('home') }}">Home</a></li>
+              <li><a href="{{ route('user.departments') }}">Department</a></li>
             
           </ul>
         </div>

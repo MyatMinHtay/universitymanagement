@@ -8,7 +8,7 @@
                </div>
 
 
-               <a class="navbar-brand fontcolor" href="/">University Management</a>
+               <a class="navbar-brand fontcolor" href="{{ route('home') }}">University Management</a>
 
                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar"
                     aria-labelledby="offcanvasNavbarLabel">
@@ -36,7 +36,7 @@
                               </li>
 
                               <li class="nav-item">
-                                   <a class="nav-link" href="/admin/roles">
+                                   <a class="nav-link" href="{{ route('roles') }}">
                                         <i class="fa-solid fa-r fs-5 icon"></i>
                                         Roles</a>
                               </li>
@@ -66,14 +66,14 @@
                               </li>
 
                               <li class="nav-item">
-                                   <a class="nav-link" href="/admin/users">
+                                   <a class="nav-link" href="{{ route('users') }}">
 
                                         <i class="fa-solid fa-user fs-5 icon"></i>
                                         Users</a>
                               </li>
 
                               <li class="nav-item">
-                                   <a class="nav-link" href="/logout">
+                                   <a class="nav-link" href="{{ route('logout') }}">
                                         <i class="fa-solid fa-circle-chevron-left fs-5 icon"></i>
                                         Logout</a>
                               </li>

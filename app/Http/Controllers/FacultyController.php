@@ -268,8 +268,10 @@ class FacultyController extends Controller
                 'max:255',
                 Rule::unique('faculty')->ignore($faculty->id),
             ],
-            'department_id' => 'required|exists:departments,id'
+            // 'department_id' => 'required|exists:departments,id'
         ]);
+
+       
 
         if ($request->hasFile('image')) {
             // Delete old image if it exists
@@ -297,12 +299,16 @@ class FacultyController extends Controller
         }
 
         try {
+            
             $faculty->update($formData);
+            
         } catch (QueryException $e) {
+           
             return back()->withErrors(['error' => 'Failed to update faculty: ' . $e->getMessage()]);
         }
-
-        return redirect()->route('faculty')->with('success', 'Faculty member updated successfully.');
+        
+            return redirect()->route('faculty')->with('success', 'Faculty member updated successfully.');
+        
     }
 
     /**

@@ -131,7 +131,7 @@
                                 let showUrl = `/faculty/${faculty.id}`;
                                 let departmentName = faculty.department?.fullname || 'N/A';
                                 let departmentBtn = faculty.department
-                                    ? `<a href="/departments/${faculty.department.id}" class="btn btn-outline-info btn-sm me-1" title="View Department">
+                                    ? `<a href="{{ route('user.departments.show', ['department' => '']) }}${faculty.department.id}" class="btn btn-outline-info btn-sm me-1" title="View Department">`
                                             <i class="fas fa-building"></i>
                                         </a>`
                                     : `<button class="btn btn-outline-secondary btn-sm me-1" disabled title="No Department">

@@ -35,7 +35,7 @@ class DashboardController extends Controller
                 return redirect()->back()->with('warning','access deined! You Are Not Admin');
             }
         }else{
-            return redirect('/login')->with('warning','access deined! Only Admin Can Access This Page');
+            return redirect()->route('login')->with('warning','access deined! Only Admin Can Access This Page');
         }
     }
 
